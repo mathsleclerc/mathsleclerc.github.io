@@ -5,7 +5,8 @@ const TYPES = {
   exercices: { libelle: "Fiche d'exercices", icone: "EX" },
   corrige:   { libelle: "Corrigé",           icone: "✓" },
   video:     { libelle: "Vidéo",             icone: "▶" },
-  lien:      { libelle: "Lien",              icone: "↗" }
+  lien:      { libelle: "Lien",              icone: "↗" },
+  exerciseur:{ libelle: "Exerciseur",        icone: "✎" }
 };
 
 function el(tag, attrs = {}, ...enfants) {
@@ -130,11 +131,12 @@ function carteRessource(r) {
   const t = TYPES[r.type] || TYPES.lien;
   const href = r.fichier || r.lien || "#";
   const estPdf = !!r.fichier;
+  const estExerciseur = r.type === "exerciseur";
   const carte = el("div", { class: "ressource t-" + (TYPES[r.type] ? r.type : "lien") },
     el("span", { class: "icone", "aria-hidden": "true" }, t.icone),
-    el("a", { class: "texte", href, target: "_blank", rel: "noopener", style: "text-decoration:none" },
+    el("a", { class: "texte", href, target: estExerciseur ? "_self" : "_blank", rel: "noopener", style: "text-decoration:none" },
       el("strong", {}, r.titre || t.libelle),
-      el("span", {}, estPdf ? "Ouvrir le PDF" : "Ouvrir le lien")
+      el("span", {}, estPdf ? "Ouvrir le PDF" : estExerciseur ? "S'entraîner en ligne" : "Ouvrir le lien")
     ),
     estPdf ? el("a", { class: "telecharger", href, download: "" }, "Télécharger") : null
   );

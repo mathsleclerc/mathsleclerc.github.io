@@ -12,6 +12,7 @@
      "corrige"    → un corrigé (PDF)
      "video"      → une vidéo YouTube : mettre  lien: "https://www.youtube.com/watch?v=..."
      "lien"       → un autre site :     mettre  lien: "https://..."
+     "exerciseur" → un exerciseur en ligne du site : mettre  lien: "exerciseurs/..."
 
    Vidéo de correction d'une fiche : ajoutez à la fin de sa ligne
      correction: "https://youtu.be/..."
@@ -50,6 +51,7 @@ const NIVEAUX = {
       {
         titre: "Chapitre 3 — Fractions et partage",
         ressources: [
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les fractions", lien: "exerciseurs/fractions-6e/" }
         ]
       }
     ]

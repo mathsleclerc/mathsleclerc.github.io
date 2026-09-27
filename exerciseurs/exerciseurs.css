@@ -1,0 +1,131 @@
+/* Styles communs des exerciseurs — complète style.css (mêmes couleurs, même police). */
+
+/* ----- Menu des activités ----- */
+.grille-activites {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.carte-activite {
+  display: flex; gap: 14px; align-items: flex-start; text-decoration: none;
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 14px;
+  padding: 16px 18px; box-shadow: var(--ombre);
+  transition: transform .15s, border-color .15s;
+}
+.carte-activite:hover { transform: translateY(-2px); border-color: var(--exercices); }
+.carte-activite .badge {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px;
+  border-radius: 10px; background: var(--exercices); color: #fff;
+  font-size: 1.15rem; font-weight: 700;
+}
+.carte-activite.melange .badge { background: var(--bleu); font-size: .95rem; }
+.carte-activite.melange:hover { border-color: var(--bleu); }
+.carte-activite h2 { margin: 2px 0 2px; font-size: 1.05rem; }
+.carte-activite p { margin: 0; color: var(--texte-doux); font-size: .9rem; }
+
+/* ----- Barre au-dessus de l'exercice ----- */
+.barre {
+  display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
+  justify-content: space-between; margin-bottom: 16px;
+}
+.barre .retour { text-decoration: none; color: var(--texte-doux); font-weight: 500; }
+.barre .retour:hover { color: var(--texte); }
+.score { display: flex; gap: 8px; flex-wrap: wrap; }
+.pastille {
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 999px;
+  padding: 4px 12px; font-size: .9rem; color: var(--texte-doux);
+}
+.pastille strong { color: var(--texte); font-variant-numeric: tabular-nums; }
+
+/* ----- Carte d'exercice ----- */
+.exercice {
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 14px;
+  box-shadow: var(--ombre); overflow: hidden;
+}
+.exercice-tete {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px;
+  padding: 14px 20px; border-left: 5px solid var(--exercices);
+}
+.exercice-tete h2 { margin: 0; font-size: 1.12rem; flex: 1; }
+.exercice-tete .num { color: var(--texte-doux); font-size: .9rem; }
+.exercice-corps { padding: 4px 20px 22px; }
+.etiquette {
+  display: inline-block; margin: 10px 0 0; padding: 2px 10px; border-radius: 999px;
+  background: var(--bleu-clair); color: var(--texte-doux); font-size: .82rem; font-weight: 500;
+}
+.consigne { font-size: 1.08rem; margin: 12px 0 14px; }
+.figure { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 4px 0 16px; }
+.figure svg { max-width: 100%; height: auto; }
+.ligne {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 10px; margin: 8px 0 18px; font-size: 1.35rem;
+}
+
+/* ----- Fractions ----- */
+.frac {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; line-height: 1.15; margin: 0 .12em;
+}
+.frac > span { padding: 0 .2em; }
+.frac > span:first-child { border-bottom: 2px solid currentColor; }
+.consigne .frac, .message .frac { font-size: .92em; }
+.frac-saisie > span:first-child { padding-bottom: 4px; }
+.frac-saisie > span:last-child { padding-top: 4px; }
+
+/* ----- Cases et boutons ----- */
+.case {
+  width: 3.2em; padding: 4px 6px; font: inherit; text-align: center;
+  border: 2px solid var(--bord); border-radius: 8px;
+  background: var(--fond); color: var(--texte);
+}
+.case.large { width: 5em; }
+.case:focus { outline: none; border-color: var(--cours); }
+.case:disabled { opacity: .75; }
+.case-choix {
+  display: inline-grid; place-items: center; width: 1.8em; height: 1.8em;
+  border: 2px dashed var(--bord); border-radius: 8px; font-weight: 700; color: var(--cours);
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.btn {
+  font: inherit; font-weight: 500; cursor: pointer;
+  padding: 10px 18px; border-radius: 10px;
+  border: 1px solid var(--bord); background: var(--carte); color: var(--texte);
+}
+.btn:hover { border-color: var(--texte-doux); }
+.btn.principal { background: var(--bleu); border-color: var(--bleu); color: #fff; }
+.btn.principal:hover { background: var(--bleu-fonce); }
+.btn.discret { border-color: transparent; color: var(--texte-doux); }
+.btn-choix { min-width: 60px; font-size: 1.4rem; font-weight: 700; padding: 6px 16px; }
+.btn:focus-visible, .droite-clic:focus-visible { outline: 2px solid var(--cours); outline-offset: 2px; }
+
+/* ----- Retour à l'élève ----- */
+.message {
+  margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+  background: var(--fond); border-left: 5px solid var(--texte-doux);
+}
+.message .titre { font-weight: 700; }
+.message.juste { border-color: var(--corrige); }
+.message.juste .titre { color: var(--corrige); }
+.message.faux { border-color: var(--video); }
+.message.faux .titre { color: var(--video); }
+.message.correction { border-color: var(--cours); }
+.message.correction .titre { color: var(--cours); }
+.message.incomplet { color: var(--texte-doux); }
+
+/* ----- Figures ----- */
+.fig-part { fill: var(--carte); stroke: var(--texte); stroke-width: 1.5; }
+.fig-part.coloriee { fill: var(--exercices); }
+
+.droite .axe, .droite .grad { stroke: var(--texte); stroke-width: 1.5; }
+.droite .grad.maj { stroke-width: 2.5; }
+.droite .fleche { fill: var(--texte); }
+.droite text { font-family: inherit; font-size: 18px; text-anchor: middle; fill: var(--texte); }
+.droite .pt line { stroke: var(--cours); stroke-width: 3; stroke-linecap: round; }
+.droite .pt text { fill: var(--cours); font-weight: 700; }
+.droite .pt.correct line { stroke: var(--corrige); }
+.droite .pt.correct text { fill: var(--corrige); }
+.droite-clic { cursor: pointer; touch-action: manipulation; }
+
+/* ----- Affichage dans une iframe : sans bandeau ni pied de page ----- */
+body.integre .bandeau, body.integre footer { display: none; }
+body.integre main { padding-top: 16px; }

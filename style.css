@@ -12,6 +12,7 @@
   --corrige: #2e8b57;
   --video: #c4302b;
   --lien: #6b5bb5;
+  --exerciseur: #0f8a8a;
   --ombre: 0 1px 3px rgba(20, 40, 80, .08), 0 4px 14px rgba(20, 40, 80, .05);
 }
 @media (prefers-color-scheme: dark) {
@@ -27,6 +28,7 @@
     --corrige: #5cc48a;
     --video: #ef6b66;
     --lien: #a597e6;
+    --exerciseur: #3cc2c2;
     --ombre: none;
   }
 }
@@ -140,6 +142,7 @@ a.ressource:hover { border-color: currentColor; }
 .t-corrige .icone { background: var(--corrige); }
 .t-video .icone { background: var(--video); }
 .t-lien .icone { background: var(--lien); }
+.t-exerciseur .icone { background: var(--exerciseur); font-size: 1.1rem; }
 
 /* ----- Vidéos ----- */
 .videos { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 14px; }
