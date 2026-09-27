@@ -138,6 +138,14 @@ function carteRessource(r) {
     ),
     estPdf ? el("a", { class: "telecharger", href, download: "" }, "Télécharger") : null
   );
+  const idCorr = idYoutube(r.correction);
+  if (idCorr) {
+    const libelle = r.correctionTitre || "Correction en vidéo";
+    carte.append(el("button", {
+      class: "btn-video", type: "button",
+      onclick: () => ouvrirVideo(idCorr, (r.titre || t.libelle) + " — " + libelle)
+    }, el("span", { class: "btn-video-icone", "aria-hidden": "true" }), libelle));
+  }
   return carte;
 }
 
@@ -169,4 +177,29 @@ function carteVideo(v) {
   cadre.addEventListener("click", lancer);
   cadre.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); lancer(); } });
   return el("div", { class: "video" }, el("figure", {}, cadre, legende));
+}
+
+/* ---------- Lecteur vidéo en surimpression ---------- */
+let lecteur = null;
+function ouvrirVideo(id, titre) {
+  if (!lecteur) {
+    const titreEl = el("strong", {});
+    const cadre = el("div", { class: "lecteur-cadre" });
+    const fermer = el("button", { class: "lecteur-fermer", type: "button", "aria-label": "Fermer" }, "✕");
+    lecteur = el("dialog", { class: "lecteur" },
+      el("div", { class: "lecteur-tete" }, titreEl, fermer), cadre);
+    lecteur._titre = titreEl; lecteur._cadre = cadre;
+    fermer.addEventListener("click", () => lecteur.close());
+    lecteur.addEventListener("click", e => { if (e.target === lecteur) lecteur.close(); });
+    lecteur.addEventListener("close", () => cadre.replaceChildren());
+    document.body.append(lecteur);
+  }
+  lecteur._titre.textContent = titre;
+  lecteur._cadre.replaceChildren(el("iframe", {
+    src: "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0",
+    title: titre,
+    allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+    allowfullscreen: ""
+  }));
+  lecteur.showModal();
 }

@@ -13,6 +13,10 @@
      "video"      → une vidéo YouTube : mettre  lien: "https://www.youtube.com/watch?v=..."
      "lien"       → un autre site :     mettre  lien: "https://..."
 
+   Vidéo de correction d'une fiche : ajoutez à la fin de sa ligne
+     correction: "https://youtu.be/..."
+   → un bouton « Correction en vidéo » apparaît sous la fiche.
+
    Attention : chaque ligne se termine par une virgule, et les textes
    sont entre guillemets "comme ceci".
    ===================================================================== */
@@ -37,7 +41,7 @@ const NIVEAUX = {
         titre: "Chapitre 2 — Droites, Médiatrices et symétrie",
         ressources: [
           { type: "cours",     titre: "Cours — Droites, Médiatrices et symétrie",                    fichier: "pdf/6e/ch2-cours.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire, notations et milieu",  fichier: "pdf/6e/ch2-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire, notations et milieu",  fichier: "pdf/6e/ch2-exercices-1.pdf", correction: "https://youtu.be/h8VQU_azEbo" },
           { type: "exercices", titre: "Feuille d'exercices n°2 : Perpendiculaires et parallèles",   fichier: "pdf/6e/ch2-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Médiatrice et démonstration",      fichier: "pdf/6e/ch2-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : La symétrie axiale",               fichier: "pdf/6e/ch2-exercices-4.pdf" }

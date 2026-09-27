@@ -176,3 +176,32 @@ footer { padding: 0 16px 30px; color: var(--texte-doux); font-size: .85rem; text
   .chapitre > summary .compte { order: 3; width: 100%; }
   .ressources { grid-template-columns: 1fr; }
 }
+
+/* ----- Bouton « Correction en vidéo » ----- */
+.ressource { flex-wrap: wrap; }
+.btn-video {
+  flex-basis: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  font: inherit; font-size: .9rem; font-weight: 500; cursor: pointer;
+  padding: 8px 12px; border-radius: 8px; border: 1px solid var(--video);
+  background: transparent; color: var(--video);
+}
+.btn-video:hover { background: var(--video); color: #fff; }
+.btn-video-icone {
+  width: 0; height: 0; border-style: solid;
+  border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor;
+}
+
+/* ----- Lecteur en surimpression ----- */
+.lecteur {
+  width: min(960px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: 14px;
+  background: var(--carte); color: var(--texte); overflow: hidden;
+}
+.lecteur::backdrop { background: rgba(10, 15, 25, .75); }
+.lecteur-tete { display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
+.lecteur-tete strong { flex: 1; font-weight: 500; }
+.lecteur-fermer {
+  font: inherit; font-size: 1.1rem; cursor: pointer; width: 36px; height: 36px;
+  border-radius: 8px; border: 1px solid var(--bord); background: transparent; color: var(--texte);
+}
+.lecteur-cadre { position: relative; aspect-ratio: 16 / 9; background: #000; }
+.lecteur-cadre iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
