@@ -6,7 +6,8 @@ const TYPES = {
   corrige:   { libelle: "Corrigé",           icone: "✓" },
   video:     { libelle: "Vidéo",             icone: "▶" },
   lien:      { libelle: "Lien",              icone: "↗" },
-  exerciseur:{ libelle: "Exerciseur",        icone: "✎" }
+  exerciseur:{ libelle: "Exerciseur",        icone: "✎" },
+  activite:  { libelle: "Activité",          icone: "★" }
 };
 
 function el(tag, attrs = {}, ...enfants) {
@@ -74,7 +75,16 @@ function pageNiveau() {
     return;
   }
 
-  const blocs = niv.chapitres.map((ch, i) => {
+  // Section « Activités » (hors chapitres), affichée en premier si le niveau en a une
+  const sections = niv.chapitres.map((ch, i) => ({ ch, ouvert: i === 0 }));
+  if (Array.isArray(niv.activites)) {
+    sections.unshift({
+      ch: { titre: "Activités", description: "Des activités interactives qui mélangent les notions de plusieurs chapitres.", ressources: niv.activites },
+      classe: "activites", vide: "Les activités arrivent bientôt."
+    });
+  }
+
+  const blocs = sections.map(({ ch, ouvert, classe, vide }) => {
     const res = ch.ressources || [];
     const docs = res.filter(r => r.type !== "video");
     const vids = res.filter(r => r.type === "video");
@@ -88,7 +98,7 @@ function pageNiveau() {
       corps.append(liste);
     }
     if (!docs.length && !vids.length) {
-      corps.append(el("p", { class: "description" }, "Les documents de ce chapitre arrivent bientôt."));
+      corps.append(el("p", { class: "description" }, vide || "Les documents de ce chapitre arrivent bientôt."));
     }
     if (vids.length) {
       const liste = el("div", { class: "videos" });
@@ -96,12 +106,13 @@ function pageNiveau() {
       corps.append(liste);
     }
 
+    const mot = classe === "activites" ? " activité" : " document";
     const compte = [
-      docs.length ? docs.length + " document" + (docs.length > 1 ? "s" : "") : null,
+      docs.length ? docs.length + mot + (docs.length > 1 ? "s" : "") : null,
       vids.length ? vids.length + " vidéo" + (vids.length > 1 ? "s" : "") : null
     ].filter(Boolean).join(" · ") || "Bientôt";
 
-    const details = el("details", { class: "chapitre" },
+    const details = el("details", { class: "chapitre" + (classe ? " " + classe : "") },
       el("summary", {},
         el("h2", {}, ch.titre),
         el("span", { class: "compte" }, compte),
@@ -109,7 +120,7 @@ function pageNiveau() {
       ),
       corps
     );
-    if (i === 0) details.open = true; // premier chapitre ouvert
+    if (ouvert) details.open = true; // premier chapitre ouvert
     details.dataset.texte = (ch.titre + " " + (ch.description || "") + " " + res.map(r => r.titre).join(" ")).toLowerCase();
     zone.append(details);
     return details;
@@ -131,12 +142,12 @@ function carteRessource(r) {
   const t = TYPES[r.type] || TYPES.lien;
   const href = r.fichier || r.lien || "#";
   const estPdf = !!r.fichier;
-  const estExerciseur = r.type === "exerciseur";
+  const estExerciseur = r.type === "exerciseur" || r.type === "activite";
   const carte = el("div", { class: "ressource t-" + (TYPES[r.type] ? r.type : "lien") },
     el("span", { class: "icone", "aria-hidden": "true" }, t.icone),
     el("a", { class: "texte", href, target: estExerciseur ? "_self" : "_blank", rel: "noopener", style: "text-decoration:none" },
       el("strong", {}, r.titre || t.libelle),
-      el("span", {}, estPdf ? "Ouvrir le PDF" : estExerciseur ? "S'entraîner en ligne" : "Ouvrir le lien")
+      el("span", {}, estPdf ? "Ouvrir le PDF" : r.type === "activite" ? "Lancer l'activité" : estExerciseur ? "S'entraîner en ligne" : "Ouvrir le lien")
     ),
     estPdf ? el("a", { class: "telecharger", href, download: "" }, "Télécharger") : null
   );

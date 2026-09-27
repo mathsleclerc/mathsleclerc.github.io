@@ -1,0 +1,7 @@
+Dossier des activités interactives de 6e (section « Activités » de la page Sixième).
+
+1. Déposez ici votre activité : un fichier .html (mon-activite.html),
+   ou un dossier qui contient un index.html (mon-activite/index.html).
+2. Dans contenu.js, ajoutez une ligne dans la liste « activites » du niveau 6e :
+     { type: "activite", titre: "Mon activité", lien: "activites/6e/mon-activite.html" },
+   (pour un dossier : lien: "activites/6e/mon-activite/")

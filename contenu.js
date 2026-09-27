@@ -13,6 +13,12 @@
      "video"      → une vidéo YouTube : mettre  lien: "https://www.youtube.com/watch?v=..."
      "lien"       → un autre site :     mettre  lien: "https://..."
      "exerciseur" → un exerciseur en ligne du site : mettre  lien: "exerciseurs/..."
+     "activite"   → une activité interactive : mettre  lien: "activites/6e/..."
+
+   Section « Activités » d'un niveau (en haut de la page, hors chapitres) :
+   déposez l'activité dans le dossier activites/6e/ (un fichier .html, ou un
+   dossier contenant un index.html), puis ajoutez une ligne dans « activites » :
+     { type: "activite", titre: "Mon activité", lien: "activites/6e/mon-activite.html" },
 
    Vidéo de correction d'une fiche : ajoutez à la fin de sa ligne
      correction: "https://youtu.be/..."
@@ -32,6 +38,8 @@ const NIVEAUX = {
 
   "6e": {
     nom: "Sixième",
+    activites: [
+    ],
     chapitres: [
       {
         titre: "Chapitre 1 — Les nombres entiers",

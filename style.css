@@ -13,6 +13,7 @@
   --video: #c4302b;
   --lien: #6b5bb5;
   --exerciseur: #0f8a8a;
+  --activite: #b83280;
   --ombre: 0 1px 3px rgba(20, 40, 80, .08), 0 4px 14px rgba(20, 40, 80, .05);
 }
 @media (prefers-color-scheme: dark) {
@@ -29,6 +30,7 @@
     --video: #ef6b66;
     --lien: #a597e6;
     --exerciseur: #3cc2c2;
+    --activite: #ec7ab8;
     --ombre: none;
   }
 }
@@ -143,6 +145,11 @@ a.ressource:hover { border-color: currentColor; }
 .t-video .icone { background: var(--video); }
 .t-lien .icone { background: var(--lien); }
 .t-exerciseur .icone { background: var(--exerciseur); font-size: 1.1rem; }
+.t-activite .icone { background: var(--activite); font-size: 1.1rem; }
+
+/* ----- Section « Activités » (hors chapitres) ----- */
+.chapitre.activites > summary { border-left-color: var(--activite); }
+.chapitre.activites > summary h2::before { content: "★ "; color: var(--activite); }
 
 /* ----- Vidéos ----- */
 .videos { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 14px; }
