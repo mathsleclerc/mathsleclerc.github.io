@@ -191,3 +191,50 @@ body.integre main { padding-top: 16px; }
 .case-quad.eleve { fill: var(--cours); }
 .case-quad.manque { fill: var(--corrige); fill-opacity: .7; }
 .case-quad.trop { fill: var(--video); fill-opacity: .55; }
+
+/* ----- Problèmes à étapes ----- */
+.ligne.etapes { display: block; font-size: 1rem; }
+.etape-pb { margin: 0 0 14px; }
+.etape-pb p { margin: 0 0 6px; }
+.etape-pb .rep { display: flex; align-items: center; gap: 8px; font-size: 1.15rem; }
+.etape-pb .case { width: 6em; }
+
+/* ----- Tableau de numération ----- */
+.numeration { border-collapse: collapse; margin: 4px auto 0; font-variant-numeric: tabular-nums; table-layout: fixed; }
+.numeration th, .numeration td { border: 1px solid var(--bord); text-align: center; padding: 0; }
+.numeration th { font-size: .78rem; font-weight: 500; color: var(--texte-doux); padding: 3px 2px; background: var(--fond); }
+.numeration th.rang { width: 2.1em; }
+.numeration td { height: 2.4em; font-size: 1.2rem; }
+.numeration td.fin-classe { border-right: 2px solid var(--texte-doux); }
+.numeration .chiffre {
+  width: 100%; height: 100%; min-height: 2.4em; font: inherit; border: 0; cursor: pointer;
+  background: transparent; color: var(--texte);
+}
+.numeration .chiffre:hover { background: var(--bleu-clair); }
+.numeration .chiffre.choisi { background: var(--cours); color: #fff; font-weight: 700; }
+.numeration .chiffre.bonne { box-shadow: inset 0 0 0 3px var(--corrige); }
+.numeration .chiffre:disabled { cursor: default; }
+
+/* ----- Ranger ----- */
+.ranger { width: 100%; }
+.jetons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 46px; }
+.jetons.rangee { border: 2px dashed var(--bord); border-radius: 12px; padding: 8px; }
+.jetons.rangee:empty::before { content: attr(data-vide); color: var(--texte-doux); align-self: center; font-size: .95rem; }
+.jeton {
+  font: inherit; font-weight: 500; cursor: pointer; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--bord); background: var(--carte); color: var(--texte); font-variant-numeric: tabular-nums;
+}
+.jeton:hover { border-color: var(--cours); }
+.rangee .jeton { background: var(--bleu-clair); border-color: var(--cours); }
+.fleche-ranger { text-align: center; margin: 6px 0; color: var(--texte-doux); }
+
+/* ----- Chiffre manquant, intercaler ----- */
+.apres-ligne { display: flex; justify-content: center; margin: -6px 0 16px; }
+.case-vide { display: inline-block; min-width: .8em; color: var(--exercices); font-weight: 700; }
+.chiffres-choix { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 360px; }
+.chiffre-choix { width: 48px; padding: 8px 0; font-size: 1.15rem; }
+.chiffre-choix[aria-pressed="true"], .bascule[aria-pressed="true"] { background: var(--cours); border-color: var(--cours); color: #fff; }
+.chiffre-choix.bonne { box-shadow: 0 0 0 3px var(--corrige); }
+
+/* ----- Demi-droite : longues étiquettes ----- */
+.droite text.longue { font-size: 13px; }

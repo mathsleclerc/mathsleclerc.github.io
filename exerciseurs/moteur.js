@@ -12,7 +12,11 @@ function melanger(t) {
   return t;
 }
 function frac(a, b) { return `<span class="frac"><span>${a}</span><span>${b}</span></span>`; }
-function ecrireNombre(x) { return x.toLocaleString("fr-FR", { maximumFractionDigits: 6 }); }
+/* Écriture française : virgule décimale et espace fine entre les classes, même pour 4 chiffres (3 248). */
+function ecrireNombre(x) {
+  const [e, d] = x.toLocaleString("fr-FR", { maximumFractionDigits: 6, useGrouping: false }).split(",");
+  return e.replace(/\B(?=(\d{3})+(?!\d))/g, "\u202f") + (d ? "," + d : "");
+}
 function lireNombre(s) {
   s = String(s).replace(/\s/g, "").replace(",", ".");
   return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN;
@@ -269,6 +273,7 @@ function lancerExerciseur({ intro, activites }) {
       const saisie = construireLigne(ligne, q.ligne || "", q.listes);
       let choisi = null;
       if (q.ligne) corps.append(ligne);
+      if (q.apresLigne) corps.append(el("div", { class: "apres-ligne" }, ...[].concat(q.apresLigne)));
       const actions = el("div", { class: "actions" });
       const retour = el("div", { class: "retour-eleve", "aria-live": "polite" });
       corps.append(actions, retour);

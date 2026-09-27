@@ -41,7 +41,8 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°2 : Comparer, ranger, intercaler",     fichier: "pdf/6e/ch1-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : La demi-droite graduée",           fichier: "pdf/6e/ch1-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Résoudre des problèmes",           fichier: "pdf/6e/ch1-exercices-4.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°5 : La division euclidienne",          fichier: "pdf/6e/ch1-exercices-5.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°5 : La division euclidienne",          fichier: "pdf/6e/ch1-exercices-5.pdf" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les nombres entiers",           lien: "exerciseurs/nombres-entiers-6e/" }
         ]
       },
       {
