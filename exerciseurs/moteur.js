@@ -134,10 +134,11 @@ function droiteGraduee(b, { max = unitesDroite(), point = null, lettre = "A", cl
    Dans q.ligne, les cases à compléter s'écrivent :
      [n]      un nombre entier          [d]    un nombre décimal
      [f]      une fraction complète     [f/12] numérateur à trouver, dénominateur 12
-     [f3/]    dénominateur à trouver    [c]    un symbole choisi parmi q.choix       */
-function construireLigne(ligne, modele) {
+     [f3/]    dénominateur à trouver    [c]    un symbole choisi parmi q.choix
+     [s]      une liste de phrases à choisir : elles sont dans q.listes (une liste par [s]) */
+function construireLigne(ligne, modele, listes = []) {
   const trous = [];
-  ligne.innerHTML = modele.replace(/\[(n|d|c)\]|\[f(\d*)\/?(\d*)\]/g, (m, t, num, den) => {
+  ligne.innerHTML = modele.replace(/\[(n|d|c|s)\]|\[f(\d*)\/?(\d*)\]/g, (m, t, num, den) => {
     trous.push(t ? { type: t } : { type: "f", num, den });
     return `<span data-trou="${trous.length - 1}"></span>`;
   });
@@ -148,13 +149,27 @@ function construireLigne(ligne, modele) {
     cases.push(i);
     return i;
   };
-  let choix = null;
+  let choix = null, nbListes = 0;
   trous.forEach((t, k) => {
     const place = ligne.querySelector(`[data-trou="${k}"]`);
     if (t.type === "n" || t.type === "d") {
       const i = nouvelleCase(t.type === "n" ? "numeric" : "decimal", "Réponse");
       place.replaceWith(i);
       lecteurs.push(() => i.value);
+    } else if (t.type === "s") {
+      const liste = el("div", { class: "liste", role: "radiogroup" });
+      let valeur = null;
+      (listes[nbListes++] || []).forEach((o, i) => {
+        const option = el("button", { class: "option", type: "button", role: "radio", "aria-checked": "false", onclick: () => {
+          valeur = i;
+          for (const b of liste.children) b.setAttribute("aria-checked", String(b === option));
+        } });
+        option.innerHTML = o;
+        cases.push(option);
+        liste.append(option);
+      });
+      place.replaceWith(liste);
+      lecteurs.push(() => valeur);
     } else if (t.type === "c") {
       choix = el("span", { class: "case-choix", "aria-label": "Symbole à choisir" }, "?");
       place.replaceWith(choix);
@@ -196,10 +211,23 @@ function lancerExerciseur({ intro, activites }) {
 
   function pageMenu() {
     app.append(el("p", { class: "intro" }, intro));
-    const grille = el("div", { class: "grille-activites" });
-    activites.forEach((a, i) => grille.append(carte(a, String(i + 1))));
+    // Les activités peuvent être regroupées (propriété « groupe ») : un titre par groupe.
+    let grille = null, groupe;
+    activites.forEach((a, i) => {
+      if (!grille || a.groupe !== groupe) {
+        groupe = a.groupe;
+        if (groupe) app.append(el("h2", { class: "titre-groupe" }, groupe));
+        grille = el("div", { class: "grille-activites" });
+        app.append(grille);
+      }
+      grille.append(carte(a, String(i + 1)));
+    });
+    if (activites.some(a => a.groupe)) {
+      app.append(el("h2", { class: "titre-groupe" }, "Pour réviser"));
+      grille = el("div", { class: "grille-activites" });
+      app.append(grille);
+    }
     grille.append(carte(melange, "Mix", "melange"));
-    app.append(grille);
   }
 
   function pageActivite(act) {
@@ -237,8 +265,9 @@ function lancerExerciseur({ intro, activites }) {
       consigne.innerHTML = q.consigne;
       corps.append(consigne);
       if (q.figure) corps.append(el("div", { class: "figure" }, ...[].concat(q.figure)));
-      const ligne = el("div", { class: "ligne" });
-      const saisie = construireLigne(ligne, q.ligne || "");
+      const ligne = el("div", { class: "ligne" + (q.classeLigne ? " " + q.classeLigne : "") });
+      const saisie = construireLigne(ligne, q.ligne || "", q.listes);
+      let choisi = null;
       if (q.ligne) corps.append(ligne);
       const actions = el("div", { class: "actions" });
       const retour = el("div", { class: "retour-eleve", "aria-live": "polite" });
@@ -259,13 +288,21 @@ function lancerExerciseur({ intro, activites }) {
       function boutonsSaisie() {
         const liste = [];
         if (q.choix) {
-          for (const c of q.choix) {
-            liste.push(el("button", { class: "btn btn-choix", type: "button", onclick: () => {
-              saisie.choix.textContent = c;
-              saisie.choix.dataset.valeur = c;
-              valider();
-            } }, c));
-          }
+          // Un choix est un texte (symbole, mot) ou une figure ; dans ce cas, verifier() reçoit son numéro.
+          const long = q.choix.some(c => typeof c === "string" && c.length > 5);
+          q.choix.forEach((c, i) => {
+            const texte = typeof c === "string";
+            const bouton = el("button", { class: "btn " + (texte ? "btn-choix" + (long ? " long" : "") : "btn-figure"), type: "button",
+              "aria-label": texte ? c : "Figure " + (i + 1), onclick: () => {
+                choisi = texte ? c : i;
+                if (saisie.choix && texte) {
+                  saisie.choix.textContent = c;
+                  saisie.choix.dataset.valeur = c;
+                }
+                valider();
+              } }, texte ? c : c.cloneNode(true));
+            liste.push(bouton);
+          });
         } else {
           liste.push(el("button", { class: "btn principal", type: "button", onclick: valider }, "Valider"));
         }
@@ -288,7 +325,7 @@ function lancerExerciseur({ intro, activites }) {
       }
 
       function valider() {
-        const r = q.verifier(saisie.lire());
+        const r = q.verifier(saisie.lire(), choisi);
         if (r.etat === "incomplet") { message("incomplet", "", r.message); return; }
         essais++;
         if (essais === 1) s.tentees++;

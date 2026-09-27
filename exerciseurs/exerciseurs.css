@@ -129,3 +129,65 @@
 /* ----- Affichage dans une iframe : sans bandeau ni pied de page ----- */
 body.integre .bandeau, body.integre footer { display: none; }
 body.integre main { padding-top: 16px; }
+
+/* ----- Menu regroupé ----- */
+.titre-groupe { font-size: 1.05rem; margin: 26px 0 12px; color: var(--texte-doux); font-weight: 500; }
+.titre-groupe:first-of-type { margin-top: 4px; }
+
+/* ----- Choix longs, figures à choisir ----- */
+.btn-choix.long { font-size: 1rem; font-weight: 500; padding: 10px 16px; }
+.btn-figure { padding: 6px; line-height: 0; }
+.btn-figure svg { max-width: 100%; height: auto; }
+.btn-figure:hover { border-color: var(--cours); }
+
+/* ----- Démonstrations : Je sais que / Or / Donc ----- */
+.ligne.demo { display: block; font-size: 1rem; }
+.etape { margin: 0 0 14px; }
+.etape .mot { display: block; font-weight: 700; color: var(--cours); margin-bottom: 6px; }
+.liste { display: grid; gap: 6px; }
+.option {
+  font: inherit; text-align: left; cursor: pointer; padding: 9px 12px 9px 38px; position: relative;
+  border: 1px solid var(--bord); border-radius: 10px; background: var(--fond); color: var(--texte);
+}
+.option::before {
+  content: ""; position: absolute; left: 13px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
+  border: 2px solid var(--texte-doux); border-radius: 50%;
+}
+.option:hover { border-color: var(--texte-doux); }
+.option[aria-checked="true"] { border-color: var(--cours); background: var(--bleu-clair); }
+.option[aria-checked="true"]::before { border-color: var(--cours); background: var(--cours); box-shadow: inset 0 0 0 2px var(--carte); }
+.option:disabled { cursor: default; }
+.option.bonne { border-color: var(--corrige); box-shadow: 0 0 0 1px var(--corrige); }
+
+/* ----- Angle : chapeau au-dessus des lettres ----- */
+.angle { position: relative; display: inline-block; }
+.angle::before {
+  content: ""; position: absolute; left: 12%; right: 12%; top: -.28em; height: .38em; background: currentColor;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%, 90% 100%, 50% 22%, 10% 100%);
+}
+
+/* ----- Figures de géométrie ----- */
+.geo text { font-family: inherit; font-size: 17px; text-anchor: middle; fill: var(--texte); }
+.geo .geo-nom { font-size: 15px; fill: var(--texte-doux); }
+.geo-trait { stroke: var(--texte); stroke-width: 1.6; }
+.geo-trait-fin { stroke: var(--texte-doux); stroke-width: 1; }
+.geo-graduation { stroke: var(--texte-doux); stroke-width: 1.4; }
+.geo-objet { stroke: var(--cours); stroke-width: 3; stroke-linecap: round; }
+.geo-point line { stroke: var(--texte); stroke-width: 2; stroke-linecap: round; }
+.geo-point-question line { stroke: var(--exercices); stroke-width: 2.6; }
+.geo-point-question text { fill: var(--exercices); font-weight: 700; }
+.geo-eleve line { stroke: var(--cours); stroke-width: 3; }
+.geo-eleve text { fill: var(--cours); font-weight: 700; }
+.geo-correct line { stroke: var(--corrige); stroke-width: 3; }
+.geo-correct text { fill: var(--corrige); font-weight: 700; }
+.geo-codage { stroke: var(--texte); stroke-width: 1.5; fill: none; }
+.geo-axe { stroke: var(--exercices); stroke-width: 2.5; }
+.geo-axe-correct { stroke: var(--corrige); stroke-width: 2.5; stroke-dasharray: 8 6; }
+.geo-forme { fill: var(--bleu-clair); stroke: var(--texte); stroke-width: 2; stroke-linejoin: round; }
+.geo-clic { cursor: pointer; touch-action: manipulation; }
+.quad line { stroke: var(--bord); stroke-width: 1; }
+.case-quad { fill: transparent; }
+.case-quad.donnee { fill: var(--exercices); }
+.case-quad.eleve { fill: var(--cours); }
+.case-quad.manque { fill: var(--corrige); fill-opacity: .7; }
+.case-quad.trop { fill: var(--video); fill-opacity: .55; }
