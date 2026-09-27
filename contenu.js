@@ -29,12 +29,18 @@ const NIVEAUX = {
     nom: "Sixième",
     chapitres: [
       {
-        titre: "Chapitre 1 — Exemple de chapitre",
-        description: "Ce chapitre montre à quoi ressemble une page. Remplacez-le par vos vrais chapitres.",
+        titre: "Chapitre 1 — Les nombres entiers",
         ressources: [
-          { type: "cours",     titre: "Cours (exemple)",              fichier: "pdf/6e/exemple-cours.pdf" },
-          { type: "exercices", titre: "Fiche d'exercices (exemple)",  fichier: "pdf/6e/exemple-exercices.pdf" },
-          { type: "video",     titre: "Vidéo du chapitre",            lien: "" }
+        ]
+      },
+      {
+        titre: "Chapitre 2 — Du point à la droite",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 3 — Fractions et partage",
+        ressources: [
         ]
       }
     ]

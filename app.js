@@ -86,6 +86,9 @@ function pageNiveau() {
       for (const r of docs) liste.append(carteRessource(r));
       corps.append(liste);
     }
+    if (!docs.length && !vids.length) {
+      corps.append(el("p", { class: "description" }, "Les documents de ce chapitre arrivent bientôt."));
+    }
     if (vids.length) {
       const liste = el("div", { class: "videos" });
       for (const v of vids) liste.append(carteVideo(v));
@@ -95,7 +98,7 @@ function pageNiveau() {
     const compte = [
       docs.length ? docs.length + " document" + (docs.length > 1 ? "s" : "") : null,
       vids.length ? vids.length + " vidéo" + (vids.length > 1 ? "s" : "") : null
-    ].filter(Boolean).join(" · ");
+    ].filter(Boolean).join(" · ") || "Bientôt";
 
     const details = el("details", { class: "chapitre" },
       el("summary", {},
@@ -105,7 +108,7 @@ function pageNiveau() {
       ),
       corps
     );
-    if (i === niv.chapitres.length - 1) details.open = true; // dernier chapitre ouvert
+    if (i === 0) details.open = true; // premier chapitre ouvert
     details.dataset.texte = (ch.titre + " " + (ch.description || "") + " " + res.map(r => r.titre).join(" ")).toLowerCase();
     zone.append(details);
     return details;
