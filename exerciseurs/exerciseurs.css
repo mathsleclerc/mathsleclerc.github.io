@@ -238,3 +238,22 @@ body.integre main { padding-top: 16px; }
 
 /* ----- Demi-droite : longues étiquettes ----- */
 .droite text.longue { font-size: 13px; }
+
+/* ----- Relier deux colonnes ----- */
+.relier { display: flex; justify-content: center; gap: 48px; width: 100%; }
+.relier .colonne { display: grid; gap: 8px; align-content: start; }
+.relier-item {
+  position: relative; min-width: 84px; min-height: 52px; padding: 6px 14px; cursor: pointer;
+  font: inherit; font-size: 1.15rem; border: 1px solid var(--bord); border-radius: 10px;
+  background: var(--carte); color: var(--texte);
+}
+.relier-item:hover { border-color: var(--cours); }
+.relier-item.selection { border-color: var(--cours); box-shadow: 0 0 0 2px var(--cours); }
+.relier-item[data-num] { background: var(--bleu-clair); border-color: var(--cours); }
+.relier-item[data-num]::after {
+  content: attr(data-num); position: absolute; top: -8px; right: -8px; width: 20px; height: 20px;
+  border-radius: 50%; background: var(--cours); color: #fff; font-size: .75rem; font-weight: 700;
+  display: grid; place-items: center;
+}
+.relier-item.bonne { border-color: var(--corrige); box-shadow: 0 0 0 2px var(--corrige); }
+.relier-item.mauvaise { border-color: var(--video); box-shadow: 0 0 0 2px var(--video); }
