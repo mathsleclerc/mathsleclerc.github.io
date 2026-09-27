@@ -61,6 +61,61 @@ const NIVEAUX = {
         ressources: [
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les fractions", lien: "exerciseurs/fractions-6e/" }
         ]
+      },
+      {
+        titre: "Chapitre 4 — Proportionnalité",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 5 — Angles",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 6 — Nombres décimaux",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 7 — Cercles et disques",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 8 — Opérations sur les nombres décimaux",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 9 — Triangles",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 10 — Fraction quotient",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 11 — Probabilités",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 12 — Repérage dans le temps",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 13 — Aires et volumes",
+        ressources: [
+        ]
+      },
+      {
+        titre: "Chapitre 14 — Statistiques",
+        ressources: [
+        ]
       }
     ]
   },
