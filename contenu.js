@@ -36,6 +36,12 @@ const NIVEAUX = {
       {
         titre: "Chapitre 1 — Les nombres entiers",
         ressources: [
+          { type: "cours",     titre: "Cours — Les nombres entiers",                                fichier: "pdf/6e/ch1-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Lire, écrire et décomposer",       fichier: "pdf/6e/ch1-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Comparer, ranger, intercaler",     fichier: "pdf/6e/ch1-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : La demi-droite graduée",           fichier: "pdf/6e/ch1-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Résoudre des problèmes",           fichier: "pdf/6e/ch1-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : La division euclidienne",          fichier: "pdf/6e/ch1-exercices-5.pdf" }
         ]
       },
       {
