@@ -19,8 +19,6 @@ const PROP = {
   mediatrice: "si un point appartient à la médiatrice d'un segment, alors il est à égale distance des deux extrémités.",
   reciproque: "si un point est à égale distance des deux extrémités d'un segment, alors il appartient à la médiatrice de ce segment.",
   perpPara: "si deux droites sont perpendiculaires à une même droite, alors elles sont parallèles entre elles.",
-  paraPerp: "si deux droites sont parallèles et si une troisième droite est perpendiculaire à l'une, alors elle est perpendiculaire à l'autre.",
-  paraPara: "si deux droites sont parallèles à une même droite, alors elles sont parallèles entre elles.",
   symetrie: "la symétrie axiale conserve les longueurs.",
   milieu: "si un point est le milieu d'un segment, alors il le partage en deux longueurs égales, chacune égale à la moitié de la longueur du segment."
 };
@@ -367,56 +365,44 @@ const ACTIVITES = [
   {
     groupe: F2,
     id: "proprietes-droites",
-    titre: "Les propriétés des droites",
-    description: "Utiliser une propriété pour conclure : ⊥ ou // ?",
+    titre: "Perpendiculaires à une même droite",
+    description: "Utiliser la propriété du cours pour conclure : ⊥ ou // ?",
     generer() {
       const [a, b, c] = melanger(["(d1)", "(d2)", "(d3)"]);
-      const cas = choisir(["perpPara", "paraPerp", "paraPara", "rien"]);
-      const donnees = {
-        perpPara: `${a} ⊥ ${c} et ${b} ⊥ ${c}`,
-        paraPerp: `${a} // ${b} et ${c} ⊥ ${a}`,
-        paraPara: `${a} // ${c} et ${b} // ${c}`,
-        rien: `${a} et ${c} sont sécantes, et ${b} et ${c} sont sécantes`
-      }[cas];
-      const [x, y] = cas === "paraPerp" ? [c, b] : [a, b];
-      const options = [`${x} // ${y}`, `${x} ⊥ ${y}`, "On ne peut rien conclure"];
-      const bonne = { perpPara: 0, paraPerp: 1, paraPara: 0, rien: 2 }[cas];
+      const rien = Math.random() < 0.3;
+      // L'ordre d'écriture varie : « (d1) ⊥ (d3) » ou « (d3) ⊥ (d1) »
+      const perp = (x, y) => Math.random() < 0.5 ? `${x} ⊥ ${y}` : `${y} ⊥ ${x}`;
+      const donnees = rien
+        ? `${a} et ${c} sont sécantes, et ${b} et ${c} sont sécantes`
+        : `${perp(a, c)} et ${perp(b, c)}`;
+      const options = [`${a} // ${b}`, `${a} ⊥ ${b}`, "On ne peut rien conclure"];
+      const bonne = rien ? 2 : 0;
 
       // Figure à main levée, tournée au hasard
       const s = figureGeo(W, H, "Trois droites");
       const u = V.angle(alea(-20, 20) * DEG), n = V.normal(u);
       const C0 = { x: W / 2, y: H / 2 };
       const cote = choisir([-1, 1]);
-      if (cas === "perpPara") {
-        dessinerDroite(s, C0, u, c, W, H);
+      dessinerDroite(s, C0, u, c, W, H);
+      if (rien) {
+        dessinerDroite(s, V.moins(C0, V.fois(u, 70)), V.tourner(u, { x: 0, y: 0 }, 58 * DEG), a, W, H);
+        dessinerDroite(s, V.plus(C0, V.fois(u, 70)), V.tourner(u, { x: 0, y: 0 }, 118 * DEG), b, W, H);
+      } else {
         for (const [nom, k] of [[a, -60 * cote], [b, 60 * cote]]) {
           const P = V.plus(C0, V.fois(u, k));
           dessinerDroite(s, P, n, nom, W, H);
           codageAngleDroit(s, P, u, n);
         }
-      } else if (cas === "paraPerp") {
-        const Pa = V.plus(C0, V.fois(n, 40 * cote)), Pb = V.moins(C0, V.fois(n, 40 * cote));
-        dessinerDroite(s, Pa, u, a, W, H);
-        dessinerDroite(s, Pb, u, b, W, H);
-        const I = V.plus(Pa, V.fois(u, alea(-50, 50)));
-        dessinerDroite(s, I, n, c, W, H);
-        codageAngleDroit(s, I, u, V.fois(n, -cote));
-      } else if (cas === "paraPara") {
-        melanger([a, b, c]).forEach((nom, k) => dessinerDroite(s, V.plus(C0, V.fois(n, (k - 1) * 55)), u, nom, W, H));
-      } else {
-        dessinerDroite(s, C0, u, c, W, H);
-        dessinerDroite(s, V.moins(C0, V.fois(u, 70)), V.tourner(u, { x: 0, y: 0 }, 58 * DEG), a, W, H);
-        dessinerDroite(s, V.plus(C0, V.fois(u, 70)), V.tourner(u, { x: 0, y: 0 }, 118 * DEG), b, W, H);
       }
       return {
         consigne: `On sait que ${donnees}. Que peut-on en conclure ?`,
         figure: s,
         choix: options,
         verifier: (v, c2) => ({ etat: c2 === options[bonne] ? "juste" : "faux" }),
-        indice: "Cherche dans le cours la propriété qui commence par ce que tu sais.",
-        correction: cas === "rien"
+        indice: "Les deux droites sont-elles toutes les deux perpendiculaires à une même droite ?",
+        correction: rien
           ? "Aucune propriété du cours ne permet de conclure : deux droites qui coupent une même droite peuvent être dans n'importe quelle position."
-          : `<strong>Je sais que :</strong> ${donnees}.<br><strong>Or :</strong> ${PROP[cas]}<br><strong>Donc :</strong> ${options[bonne]}.`
+          : `<strong>Je sais que :</strong> ${donnees}.<br><strong>Or :</strong> ${PROP.perpPara}<br><strong>Donc :</strong> ${options[0]}.`
       };
     }
   },
@@ -533,20 +519,8 @@ const ACTIVITES = [
         {
           enonce: `Les droites ${d1} et ${d2} sont toutes les deux perpendiculaires à la droite ${d3}. Démontre que ${d1} et ${d2} sont parallèles.`,
           sais: [`${d1} ⊥ ${d3} et ${d2} ⊥ ${d3}.`, `${d1} // ${d2}.`, `${d1} ⊥ ${d2}.`],
-          or: "perpPara", piege: "paraPerp",
+          or: "perpPara", piege: "reciproque",
           donc: [`${d1} // ${d2}.`, `${d1} ⊥ ${d2}.`, `${d3} // ${d1}.`]
-        },
-        {
-          enonce: `Les droites ${d1} et ${d2} sont parallèles, et la droite ${d3} est perpendiculaire à ${d1}. Démontre que ${d3} ⊥ ${d2}.`,
-          sais: [`${d1} // ${d2} et ${d3} ⊥ ${d1}.`, `${d3} ⊥ ${d2}.`, `${d3} // ${d2}.`],
-          or: "paraPerp", piege: "perpPara",
-          donc: [`${d3} ⊥ ${d2}.`, `${d3} // ${d2}.`, `${d1} ⊥ ${d2}.`]
-        },
-        {
-          enonce: `Les droites ${d1} et ${d2} sont toutes les deux parallèles à la droite ${d3}. Démontre que ${d1} // ${d2}.`,
-          sais: [`${d1} // ${d3} et ${d2} // ${d3}.`, `${d1} // ${d2}.`, `${d1} ⊥ ${d3}.`],
-          or: "paraPara", piege: "perpPara",
-          donc: [`${d1} // ${d2}.`, `${d1} ⊥ ${d2}.`, `${d1} ⊥ ${d3}.`]
         },
         {
           enonce: `${A}′ et ${B}′ sont les symétriques de ${A} et ${B} par rapport à la droite (d), et ${A}${B} = ${X}. Démontre que ${A}′${B}′ = ${X}.`,
