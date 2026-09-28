@@ -257,3 +257,64 @@ body.integre main { padding-top: 16px; }
 }
 .relier-item.bonne { border-color: var(--corrige); box-shadow: 0 0 0 2px var(--corrige); }
 .relier-item.mauvaise { border-color: var(--video); box-shadow: 0 0 0 2px var(--video); }
+
+/* ----- Tableau de proportionnalité (avec flèches) ----- */
+.tp-conteneur { display: flex; justify-content: center; width: 100%; overflow-x: auto; }
+.tprop {
+  display: grid; grid-template-columns: minmax(96px, auto) repeat(var(--n), minmax(62px, auto)) auto;
+  grid-template-rows: auto auto auto; font-size: 1.1rem; margin: 0 auto; width: max-content; max-width: 100%;
+}
+.tp-tete, .tp-case { border: 1px solid var(--texte-doux); padding: 8px 10px; display: grid; place-items: center; margin: 0 0 -1px -1px; }
+.tp-tete { grid-column: 1; background: var(--bleu-clair); font-size: .9rem; font-weight: 500; text-align: center; place-items: center start; }
+.tp-case { font-variant-numeric: tabular-nums; background: var(--carte); color: var(--texte); font: inherit; }
+.tp-case .case { width: 4.2em; }
+.tp-clic { cursor: pointer; }
+.tp-clic:hover { background: var(--bleu-clair); }
+.tp-clic.choisie { background: var(--cours); color: #fff; font-weight: 700; }
+.tp-clic.bonne { box-shadow: inset 0 0 0 3px var(--corrige); }
+.tp-fleche { grid-row: 1; position: relative; height: 44px; display: flex; justify-content: center; align-items: flex-start; }
+.tp-fleche::before {
+  content: ""; position: absolute; bottom: 2px; height: 16px;
+  left: calc(50% / var(--span)); right: calc(50% / var(--span));
+  border: 2px solid var(--exercices); border-bottom: 0; border-radius: 14px 14px 0 0;
+}
+.tp-fleche::after {
+  content: ""; position: absolute; bottom: -3px; right: calc(50% / var(--span) - 5px);
+  border: 6px solid transparent; border-top-color: var(--exercices);
+}
+.tp-fleche span { position: relative; z-index: 1; background: var(--carte); padding: 0 6px; color: var(--exercices); font-weight: 700; font-size: 1rem; }
+.tp-coef { grid-row: 2 / 4; position: relative; display: flex; align-items: center; padding-left: 26px; }
+.tp-coef::before {
+  content: ""; position: absolute; left: 4px; top: 22%; bottom: 22%; width: 14px;
+  border: 2px solid var(--exercices); border-left: 0; border-radius: 0 14px 14px 0;
+}
+.tp-coef::after {
+  content: ""; position: absolute; left: -4px; bottom: calc(22% - 6px);
+  border: 6px solid transparent; border-right-color: var(--exercices);
+}
+.tp-coef span { color: var(--exercices); font-weight: 700; font-size: 1rem; white-space: nowrap; }
+.tp-coef .case, .tp-fleche .case { width: 2.8em; font-size: .95rem; padding: 2px 4px; }
+.etape-pb .tp-conteneur { justify-content: flex-start; }
+.etape-pb > .tprop { margin: 0; }
+
+/* ----- Étiquettes à sélectionner ----- */
+.etiquettes { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.etiquette-choix[aria-pressed="true"] { background: var(--cours); border-color: var(--cours); color: #fff; }
+.etiquette-choix.bonne { box-shadow: 0 0 0 3px var(--corrige); }
+
+/* ----- Carte et règle ----- */
+.carte-fond { fill: #e9f2e2; }
+.carte-route { stroke: #b58a4a; stroke-width: 6; stroke-linecap: round; }
+.carte-ville { fill: var(--video); stroke: #fff; stroke-width: 2; }
+.carte-nom { font: 500 13px "Fira Sans", sans-serif; text-anchor: middle; fill: #1c2430; }
+.carte-regle { fill: #fff6d6; stroke: #b9a45e; }
+.carte-grad { stroke: #5a4a1a; stroke-width: 1.2; }
+.carte-cm { font: 11px "Fira Sans", sans-serif; text-anchor: middle; fill: #5a4a1a; }
+.carte-echelle { font: 500 13px "Fira Sans", sans-serif; text-anchor: middle; fill: #1c2430; }
+@media (max-width: 520px) {
+  .tprop { grid-template-columns: minmax(64px, auto) repeat(var(--n), minmax(36px, auto)) auto; font-size: .95rem; }
+  .tp-tete { font-size: .72rem; padding: 6px 4px; }
+  .tp-case { padding: 6px 4px; }
+  .tp-case .case { width: 3.3em; font-size: .95rem; padding: 3px 2px; }
+  .tp-coef { padding-left: 22px; }
+}

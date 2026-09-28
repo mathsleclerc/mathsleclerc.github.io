@@ -188,6 +188,48 @@ function construireLigne(ligne, modele, listes = []) {
   return { cases, choix, lire: () => lecteurs.map(f => f()) };
 }
 
+/* ---------- Relier deux colonnes ----------
+   Clic à gauche, puis clic à droite. Chaque élément a une « cle » : les bonnes paires ont la même. */
+function relier(gauche, droite) {
+  const liens = new Map(); // bouton de gauche → bouton de droite
+  let selection = null, actif = true;
+  const bouton = (o, cote) => {
+    const b = el("button", { type: "button", class: "relier-item " + cote, "data-cle": String(o.cle) });
+    b.innerHTML = o.html;
+    return b;
+  };
+  const bg = gauche.map(o => bouton(o, "g")), bd = melanger(droite.map(o => bouton(o, "d")));
+  const maj = () => {
+    for (const b of [...bg, ...bd]) { b.removeAttribute("data-num"); b.classList.remove("selection"); }
+    let n = 0;
+    for (const [g, d] of liens) { n++; g.dataset.num = n; d.dataset.num = n; }
+    selection?.classList.add("selection");
+  };
+  for (const g of bg) g.addEventListener("click", () => {
+    if (!actif) return;
+    liens.delete(g);
+    selection = g;
+    maj();
+  });
+  for (const d of bd) d.addEventListener("click", () => {
+    if (!actif || !selection) return;
+    for (const [g, x] of liens) if (x === d) liens.delete(g);
+    liens.set(selection, d);
+    selection = bg.find(g => !liens.has(g)) || null;
+    maj();
+  });
+  return {
+    noeud: el("div", { class: "relier" }, el("div", { class: "colonne" }, ...bg), el("div", { class: "colonne" }, ...bd)),
+    verifier() {
+      if (liens.size < bg.length) return { etat: "incomplet", message: "Relie chaque élément de gauche à un élément de droite." };
+      const faux = [...liens].filter(([g, d]) => g.dataset.cle !== d.dataset.cle).length;
+      return faux ? { etat: "faux", message: `${faux > 1 ? faux + " liens sont faux" : "Un lien est faux"}.` } : { etat: "juste" };
+    },
+    corriger() { for (const [g, d] of liens) for (const b of [g, d]) b.classList.add(g.dataset.cle === d.dataset.cle ? "bonne" : "mauvaise"); },
+    bloquer() { actif = false; selection = null; maj(); }
+  };
+}
+
 /* ---------- Pages ---------- */
 const BRAVO = ["Bravo !", "Exact !", "Très bien !", "Parfait !", "C'est juste !"];
 

@@ -73,6 +73,7 @@ const NIVEAUX = {
       {
         titre: "Chapitre 4 — Proportionnalité",
         ressources: [
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur la proportionnalité", lien: "exerciseurs/proportionnalite-6e/" }
         ]
       },
       {
