@@ -357,3 +357,30 @@ body.integre main { padding-top: 16px; }
 .horloge .h-minutes { stroke: var(--cours); stroke-width: 4; stroke-linecap: round; }
 .horloge .h-centre { fill: var(--texte); }
 .nom-angle { white-space: nowrap; }
+
+/* ----- Nombres décimaux : tableau, zoom, repère, graphique ----- */
+.numeration.decimale th { font-size: .7rem; padding: 4px 2px; min-width: 2.6em; max-width: 5em; }
+.numeration .virgule-apres { border-right: 3px solid var(--video); }
+.zoom { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.zoom svg { max-width: 100%; height: auto; }
+.zoom-cadre { fill: color-mix(in srgb, var(--exercices) 18%, transparent); stroke: var(--exercices); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.zoom-lien line { stroke: var(--exercices); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.droite .pt-nombre { fill: var(--video); }
+.droite .etiq-nombre { font-size: 14px; fill: var(--video); font-weight: 700; }
+.repere .grille { stroke: var(--bord); stroke-width: 1; }
+.repere .axe-rep { stroke: var(--texte); stroke-width: 2; }
+.repere .fleche-rep { fill: var(--texte); }
+.repere .rep-etiq { font: 13px "Fira Sans", sans-serif; text-anchor: middle; fill: var(--texte); }
+.repere .rep-etiq.gauche { text-anchor: end; }
+.repere .rep-nom { font: 500 13px "Fira Sans", sans-serif; fill: var(--texte-doux); }
+.repere .rep-nom.droite-nom { text-anchor: end; }
+.repere .rep-point line { stroke: var(--cours); stroke-width: 2.5; stroke-linecap: round; }
+.repere .rep-point text { font: 700 16px "Fira Sans", sans-serif; fill: var(--cours); }
+.repere .rep-point.eleve line { stroke: var(--exercices); }
+.repere .rep-point.eleve text { fill: var(--exercices); }
+.repere .rep-point.correct line { stroke: var(--corrige); }
+.repere .rep-point.correct text { fill: var(--corrige); }
+.graphique .courbe { fill: none; stroke: var(--cours); stroke-width: 2.5; stroke-linejoin: round; }
+.graphique .courbe-point { fill: var(--cours); }
+.graphique .lecture { fill: none; stroke: var(--corrige); stroke-width: 2; stroke-dasharray: 5 4; }
+.graphique.petit .courbe { stroke-width: 2; }

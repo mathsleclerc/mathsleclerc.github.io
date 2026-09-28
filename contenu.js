@@ -85,6 +85,7 @@ const NIVEAUX = {
       {
         titre: "Chapitre 6 — Nombres décimaux",
         ressources: [
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les nombres décimaux", lien: "exerciseurs/decimaux-6e/" }
         ]
       },
       {
