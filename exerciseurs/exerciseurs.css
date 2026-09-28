@@ -318,3 +318,42 @@ body.integre main { padding-top: 16px; }
   .tp-case .case { width: 3.3em; font-size: .95rem; padding: 3px 2px; }
   .tp-coef { padding-left: 22px; }
 }
+
+/* ----- Angles : figures, rapporteur, demi-droite mobile ----- */
+.geo .geo-nom-angle { font-size: 17px; font-style: italic; font-family: "Times New Roman", serif; fill: var(--texte); }
+.geo .geo-mesure { font-size: 15px; font-weight: 700; fill: var(--exercices); }
+.geo-arc { fill: none; stroke: var(--exercices); stroke-width: 2; }
+.geo-arc.pointille { stroke-dasharray: 5 4; stroke: var(--texte-doux); }
+.geo-manipuler { touch-action: none; user-select: none; }
+.rapporteur { cursor: grab; }
+.rapporteur:active { cursor: grabbing; }
+.rap-fond { fill: color-mix(in srgb, var(--cours) 12%, transparent); stroke: var(--cours); stroke-width: 1.5; }
+.rap-grad { stroke: var(--texte); stroke-width: .8; }
+.rap-base { stroke: var(--texte); stroke-width: 1.2; }
+.rap-centre { fill: var(--video); }
+.rap-ext { font: 9.5px "Fira Sans", sans-serif; text-anchor: middle; fill: var(--texte); }
+.rap-int { font: 9.5px "Fira Sans", sans-serif; text-anchor: middle; fill: var(--video); }
+.rap-poignee { cursor: alias; }
+.rap-poignee circle { fill: var(--cours); }
+.rap-poignee text { font: 700 16px "Fira Sans", sans-serif; text-anchor: middle; fill: #fff; pointer-events: none; }
+.rayon-trait { stroke: var(--exercices); stroke-width: 3; stroke-linecap: round; }
+.rayon-poignee { fill: var(--exercices); stroke: #fff; stroke-width: 2; cursor: grab; }
+.rotation { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; }
+.rotation span { color: var(--texte-doux); font-size: .9rem; }
+.rotation .btn { padding: 6px 10px; }
+
+/* ----- Diagrammes circulaires et horloge ----- */
+.diagramme .secteur { stroke: var(--carte); stroke-width: 2; }
+.diagramme .secteur-texte { font: 700 13px "Fira Sans", sans-serif; text-anchor: middle; fill: #fff; }
+.diag-titre { width: 100%; text-align: center; margin: 0; color: var(--texte-doux); font-size: .95rem; }
+.tab-effectifs { border-collapse: collapse; margin: 0 auto; font-variant-numeric: tabular-nums; }
+.tab-effectifs th, .tab-effectifs td { border: 1px solid var(--texte-doux); padding: 6px 12px; text-align: center; }
+.tab-effectifs th { background: var(--bleu-clair); font-weight: 500; }
+.horloge .h-cadran { fill: var(--carte); stroke: var(--texte); stroke-width: 3; }
+.horloge .h-grad { stroke: var(--texte-doux); stroke-width: 1; }
+.horloge .h-grad.gros { stroke: var(--texte); stroke-width: 2.5; }
+.horloge .h-num { font: 700 17px "Fira Sans", sans-serif; text-anchor: middle; fill: var(--texte); }
+.horloge .h-heures { stroke: var(--texte); stroke-width: 6; stroke-linecap: round; }
+.horloge .h-minutes { stroke: var(--cours); stroke-width: 4; stroke-linecap: round; }
+.horloge .h-centre { fill: var(--texte); }
+.nom-angle { white-space: nowrap; }

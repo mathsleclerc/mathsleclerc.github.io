@@ -79,6 +79,7 @@ const NIVEAUX = {
       {
         titre: "Chapitre 5 — Angles",
         ressources: [
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les angles", lien: "exerciseurs/angles-6e/" }
         ]
       },
       {

@@ -336,18 +336,19 @@ function lancerExerciseur({ intro, activites }) {
         const liste = [];
         if (q.choix) {
           // Un choix est un texte (symbole, mot) ou une figure ; dans ce cas, verifier() reçoit son numéro.
-          const long = q.choix.some(c => typeof c === "string" && c.length > 5);
+          const long = q.choix.some(c => typeof c === "string" && c.replace(/<[^>]+>/g, "").length > 5);
           q.choix.forEach((c, i) => {
             const texte = typeof c === "string";
             const bouton = el("button", { class: "btn " + (texte ? "btn-choix" + (long ? " long" : "") : "btn-figure"), type: "button",
-              "aria-label": texte ? c : "Figure " + (i + 1), onclick: () => {
+              "aria-label": texte ? c.replace(/<[^>]+>/g, "") : "Figure " + (i + 1), onclick: () => {
                 choisi = texte ? c : i;
                 if (saisie.choix && texte) {
-                  saisie.choix.textContent = c;
+                  saisie.choix.innerHTML = c;
                   saisie.choix.dataset.valeur = c;
                 }
                 valider();
-              } }, texte ? c : c.cloneNode(true));
+              } }, texte ? "" : c.cloneNode(true));
+            if (texte) bouton.innerHTML = c; // un choix peut contenir une notation (fraction, angle…)
             liste.push(bouton);
           });
         } else {
