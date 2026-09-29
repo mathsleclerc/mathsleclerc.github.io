@@ -18,11 +18,313 @@ const W = 360, H = 210; // taille des figures
 const PROP = {
   mediatrice: "si un point appartient à la médiatrice d'un segment, alors il est à égale distance des deux extrémités.",
   reciproque: "si un point est à égale distance des deux extrémités d'un segment, alors il appartient à la médiatrice de ce segment.",
-  perpPara: "si deux droites sont perpendiculaires à une même droite, alors elles sont parallèles entre elles.",
   symetrie: "la symétrie axiale conserve les longueurs.",
-  milieu: "si un point est le milieu d'un segment, alors il le partage en deux longueurs égales, chacune égale à la moitié de la longueur du segment."
+  milieu: "si un point est le milieu d'un segment, alors il le partage en deux longueurs égales, chacune égale à la moitié de la longueur du segment.",
+  symLongueurs: "la symétrie axiale conserve les longueurs.",
+  symAires: "la symétrie axiale conserve les aires.",
+  symMilieux: "la symétrie axiale conserve les milieux.",
+  symDefinition: "si un point M′ est le symétrique d'un point M par rapport à une droite (d), alors (d) est la médiatrice du segment [MM′].",
+  symAxe: "si un point appartient à l'axe de symétrie, alors il est son propre symétrique."
 };
-const CONSERVE = "La symétrie axiale conserve les longueurs, l'alignement, les angles, les aires et les milieux.";
+
+/* Direction d'un angle en degrés (sens inverse des aiguilles d'une montre), dans le repère de l'écran */
+const dir = phi => ({ x: Math.cos(phi * DEG), y: -Math.sin(phi * DEG) });
+
+/* ---------- Démonstration : Je sais que / Or / Donc ----------
+   sc : { enonce, sais: [bonne, fausses…], or, piege, donc: [bonne, fausses…] }
+   pool : propriétés (clés de PROP) parmi lesquelles on tire les propositions fausses de « Or ». */
+function demonstration(sc, pool) {
+  const autres = melanger(pool.filter(k => k !== sc.or && k !== sc.piege)).slice(0, 2);
+  const or = [sc.or, sc.piege, ...autres].map(k => PROP[k]);
+  const listes = [sc.sais, or, sc.donc].map(l => melanger(l.map((t, i) => ({ t, i }))));
+  const bonnes = listes.map(l => l.findIndex(o => o.i === 0));
+  const etapes = ["Je sais que", "Or", "Donc"];
+  return {
+    consigne: `${sc.enonce}<br>Pour chaque étape, choisis la bonne phrase.`,
+    classeLigne: "demo",
+    ligne: etapes.map(e => `<div class="etape"><span class="mot">${e} :</span>[s]</div>`).join(""),
+    listes: listes.map(l => l.map(o => o.t)),
+    verifier(v) {
+      if (v.some(x => x == null)) return { etat: "incomplet", message: "Choisis une phrase pour chacune des trois étapes." };
+      const fausses = etapes.filter((e, k) => v[k] !== bonnes[k]);
+      if (!fausses.length) return { etat: "juste" };
+      const conseils = [`À revoir : ${fausses.map(e => "« " + e + " »").join(", ")}.`];
+      if (listes[0][v[0]].i === 1) conseils.push("Dans « Je sais que », on écrit les informations de l'énoncé, pas ce que l'on veut démontrer.");
+      if (listes[1][v[1]].i === 1) conseils.push("Attention à ne pas confondre deux propriétés qui se ressemblent : relis bien le « si » et le « alors ».");
+      return { etat: "faux", message: conseils.join(" ") };
+    },
+    indice: "« Or » est une propriété du cours : son « si » doit correspondre à ce que tu sais, et son « alors » à ce que tu veux démontrer.",
+    correction: etapes.map((e, k) => `<br><strong>${e} :</strong> ${[sc.sais, or, sc.donc][k][0]}`).join(""),
+    surCorrection() {
+      document.querySelectorAll(".ligne.demo .liste").forEach((l, k) => l.children[bonnes[k]].classList.add("bonne"));
+    }
+  };
+}
+
+/* ---------- Atelier de construction ----------
+   Une suite d'étapes guidées. Chaque étape est l'une de :
+   champ (une mesure ou un calcul à écrire), clic (placer un point sur une droite),
+   tracer (placer l'équerre puis tracer), codage (choisir ce qu'il faut coder).
+   Chaque étape a un bouton « Montre-moi ». */
+function atelier(s, etapes, bloquerOutils) {
+  const message = el("p", { class: "atelier-message" });
+  const actions = el("div", { class: "atelier-actions" });
+  const pastilles = el("div", { class: "etapes-construction" }, ...etapes.map(e => el("span", {}, e.nom)));
+  const controle = el("div", { class: "atelier-controle" }, pastilles, message, actions);
+  let k = -1, fini = false, clic = null, pointClic = null, actif = true, champ = null, choix = null;
+  const dire = (t, type = "") => { message.innerHTML = t; message.className = "atelier-message " + type; };
+  const bouton = (t, f, c = "") => el("button", { type: "button", class: "btn " + c, onclick: () => { if (actif) f(); } }, t);
+
+  // Placer un point sur une droite par un clic (arrondi au millimètre)
+  const placerPoint = t => {
+    pointClic?.remove();
+    pointClic = dessinerPoint(s, V.plus(clic.depart, V.fois(clic.direction, t * CM)), clic.nom, { vers: V.normal(clic.direction), classe: "geo-point-eleve" });
+    clic.valeur = t;
+  };
+  // Phase de capture : un clic tout près de la droite place le point, même si une règle est posée dessus
+  s.addEventListener("pointerdown", e => {
+    if (!actif || !clic || e.target.closest(".outil-poignee")) return;
+    const p = s.createSVGPoint();
+    p.x = e.clientX; p.y = e.clientY;
+    const q = p.matrixTransform(s.getScreenCTM().inverse());
+    const r = V.moins(q, clic.depart);
+    const distance = Math.abs(r.x * clic.direction.y - r.y * clic.direction.x);
+    if (distance > (e.target.closest(".instrument") ? 12 : 24)) return; // trop loin : on laisse faire (déplacer la règle…)
+    e.stopPropagation();
+    let t = Math.round((r.x * clic.direction.x + r.y * clic.direction.y) / CM * 10) / 10;
+    t = Math.min(clic.longueur, Math.max(clic.deuxSens ? -clic.longueur : 0, t));
+    placerPoint(t);
+  }, true);
+
+  function etape(i) {
+    k = i;
+    const e = etapes[i];
+    [...pastilles.children].forEach((p, j) => { p.className = j < i ? "faite" : j === i ? "en-cours" : ""; });
+    e.avant?.();
+    dire(e.texte);
+    actions.replaceChildren();
+    clic = null; pointClic = null; champ = null; choix = null;
+    if (e.champ) {
+      const [avant, apres] = e.champ.split("[d]");
+      champ = el("input", { class: "case", inputmode: "decimal", autocomplete: "off", "aria-label": "Réponse" });
+      const ok = bouton("OK", () => {
+        const v = lireNombre(champ.value);
+        if (isNaN(v)) { dire("Écris un nombre.", "attention"); return; }
+        const r = e.valider(v);
+        if (r === true) reussir(); else dire(r, "attention");
+      }, "principal");
+      champ.addEventListener("keydown", ev => { if (ev.key === "Enter") { ev.preventDefault(); ev.stopPropagation(); ok.click(); } });
+      actions.append(el("span", {}, avant), champ, el("span", {}, apres), ok);
+      champ.focus({ preventScroll: true });
+    } else if (e.clic) {
+      clic = { ...e.clic, valeur: null };
+      actions.append(bouton("OK", () => {
+        if (clic.valeur == null) { dire("Clique sur la droite pour placer le point.", "attention"); return; }
+        if (Math.abs(clic.valeur - clic.cible) < 0.05) { clic = null; reussir(); } else dire(e.clic.message(clic.valeur), "attention");
+      }, "principal"));
+    } else if (e.tracer) {
+      actions.append(bouton("Tracer", () => {
+        const r = e.tracer();
+        if (r === true) reussir(); else dire(r, "attention");
+      }, "principal"));
+    } else if (e.codage) {
+      choix = new Set();
+      e.codage.forEach(([t], j) => {
+        const b = el("button", { type: "button", class: "btn etiquette-choix", "aria-pressed": "false" }, t);
+        b.addEventListener("click", () => { if (!actif) return; if (choix.has(j)) choix.delete(j); else choix.add(j); b.setAttribute("aria-pressed", String(choix.has(j))); });
+        actions.append(b);
+      });
+      actions.append(bouton("OK", () => {
+        const juste = e.codage.every(([, besoin], j) => besoin === choix.has(j));
+        if (juste) reussir(); else dire("Pas tout à fait : on code ce qui montre que la droite est la médiatrice, et seulement cela.", "attention");
+      }, "principal"));
+    }
+    actions.append(bouton("Montre-moi", () => montrer(e), "discret"));
+  }
+
+  function montrer(e) {
+    e.montrer?.();
+    if (e.champ) { champ.value = ecrireNombre(e.reponse); dire(`Regarde la règle : on lit ${ecrireNombre(e.reponse)}. Clique sur OK.`, "bien"); }
+    else if (e.clic) { placerPoint(e.clic.cible); dire("Voici où placer le point. Clique sur OK.", "bien"); }
+    else if (e.tracer) dire("Voici comment placer l'équerre. Clique sur « Tracer ».", "bien");
+    else if (e.codage) {
+      [...actions.querySelectorAll(".etiquette-choix")].forEach((b, j) => {
+        const besoin = e.codage[j][1];
+        if (besoin) choix.add(j); else choix.delete(j);
+        b.setAttribute("aria-pressed", String(besoin));
+      });
+      dire("Voici ce qu'il faut coder. Clique sur OK.", "bien");
+    }
+  }
+
+  function reussir() {
+    const e = etapes[k];
+    e.dessin?.();
+    if (k + 1 < etapes.length) { etape(k + 1); return; }
+    fini = true;
+    [...pastilles.children].forEach(p => { p.className = "faite"; });
+    s.querySelectorAll(".instrument").forEach(i => i.classList.add("range")); // on estompe les instruments
+    actions.replaceChildren();
+    dire((e.fin || "Construction terminée !") + " Clique sur « Valider ».", "bien");
+  }
+
+  etape(0);
+  return {
+    consigne: "Suis les étapes de la construction. Fais glisser les instruments, et tourne-les avec la poignée ↻. Si tu es bloqué, utilise « Montre-moi ».",
+    figure: [s, controle],
+    verifier: () => fini ? { etat: "juste" } : { etat: "incomplet", message: "Termine d'abord toutes les étapes de la construction." },
+    indice: "Suis les étapes une par une ; le bouton « Montre-moi » aide à chaque étape.",
+    correction: "Les étapes : " + etapes.map(e => e.nom.toLowerCase()).join(" → ") + ".",
+    surCorrection() {
+      // termine la construction à la place de l'élève
+      while (!fini && k < etapes.length) {
+        const e = etapes[k];
+        e.montrer?.();
+        if (e.clic) placerPoint(e.clic.cible);
+        reussir();
+      }
+    },
+    bloquer() { actif = false; bloquerOutils(); }
+  };
+}
+
+/* ---------- Programmes de construction ----------
+   Chaque programme donne sa figure et ses étapes ; « apres » : les étapes nécessaires avant. */
+const PX = 30; // pixels par centimètre sur les figures des programmes
+function figureProgramme(dessin) {
+  const s = figureGeo(420, 300, "Figure à construire");
+  dessin(s);
+  return s;
+}
+const PROGRAMMES = [
+  () => {
+    const a = alea(5, 8), h = alea(2, 4);
+    const A = { x: 210 - a * PX / 2, y: 220 }, B = { x: 210 + a * PX / 2, y: 220 }, I = { x: 210, y: 220 }, C = { x: 210, y: 220 - h * PX };
+    return {
+      figure: figureProgramme(s => {
+        dessinerTrait(s, { x: 210, y: 260 }, { x: 210, y: 30 }, "segment", "geo-trait");
+        dessinerTexte(s, { x: 226, y: 40 }, "(d)", "geo-nom");
+        for (const [p, q] of [[A, B], [A, C], [B, C]]) dessinerTrait(s, p, q, "segment", "geo-objet");
+        dessinerPoint(s, A, "A", { vers: { x: -1, y: 0.5 } }); dessinerPoint(s, B, "B", { vers: { x: 1, y: 0.5 } });
+        dessinerPoint(s, I, "I", { vers: { x: -0.6, y: 1 } }); dessinerPoint(s, C, "C", { vers: { x: 1, y: -0.4 } });
+        codageAngleDroit(s, I, { x: 1, y: 0 }, { x: 0, y: -1 }); codageLongueur(s, A, I, 2); codageLongueur(s, I, B, 2);
+      }),
+      etapes: [
+        { texte: `Trace un segment [AB] de ${a} cm.` },
+        { texte: "Place le milieu I de [AB].", apres: [0] },
+        { texte: "Trace la droite (d) perpendiculaire à [AB] passant par I.", apres: [1] },
+        { texte: `Place un point C sur (d) tel que IC = ${h} cm.`, apres: [2] },
+        { texte: "Trace les segments [AC] et [BC].", apres: [3] }
+      ]
+    };
+  },
+  () => {
+    const d = alea(2, 4);
+    const H = { x: 210, y: 150 }, M = { x: 210 - d * PX, y: 150 }, M2 = { x: 210 + d * PX, y: 150 };
+    return {
+      figure: figureProgramme(s => {
+        dessinerTrait(s, { x: 210, y: 20 }, { x: 210, y: 280 }, "segment", "geo-trait");
+        dessinerTexte(s, { x: 226, y: 32 }, "(d)", "geo-nom");
+        dessinerTrait(s, { x: M.x - 30, y: 150 }, { x: M2.x + 30, y: 150 }, "segment", "geo-trait-fin");
+        dessinerPoint(s, M, "M", { vers: { x: 0, y: -1 } }); dessinerPoint(s, M2, "M′", { vers: { x: 0, y: -1 } }); dessinerPoint(s, H, "H", { vers: { x: 0.7, y: 1 } });
+        codageAngleDroit(s, H, { x: 1, y: 0 }, { x: 0, y: -1 }); codageLongueur(s, M, H, 1); codageLongueur(s, H, M2, 1);
+      }),
+      etapes: [
+        { texte: "Trace une droite (d)." },
+        { texte: "Place un point M qui n'est pas sur (d).", apres: [0] },
+        { texte: "Trace la perpendiculaire à (d) passant par M ; elle coupe (d) en H.", apres: [1] },
+        { texte: "Place M′ sur cette perpendiculaire, de l'autre côté de (d), tel que HM′ = HM.", apres: [2] },
+        { texte: "Code la figure (angle droit et longueurs égales).", apres: [3] }
+      ]
+    };
+  },
+  () => {
+    const a = alea(5, 8), b = alea(3, 5);
+    const A = { x: 210 - a * PX / 2, y: 240 }, B = { x: 210 + a * PX / 2, y: 240 }, C = { x: B.x, y: 240 - b * PX }, D = { x: A.x, y: 240 - b * PX };
+    return {
+      figure: figureProgramme(s => {
+        dessinerTrait(s, { x: A.x, y: 275 }, { x: A.x, y: 20 }, "segment", "geo-trait-fin");
+        dessinerTrait(s, { x: B.x, y: 275 }, { x: B.x, y: 20 }, "segment", "geo-trait-fin");
+        for (const [p, q] of [[A, B], [B, C], [C, D], [D, A]]) dessinerTrait(s, p, q, "segment", "geo-objet");
+        dessinerPoint(s, A, "A", { vers: { x: -1, y: 0.6 } }); dessinerPoint(s, B, "B", { vers: { x: 1, y: 0.6 } });
+        dessinerPoint(s, C, "C", { vers: { x: 1, y: -0.6 } }); dessinerPoint(s, D, "D", { vers: { x: -1, y: -0.6 } });
+        codageAngleDroit(s, A, { x: 1, y: 0 }, { x: 0, y: -1 }); codageAngleDroit(s, B, { x: -1, y: 0 }, { x: 0, y: -1 });
+      }),
+      etapes: [
+        { texte: `Trace un segment [AB] de ${a} cm.` },
+        { texte: "Trace la perpendiculaire à [AB] passant par A.", apres: [0] },
+        { texte: "Trace la perpendiculaire à [AB] passant par B.", apres: [0] },
+        { texte: `Place D sur la perpendiculaire passant par A, tel que AD = ${b} cm.`, apres: [1] },
+        { texte: `Place C sur la perpendiculaire passant par B, du même côté que D, tel que BC = ${b} cm.`, apres: [2, 3] },
+        { texte: "Trace le segment [DC].", apres: [3, 4] }
+      ]
+    };
+  },
+  () => {
+    const A = { x: 200, y: 90 }, P = { x: 200, y: 230 };
+    return {
+      figure: figureProgramme(s => {
+        dessinerTrait(s, { x: 20, y: 230 }, { x: 400, y: 230 }, "segment", "geo-objet");
+        dessinerTexte(s, { x: 390, y: 250 }, "(d)", "geo-nom");
+        dessinerTrait(s, { x: 200, y: 280 }, { x: 200, y: 20 }, "segment", "geo-trait");
+        dessinerTexte(s, { x: 218, y: 30 }, "(d1)", "geo-nom");
+        dessinerTrait(s, { x: 20, y: 90 }, { x: 400, y: 90 }, "segment", "geo-objet");
+        dessinerTexte(s, { x: 390, y: 80 }, "(d2)", "geo-nom");
+        dessinerPoint(s, A, "A", { vers: { x: -0.8, y: -1 } });
+        codageAngleDroit(s, P, { x: 1, y: 0 }, { x: 0, y: -1 }); codageAngleDroit(s, A, { x: 1, y: 0 }, { x: 0, y: 1 });
+      }),
+      etapes: [
+        { texte: "Trace une droite (d) et place un point A qui n'est pas sur (d)." },
+        { texte: "Trace la droite (d1) perpendiculaire à (d) passant par A.", apres: [0] },
+        { texte: "Trace la droite (d2) perpendiculaire à (d1) passant par A.", apres: [1] },
+        { texte: "Code les deux angles droits.", apres: [2] }
+      ]
+    };
+  },
+  () => {
+    const a = alea(6, 9), b = alea(2, 3);
+    const A = { x: 210 - a * PX / 2, y: 150 }, C = { x: 210 + a * PX / 2, y: 150 }, O = { x: 210, y: 150 }, B = { x: 210, y: 150 - b * PX }, D = { x: 210, y: 150 + b * PX };
+    return {
+      figure: figureProgramme(s => {
+        dessinerTrait(s, A, C, "segment", "geo-trait");
+        dessinerTrait(s, { x: 210, y: 20 }, { x: 210, y: 280 }, "segment", "geo-trait-fin");
+        dessinerTexte(s, { x: 228, y: 276 }, "(d)", "geo-nom");
+        for (const [p, q] of [[A, B], [B, C], [C, D], [D, A]]) dessinerTrait(s, p, q, "segment", "geo-objet");
+        dessinerPoint(s, A, "A", { vers: { x: -1, y: 0 } }); dessinerPoint(s, C, "C", { vers: { x: 1, y: 0 } });
+        dessinerPoint(s, B, "B", { vers: { x: 0.8, y: -1 } }); dessinerPoint(s, D, "D", { vers: { x: 0.8, y: 1 } }); dessinerPoint(s, O, "O", { vers: { x: -1, y: 1 } });
+        codageAngleDroit(s, O, { x: 1, y: 0 }, { x: 0, y: -1 }); codageLongueur(s, A, O, 1); codageLongueur(s, O, C, 1);
+        codageLongueur(s, O, B, 2); codageLongueur(s, O, D, 2);
+      }),
+      etapes: [
+        { texte: `Trace un segment [AC] de ${a} cm.` },
+        { texte: "Trace la médiatrice (d) de [AC] ; elle coupe [AC] en O.", apres: [0] },
+        { texte: `Place un point B sur (d) tel que OB = ${b} cm.`, apres: [1] },
+        { texte: `Place un point D sur (d), de l'autre côté de [AC], tel que OD = ${b} cm.`, apres: [1] },
+        { texte: "Trace le quadrilatère ABCD.", apres: [2, 3] }
+      ]
+    };
+  },
+  () => {
+    const A = { x: 80, y: 80 }, B = { x: 150, y: 220 }, A2 = { x: 340, y: 80 }, B2 = { x: 270, y: 220 };
+    return {
+      figure: figureProgramme(s => {
+        dessinerTrait(s, { x: 210, y: 20 }, { x: 210, y: 280 }, "segment", "geo-trait");
+        dessinerTexte(s, { x: 226, y: 32 }, "(d)", "geo-nom");
+        dessinerTrait(s, A, A2, "segment", "geo-trait-fin"); dessinerTrait(s, B, B2, "segment", "geo-trait-fin");
+        dessinerTrait(s, A, B, "segment", "geo-objet"); dessinerTrait(s, A2, B2, "segment", "geo-objet");
+        dessinerPoint(s, A, "A", { vers: { x: -1, y: -0.5 } }); dessinerPoint(s, B, "B", { vers: { x: -1, y: 0.5 } });
+        dessinerPoint(s, A2, "A′", { vers: { x: 1, y: -0.5 } }); dessinerPoint(s, B2, "B′", { vers: { x: 1, y: 0.5 } });
+        codageAngleDroit(s, { x: 210, y: 80 }, { x: 1, y: 0 }, { x: 0, y: -1 }); codageAngleDroit(s, { x: 210, y: 220 }, { x: 1, y: 0 }, { x: 0, y: -1 });
+      }),
+      etapes: [
+        { texte: "Trace une droite (d) et un segment [AB] qui ne la coupe pas." },
+        { texte: "Construis A′, le symétrique de A par rapport à (d).", apres: [0] },
+        { texte: "Construis B′, le symétrique de B par rapport à (d).", apres: [0] },
+        { texte: "Trace le segment [A′B′].", apres: [1, 2] }
+      ]
+    };
+  }
+];
 
 const cap = t => t[0].toUpperCase() + t.slice(1);
 const cm = x => ecrireNombre(x) + "\u00a0cm"; // espace insécable : « 4,5 cm » reste sur une ligne
@@ -139,55 +441,75 @@ const ACTIVITES = [
     groupe: F1,
     id: "appartenance",
     titre: "Appartient ou n'appartient pas",
-    description: "Compléter avec ∈ ou ∉ en lisant une figure.",
+    description: "Lire une figure (droites, triangle, quadrilatère) et compléter avec ∈ ou ∉.",
     generer() {
-      const [X, Y, P] = tirerLettres(3);
-      const [type, notation] = choisir([
-        ["droite", `(${X}${Y})`], ["segment", `[${X}${Y}]`], ["demiX", `[${X}${Y})`], ["demiY", `[${Y}${X})`]]);
-      const place = choisir(["entre", "avant", "apres", "dehors"]);
-      const { A, B, w } = segmentAuHasard(110, 140);
-      const t = place === "entre" ? alea(25, 75) / 100 : place === "avant" ? -alea(38, 50) / 100
-        : place === "apres" ? 1 + alea(38, 50) / 100 : alea(20, 80) / 100;
-      const cote = choisir([-1, 1]);
-      let M = V.plus(A, V.fois(V.moins(B, A), t));
-      if (place === "dehors") M = V.plus(M, V.fois(w, cote * alea(32, 45)));
-      const surDroite = place !== "dehors";
-      const appartient = {
-        droite: surDroite,
-        segment: place === "entre",
-        demiX: place === "entre" || place === "apres",
-        demiY: place === "entre" || place === "avant"
-      }[type];
-      const signe = appartient ? "∈" : "∉";
-
-      const s = figureGeo(W, H, "Figure");
-      dessinerTrait(s, A, B, "droite");
-      dessinerPoint(s, A, X, { vers: w });
-      dessinerPoint(s, B, Y, { vers: w });
-      dessinerPoint(s, M, P, { vers: place === "dehors" ? V.fois(w, cote) : V.fois(w, -1), classe: "geo-point-question" });
-
-      let explication;
-      if (!surDroite) explication = `${P} n'est pas sur la droite (${X}${Y})` + (type === "droite" ? "." : ` : il n'est donc pas non plus sur ${notation}.`);
-      else if (type === "droite") explication = `${P} est sur la droite (${X}${Y}).`;
-      else if (type === "segment") explication = appartient
-        ? `${P} est sur la droite, entre ${X} et ${Y} : il est sur le segment.`
-        : `${P} est bien sur la droite (${X}${Y}), mais pas entre ${X} et ${Y} : il n'est pas sur le segment.`;
-      else {
-        const [o, q] = type === "demiX" ? [X, Y] : [Y, X];
-        explication = `La demi-droite ${notation} part de ${o} et passe par ${q}. ` + (appartient
-          ? `${P} est du côté de ${q} : il est dessus.`
-          : `${P} est de l'autre côté de ${o} : il n'est pas dessus.`);
+      const s = figureGeo(W + 40, H + 70, "Figure");
+      const Lw = W + 40, Lh = H + 70;
+      const aff = [];     // affirmations possibles : [point, objet, appartient ?]
+      const type = choisir(["triangle", "quadrilatere", "droites"]);
+      const lettres = tirerLettres(9);
+      const P = (x, y) => ({ x, y });
+      const sur = (A, B, t) => V.plus(A, V.fois(V.moins(B, A), t));
+      const nomPt = (p, n, vers) => dessinerPoint(s, p, n, { vers });
+      if (type === "triangle") {
+        const [A, B, C, M, N, R, Q, S] = lettres;
+        const pA = P(80, 230), pB = P(300, 245), pC = P(170 + alea(-30, 30), 70);
+        dessinerTrait(s, pA, pB, "droite", "geo-trait-fin");                // la droite (AB) est tracée en entier
+        dessinerTrait(s, pA, pC, "demi", "geo-trait-fin");                  // la demi-droite [AC)
+        for (const [p, q] of [[pA, pB], [pB, pC], [pC, pA]]) dessinerTrait(s, p, q, "segment", "geo-objet");
+        const pM = sur(pA, pB, alea(30, 70) / 100), pN = sur(pA, pB, alea(125, 140) / 100), pR = sur(pB, pC, alea(30, 70) / 100);
+        const pQ = sur(pA, pC, alea(125, 140) / 100), pS = P((pA.x + pB.x + pC.x) / 3, (pA.y + pB.y + pC.y) / 3);
+        nomPt(pA, A, { x: -1, y: 0.4 }); nomPt(pB, B, { x: 1, y: 0.4 }); nomPt(pC, C, { x: 0, y: -1 });
+        nomPt(pM, M, { x: 0, y: 1 }); nomPt(pN, N, { x: 0, y: 1 }); nomPt(pR, R, { x: 1, y: -0.3 }); nomPt(pQ, Q, { x: -1, y: 0 }); nomPt(pS, S, { x: 0, y: -1 });
+        aff.push([M, `[${A}${B}]`, true], [M, `(${A}${B})`, true], [N, `[${A}${B}]`, false], [N, `(${A}${B})`, true], [N, `[${B}${A})`, false], [N, `[${A}${B})`, true],
+          [R, `[${B}${C}]`, true], [R, `[${A}${B}]`, false], [Q, `[${A}${C})`, true], [Q, `[${A}${C}]`, false], [S, `[${A}${B}]`, false], [S, `[${B}${C}]`, false],
+          [C, `[${A}${C}]`, true], [A, `[${B}${C}]`, false], [B, `(${A}${B})`, true]);
+      } else if (type === "quadrilatere") {
+        const [A, B, C, D, O, M, N, R] = lettres;
+        const pA = P(70, 220), pB = P(290, 235), pC = P(320, 70), pD = P(110, 60);
+        dessinerTrait(s, pB, pD, "droite", "geo-trait-fin");               // la droite (BD)
+        for (const [p, q] of [[pA, pB], [pB, pC], [pC, pD], [pD, pA], [pA, pC]]) dessinerTrait(s, p, q, "segment", "geo-objet");
+        dessinerTrait(s, pB, pD, "segment", "geo-objet");
+        // O : intersection des diagonales
+        const d1 = V.moins(pC, pA), d2 = V.moins(pD, pB);
+        const t = ((pB.x - pA.x) * d2.y - (pB.y - pA.y) * d2.x) / (d1.x * d2.y - d1.y * d2.x);
+        const pO = sur(pA, pC, t), pM = sur(pA, pB, alea(35, 65) / 100), pN = sur(pB, pD, alea(118, 130) / 100), pR = sur(pC, pD, alea(35, 65) / 100);
+        nomPt(pA, A, { x: -1, y: 0.5 }); nomPt(pB, B, { x: 1, y: 0.5 }); nomPt(pC, C, { x: 1, y: -0.5 }); nomPt(pD, D, { x: -1, y: -0.5 });
+        nomPt(pO, O, { x: 1, y: 0.2 }); nomPt(pM, M, { x: 0, y: 1 }); nomPt(pN, N, { x: -1, y: 0 }); nomPt(pR, R, { x: 0, y: -1 });
+        aff.push([O, `[${A}${C}]`, true], [O, `[${B}${D}]`, true], [O, `[${A}${B}]`, false], [M, `[${A}${B}]`, true], [M, `[${C}${D}]`, false],
+          [N, `(${B}${D})`, true], [N, `[${B}${D}]`, false], [N, `[${B}${D})`, true], [R, `[${C}${D}]`, true], [R, `[${A}${C}]`, false], [A, `[${B}${D}]`, false], [D, `(${B}${D})`, true]);
+      } else {
+        const [A, B, C, M, N, R] = lettres;
+        // trois droites qui se coupent deux à deux en A, B et C
+        const pA = P(90, 220), pB = P(310, 210), pC = P(200, 70);
+        const noms = ["(d1)", "(d2)", "(d3)"];
+        const droites = [[pA, pB, noms[0]], [pB, pC, noms[1]], [pC, pA, noms[2]]];
+        for (const [p, q, n] of droites) {
+          dessinerTrait(s, p, q, "droite", "geo-objet");
+          const u = V.unitaire(V.moins(q, p));
+          dessinerTexte(s, V.plus(V.plus(q, V.fois(u, 60)), V.fois(V.normal(u), 14)), n, "geo-nom");
+        }
+        const pM = sur(pA, pB, alea(130, 145) / 100), pN = sur(pB, pC, alea(35, 65) / 100), pR = P(200, 170);
+        nomPt(pA, A, { x: -0.3, y: 1 }); nomPt(pB, B, { x: 0.3, y: 1 }); nomPt(pC, C, { x: 1, y: -0.3 });
+        nomPt(pM, M, { x: 0, y: 1 }); nomPt(pN, N, { x: 1, y: 0 }); nomPt(pR, R, { x: 0, y: -1 });
+        aff.push([A, noms[0], true], [A, noms[2], true], [A, noms[1], false], [B, noms[0], true], [B, noms[2], false], [C, noms[1], true], [C, noms[0], false],
+          [M, noms[0], true], [M, `[${A}${B}]`, false], [N, noms[1], true], [N, `[${B}${C}]`, true], [R, noms[0], false], [R, noms[2], false]);
       }
+      // 4 affirmations, avec au moins un piège (appartient à la droite mais pas au segment…)
+      const choisies = melanger(aff).slice(0, 4);
       return {
-        consigne: "Complète avec ∈ (appartient à) ou ∉ (n'appartient pas à).",
+        consigne: "Complète avec ∈ (appartient à) ou ∉ (n'appartient pas à). Les traits fins prolongent la figure.",
         figure: s,
-        ligne: `${P} [c] ${notation}`,
-        choix: ["∈", "∉"],
-        verifier: (v, c) => ({ etat: c === signe ? "juste" : "faux" }),
-        indice: type === "droite"
-          ? "Le point est-il exactement sur la droite ?"
-          : `Attention : la droite tracée est plus longue que ${notation}. Repère où ${notation} commence et s'arrête.`,
-        correction: `${explication} Donc ${P} ${signe} ${notation}.`
+        classeLigne: "etapes",
+        ligne: choisies.map(([p, o]) => `<div class="etape-pb enonce-ligne"><span>${p}</span>[s]<span>${o}</span></div>`).join(""),
+        listes: choisies.map(() => ["∈", "∉"]),
+        verifier(v) {
+          if (v.some(x => x == null)) return { etat: "incomplet", message: "Réponds aux quatre lignes." };
+          const fausses = choisies.map(([, , ok], i) => (v[i] === 0) !== ok ? i + 1 : 0).filter(Boolean);
+          return fausses.length ? { etat: "faux", message: `À revoir : ligne${fausses.length > 1 ? "s" : ""} ${fausses.join(", ")}. Attention : un segment s'arrête à ses extrémités, une demi-droite part de son origine.` } : { etat: "juste" };
+        },
+        indice: "[AB] : entre A et B seulement ; [AB) : part de A et passe par B ; (AB) : continue des deux côtés.",
+        correction: choisies.map(([p, o, ok]) => `${p} ${ok ? "∈" : "∉"} ${o}`).join(" ; ") + "."
       };
     }
   },
@@ -196,83 +518,56 @@ const ACTIVITES = [
     groupe: F1,
     id: "milieu",
     titre: "Le milieu d'un segment",
-    description: "Placer le milieu, calculer des longueurs.",
+    description: "Trouver la longueur d'un segment ou de sa moitié.",
     generer() {
       const [X, Y, I] = tirerLettres(3);
-      const indice = "Le milieu partage le segment en deux longueurs égales : chacune vaut la moitié de la longueur du segment.";
-      if (Math.random() < 0.6) {
-        const cas = alea(0, 2);
-        if (cas === 0) {
-          const L = alea(20, 160) / 10;
-          return {
-            consigne: `${I} est le milieu de [${X}${Y}] et ${X}${Y} = ${cm(L)}. Combien vaut ${X}${I} ?`,
-            ligne: `${X}${I} = [d] cm`,
-            verifier: v => verifierNombre(v[0], L / 2),
-            indice,
-            correction: `${X}${I} = ${X}${Y} ÷ 2 = ${ecrireNombre(L)} ÷ 2 = ${cm(L / 2)}.`
-          };
-        }
-        const d = alea(15, 80) / 10;
-        if (cas === 1) {
-          return {
-            consigne: `${I} est le milieu de [${X}${Y}] et ${X}${I} = ${cm(d)}. Combien vaut ${X}${Y} ?`,
-            ligne: `${X}${Y} = [d] cm`,
-            verifier(v) {
-              const r = verifierNombre(v[0], 2 * d);
-              if (r.etat === "faux" && lireNombre(v[0]) === d / 2) r.message = `${X}${I} est la moitié de ${X}${Y}, pas l'inverse.`;
-              return r;
-            },
-            indice,
-            correction: `${X}${Y} = 2 × ${X}${I} = 2 × ${ecrireNombre(d)} = ${cm(2 * d)}.`
-          };
-        }
-        return {
-          consigne: `${I} est le milieu de [${X}${Y}] et ${I}${Y} = ${cm(d)}. Combien vaut ${X}${I} ?`,
-          ligne: `${X}${I} = [d] cm`,
-          verifier: v => verifierNombre(v[0], d),
-          indice,
-          correction: `Le milieu est à égale distance des deux extrémités : ${X}${I} = ${I}${Y} = ${cm(d)}.`
-        };
+      const cas = choisir(["moitie", "moitie", "double", "autre-moitie", "probleme"]);
+      let consigne, ligne, attendu, correction, connu, etiquette;
+      if (cas === "moitie") {
+        const L = alea(20, 160) / 10; connu = "total";
+        consigne = `${I} est le milieu de [${X}${Y}] et ${X}${Y} = ${cm(L)}. Combien mesure ${X}${I} ?`;
+        ligne = `${X}${I} = [d] cm`; attendu = L / 2; etiquette = `${X}${Y} = ${cm(L)}`;
+        correction = `${X}${I} = ${X}${Y} ÷ 2 = ${ecrireNombre(L)} ÷ 2 = ${cm(L / 2)}.`;
+      } else if (cas === "double") {
+        const dm = alea(15, 80) / 10; connu = "moitie";
+        consigne = `${I} est le milieu de [${X}${Y}] et ${X}${I} = ${cm(dm)}. Combien mesure ${X}${Y} ?`;
+        ligne = `${X}${Y} = [d] cm`; attendu = 2 * dm; etiquette = `${X}${I} = ${cm(dm)}`;
+        correction = `${X}${Y} = 2 × ${X}${I} = 2 × ${ecrireNombre(dm)} = ${cm(2 * dm)}.`;
+      } else if (cas === "autre-moitie") {
+        const dm = alea(15, 80) / 10; connu = "autre";
+        consigne = `${I} est le milieu de [${X}${Y}] et ${I}${Y} = ${cm(dm)}. Combien mesure ${X}${I} ?`;
+        ligne = `${X}${I} = [d] cm`; attendu = dm; etiquette = `${I}${Y} = ${cm(dm)}`;
+        correction = `Le milieu est à égale distance des extrémités : ${X}${I} = ${I}${Y} = ${cm(dm)}.`;
+      } else {
+        const L = alea(40, 250) / 10; connu = "total";
+        consigne = `Deux bornes ${X} et ${Y} sont distantes de ${ecrireNombre(L)} km sur une route droite. Une aire de repos ${I} est installée au milieu. À quelle distance de ${X} se trouve-t-elle ?`;
+        ligne = `${X}${I} = [d] km`; attendu = L / 2; etiquette = `${X}${Y} = ${ecrireNombre(L)} km`;
+        correction = `${X}${I} = ${ecrireNombre(L)} ÷ 2 = ${ecrireNombre(L / 2)} km.`;
       }
-
-      // Placer le milieu sur des graduations
-      const n = 14, pas = 24, x0 = 22, y = 58;
-      let a, b;
-      do { a = alea(0, 6); b = alea(a + 4, n); } while ((b - a) % 2);
-      const m = (a + b) / 2;
-      const X_ = k => ({ x: x0 + k * pas, y });
-      const s = figureGeo(2 * x0 + n * pas, 96, "Segment gradué");
-      s.classList.add("geo-clic");
-      dessinerTrait(s, X_(0), X_(n), "segment", "geo-trait-fin");
-      for (let k = 0; k <= n; k++) s.append(svg("line", { x1: X_(k).x, y1: y - 5, x2: X_(k).x, y2: y + 5, class: "geo-graduation" }));
-      dessinerTrait(s, X_(a), X_(b), "segment", "geo-objet");
-      dessinerPoint(s, X_(a), X, { vers: { x: 0, y: -1 } });
-      dessinerPoint(s, X_(b), Y, { vers: { x: 0, y: -1 } });
-      let position = null, marque = null, actif = true;
-      s.addEventListener("pointerdown", e => {
-        if (!actif) return;
-        const k = Math.max(0, Math.min(n, Math.round((positionClic(s, e).x - x0) / pas)));
-        position = k;
-        marque?.remove();
-        marque = dessinerPoint(s, X_(k), I, { vers: { x: 0, y: 1 }, classe: "geo-eleve" });
-      });
-      const graduations = k => pluriel(k, "graduation");
+      // Coup de pouce : un schéma codé, affiché à la demande
+      const schema = figureGeo(360, 110, "Schéma");
+      const A = { x: 40, y: 60 }, B = { x: 320, y: 60 }, M = { x: 180, y: 60 };
+      dessinerTrait(schema, A, B, "segment", "geo-objet");
+      dessinerPoint(schema, A, X); dessinerPoint(schema, B, Y); dessinerPoint(schema, M, I);
+      codageLongueur(schema, A, M, 2); codageLongueur(schema, M, B, 2);
+      // le « ? » est au-dessus de ce que l'on cherche ; la longueur connue est écrite en dessous
+      const posConnu = { total: { x: 180, y: 100 }, moitie: { x: 110, y: 100 }, autre: { x: 250, y: 100 } }[connu];
+      const posCherche = { total: { x: 110, y: 26 }, moitie: { x: 180, y: 26 }, autre: { x: 110, y: 26 } }[connu];
+      dessinerTexte(schema, posConnu, etiquette, "geo-mesure");
+      dessinerTexte(schema, posCherche, `${ligne.split(" =")[0]} = ?`, "geo-mesure");
+      schema.style.display = "none";
+      const pouce = el("button", { type: "button", class: "btn discret" }, "💡 Coup de pouce : voir un schéma");
+      pouce.addEventListener("click", () => { schema.style.display = ""; pouce.remove(); });
       return {
-        consigne: `Place le milieu ${I} du segment [${X}${Y}] en cliquant sur la bonne graduation, puis valide.`,
-        figure: s,
-        verifier() {
-          if (position == null) return { etat: "incomplet", message: "Clique sur une graduation pour placer le point." };
-          if (position === m) return { etat: "juste" };
-          return { etat: "faux", message: `Ton point est à ${graduations(Math.abs(position - a))} de ${X} et à ${graduations(Math.abs(b - position))} de ${Y}.` };
+        consigne, ligne,
+        apresLigne: [pouce, schema],
+        verifier(v) {
+          const r = verifierNombre(v[0], attendu);
+          if (r.etat === "faux" && cas !== "autre-moitie" && Math.abs(lireNombre(v[0]) - (cas === "double" ? attendu / 4 : attendu * 4)) < 1e-9) r.message = cas === "double" ? "Le segment entier est deux fois plus long que sa moitié." : "La moitié, c'est diviser par 2.";
+          return r;
         },
-        indice: `Compte les graduations entre ${X} et ${Y}, puis prends la moitié.`,
-        correction: `[${X}${Y}] mesure ${graduations(b - a)}. Son milieu est à ${graduations(m - a)} de ${X} et de ${Y} (en vert).`,
-        surCorrection() {
-          dessinerPoint(s, X_(m), I, { vers: { x: 0, y: 1 }, classe: "geo-correct" });
-          codageLongueur(s, X_(a), X_(m), 2);
-          codageLongueur(s, X_(m), X_(b), 2);
-        },
-        bloquer() { actif = false; }
+        indice: "Le milieu partage le segment en deux longueurs égales : chacune vaut la moitié de la longueur du segment.",
+        correction
       };
     }
   },
@@ -283,36 +578,45 @@ const ACTIVITES = [
     groupe: F2,
     id: "reconnaitre-droites",
     titre: "Perpendiculaires ou parallèles ?",
-    description: "Lire la position de deux droites sur une figure codée.",
+    description: "Lire la position de plusieurs droites sur une figure codée.",
     generer() {
-      const [n1, n2] = choisir([["(d1)", "(d2)"], ["(d)", "(d′)"], ["(u)", "(v)"]]);
-      const cas = choisir(["perp", "para", "secantes"]);
-      const a = alea(-40, 40) * DEG, u1 = V.angle(a), n = V.normal(u1);
-      const O = { x: W / 2 + alea(-25, 25), y: H / 2 + alea(-12, 12) };
-      const s = figureGeo(W, H, "Deux droites");
-      if (cas === "para") {
-        const ecart = alea(55, 80);
-        dessinerDroite(s, V.moins(O, V.fois(n, ecart / 2)), u1, n1, W, H);
-        dessinerDroite(s, V.plus(O, V.fois(n, ecart / 2)), u1, n2, W, H);
-      } else {
-        const u2 = cas === "perp" ? n : V.angle(a + choisir([-1, 1]) * alea(35, 62) * DEG);
-        dessinerDroite(s, O, u1, n1, W, H);
-        dessinerDroite(s, O, u2, n2, W, H);
-        if (cas === "perp") codageAngleDroit(s, O, u1, u2);
-      }
-      const bonne = { perp: "⊥", para: "//", secantes: "ni l'un ni l'autre" }[cas];
+      const Lw = W + 40, Lh = H + 60;
+      const s = figureGeo(Lw, Lh, "Plusieurs droites");
+      const a = alea(-25, 25) * DEG, u = V.angle(a), n = V.normal(u);
+      const C0 = { x: Lw / 2, y: Lh / 2 };
+      const noms = melanger(["(d1)", "(d2)", "(d3)", "(d4)"]);
+      const [dA, dB, dC, dD] = noms;
+      // dA et dB parallèles ; dC perpendiculaire aux deux (codée) ; dD oblique
+      const ecart = alea(60, 85);
+      const pA = V.moins(C0, V.fois(n, ecart / 2)), pB = V.plus(C0, V.fois(n, ecart / 2));
+      const pC = V.plus(C0, V.fois(u, alea(-110, -60)));
+      const uD = V.angle(a + choisir([-1, 1]) * alea(35, 60) * DEG), pD = V.plus(C0, V.fois(u, alea(60, 110)));
+      dessinerDroite(s, pA, u, dA, Lw, Lh);
+      dessinerDroite(s, pB, u, dB, Lw, Lh);
+      dessinerDroite(s, pC, n, dC, Lw, Lh);
+      dessinerDroite(s, pD, uD, dD, Lw, Lh);
+      // codage des angles droits entre dC et dA, dC et dB
+      const inter = (P, v, Q, w) => { const t = ((Q.x - P.x) * w.y - (Q.y - P.y) * w.x) / (v.x * w.y - v.y * w.x); return V.plus(P, V.fois(v, t)); };
+      codageAngleDroit(s, inter(pA, u, pC, n), u, n);
+      codageAngleDroit(s, inter(pB, u, pC, n), u, V.fois(n, -1));
+      const rel = { [`${dA}|${dB}`]: "//", [`${dA}|${dC}`]: "⊥", [`${dB}|${dC}`]: "⊥", [`${dA}|${dD}`]: "aucun des deux", [`${dB}|${dD}`]: "aucun des deux", [`${dC}|${dD}`]: "aucun des deux" };
+      const paires = melanger(Object.keys(rel));
+      const choisies = [paires.find(k => rel[k] === "//"), paires.find(k => rel[k] === "⊥"), paires.find(k => rel[k] === "aucun des deux")];
+      melanger(choisies);
+      const options = ["⊥", "//", "aucun des deux"];
       return {
-        consigne: "Complète avec le bon symbole.",
+        consigne: "Pour chaque paire de droites, choisis le bon symbole. Les angles droits sont codés.",
         figure: s,
-        ligne: `${n1} [c] ${n2}`,
-        choix: ["⊥", "//", "ni l'un ni l'autre"],
-        verifier: (v, c) => ({ etat: c === bonne ? "juste" : "faux" }),
-        indice: "Les droites se coupent-elles ? Si oui, l'angle droit est-il codé par un petit carré ?",
-        correction: {
-          perp: `Les droites se coupent en formant un angle droit (codé par un petit carré) : ${n1} ⊥ ${n2}.`,
-          para: `Les droites ne se coupent pas : elles sont parallèles, ${n1} // ${n2}.`,
-          secantes: "Les droites se coupent, mais sans former d'angle droit : elles sont sécantes, ni perpendiculaires ni parallèles."
-        }[cas]
+        classeLigne: "etapes",
+        ligne: choisies.map(k => { const [x, y] = k.split("|"); return `<div class="etape-pb enonce-ligne"><span>${x}</span>[s]<span>${y}</span></div>`; }).join(""),
+        listes: choisies.map(() => options),
+        verifier(v) {
+          if (v.some(x => x == null)) return { etat: "incomplet", message: "Réponds aux trois lignes." };
+          const fausses = choisies.map((k, i) => options[v[i]] === rel[k] ? 0 : i + 1).filter(Boolean);
+          return fausses.length ? { etat: "faux", message: `À revoir : ligne${fausses.length > 1 ? "s" : ""} ${fausses.join(", ")}.` } : { etat: "juste" };
+        },
+        indice: "Perpendiculaires : elles se coupent avec un angle droit codé. Parallèles : elles ne se coupent jamais.",
+        correction: choisies.map(k => { const [x, y] = k.split("|"); return rel[k] === "aucun des deux" ? `${x} et ${y} sont sécantes sans angle droit` : `${x} ${rel[k]} ${y}`; }).join(" ; ") + "."
       };
     }
   },
@@ -358,51 +662,6 @@ const ACTIVITES = [
         verifier: (v, c) => ({ etat: c === options[bonne] ? "juste" : "faux" }),
         indice: lecture,
         correction: `${nota[cas]} se lit : « ${options[bonne].slice(0, -1)} ».`
-      };
-    }
-  },
-
-  {
-    groupe: F2,
-    id: "proprietes-droites",
-    titre: "Perpendiculaires à une même droite",
-    description: "Utiliser la propriété du cours pour conclure : ⊥ ou // ?",
-    generer() {
-      const [a, b, c] = melanger(["(d1)", "(d2)", "(d3)"]);
-      const rien = Math.random() < 0.3;
-      // L'ordre d'écriture varie : « (d1) ⊥ (d3) » ou « (d3) ⊥ (d1) »
-      const perp = (x, y) => Math.random() < 0.5 ? `${x} ⊥ ${y}` : `${y} ⊥ ${x}`;
-      const donnees = rien
-        ? `${a} et ${c} sont sécantes, et ${b} et ${c} sont sécantes`
-        : `${perp(a, c)} et ${perp(b, c)}`;
-      const options = [`${a} // ${b}`, `${a} ⊥ ${b}`, "On ne peut rien conclure"];
-      const bonne = rien ? 2 : 0;
-
-      // Figure à main levée, tournée au hasard
-      const s = figureGeo(W, H, "Trois droites");
-      const u = V.angle(alea(-20, 20) * DEG), n = V.normal(u);
-      const C0 = { x: W / 2, y: H / 2 };
-      const cote = choisir([-1, 1]);
-      dessinerDroite(s, C0, u, c, W, H);
-      if (rien) {
-        dessinerDroite(s, V.moins(C0, V.fois(u, 70)), V.tourner(u, { x: 0, y: 0 }, 58 * DEG), a, W, H);
-        dessinerDroite(s, V.plus(C0, V.fois(u, 70)), V.tourner(u, { x: 0, y: 0 }, 118 * DEG), b, W, H);
-      } else {
-        for (const [nom, k] of [[a, -60 * cote], [b, 60 * cote]]) {
-          const P = V.plus(C0, V.fois(u, k));
-          dessinerDroite(s, P, n, nom, W, H);
-          codageAngleDroit(s, P, u, n);
-        }
-      }
-      return {
-        consigne: `On sait que ${donnees}. Que peut-on en conclure ?`,
-        figure: s,
-        choix: options,
-        verifier: (v, c2) => ({ etat: c2 === options[bonne] ? "juste" : "faux" }),
-        indice: "Les deux droites sont-elles toutes les deux perpendiculaires à une même droite ?",
-        correction: rien
-          ? "Aucune propriété du cours ne permet de conclure : deux droites qui coupent une même droite peuvent être dans n'importe quelle position."
-          : `<strong>Je sais que :</strong> ${donnees}.<br><strong>Or :</strong> ${PROP.perpPara}<br><strong>Donc :</strong> ${options[0]}.`
       };
     }
   },
@@ -496,13 +755,10 @@ const ACTIVITES = [
     groupe: F3,
     id: "demonstration",
     titre: "Rédiger une démonstration",
-    description: "Choisir les bonnes phrases : Je sais que… / Or… / Donc…",
+    description: "Avec la médiatrice : Je sais que… / Or… / Donc…",
     generer() {
       const [A, B, M] = tirerLettres(3);
       const x = alea(15, 95) / 10, X = cm(x);
-      const [d1, d2, d3] = melanger(["(d1)", "(d2)", "(d3)"]);
-      /* Dans chaque liste, la première phrase est la bonne. La deuxième phrase de « sais »
-         est toujours la conclusion : c'est l'erreur la plus fréquente. */
       const sc = choisir([
         {
           enonce: `La droite (d) est la médiatrice de [${A}${B}] et ${M} est un point de (d) tel que ${M}${A} = ${X}. Démontre que ${M}${B} = ${X}.`,
@@ -511,55 +767,130 @@ const ACTIVITES = [
           donc: [`${M}${B} = ${M}${A}, c'est-à-dire ${M}${B} = ${X}.`, `${M} appartient à la médiatrice de [${A}${B}].`, `${M} est le milieu de [${A}${B}].`]
         },
         {
+          enonce: `${M} appartient à la médiatrice du segment [${A}${B}]. Démontre que ${M}${A} = ${M}${B}.`,
+          sais: [`${M} appartient à la médiatrice de [${A}${B}].`, `${M}${A} = ${M}${B}.`, `${M} est le milieu de [${A}${B}].`],
+          or: "mediatrice", piege: "reciproque",
+          donc: [`${M}${A} = ${M}${B}.`, `${M} est le milieu de [${A}${B}].`, `(${M}${A}) est perpendiculaire à (${M}${B}).`]
+        },
+        {
           enonce: `${M} est un point tel que ${M}${A} = ${M}${B} = ${X}. Démontre que ${M} appartient à la médiatrice de [${A}${B}].`,
           sais: [`${M}${A} = ${M}${B}.`, `${M} appartient à la médiatrice de [${A}${B}].`, `${M} est le milieu de [${A}${B}].`],
           or: "reciproque", piege: "mediatrice",
           donc: [`${M} appartient à la médiatrice de [${A}${B}].`, `${M} est le milieu de [${A}${B}].`, `${M}${A} = ${M}${B}.`]
         },
         {
-          enonce: `Les droites ${d1} et ${d2} sont toutes les deux perpendiculaires à la droite ${d3}. Démontre que ${d1} et ${d2} sont parallèles.`,
-          sais: [`${d1} ⊥ ${d3} et ${d2} ⊥ ${d3}.`, `${d1} // ${d2}.`, `${d1} ⊥ ${d2}.`],
-          or: "perpPara", piege: "reciproque",
-          donc: [`${d1} // ${d2}.`, `${d1} ⊥ ${d2}.`, `${d3} // ${d1}.`]
-        },
-        {
-          enonce: `${A}′ et ${B}′ sont les symétriques de ${A} et ${B} par rapport à la droite (d), et ${A}${B} = ${X}. Démontre que ${A}′${B}′ = ${X}.`,
-          sais: [`[${A}′${B}′] est le symétrique du segment [${A}${B}] par rapport à (d).`, `${A}′${B}′ = ${X}.`, `(d) est la médiatrice de [${A}${B}].`],
-          or: "symetrie", piege: "mediatrice",
-          donc: [`${A}′${B}′ = ${A}${B}, c'est-à-dire ${A}′${B}′ = ${X}.`, `${A}′${B}′ = 2 × ${A}${B}.`, `(d) est la médiatrice de [${A}′${B}′].`]
-        },
-        {
-          enonce: `${M} est le milieu de [${A}${B}] et ${A}${B} = ${cm(2 * x)}. Démontre que ${A}${M} = ${X}.`,
-          sais: [`${M} est le milieu de [${A}${B}] et ${A}${B} = ${cm(2 * x)}.`, `${A}${M} = ${X}.`, `${M} appartient à la médiatrice de [${A}${B}].`],
-          or: "milieu", piege: "mediatrice",
-          donc: [`${A}${M} = ${A}${B} ÷ 2 = ${X}.`, `${A}${M} = ${A}${B} × 2 = ${cm(4 * x)}.`, `${A}${M} = ${A}${B} = ${cm(2 * x)}.`]
+          enonce: `Sur une carte, un phare ${M} est à ${X} de la ville ${A} et à ${X} de la ville ${B}. Démontre que le phare est sur la médiatrice du segment [${A}${B}].`,
+          sais: [`${M}${A} = ${M}${B} = ${X}.`, `${M} appartient à la médiatrice de [${A}${B}].`, `${M} est le milieu de [${A}${B}].`],
+          or: "reciproque", piege: "mediatrice",
+          donc: [`${M} appartient à la médiatrice de [${A}${B}].`, `${M} est le milieu de [${A}${B}].`, `(${A}${B}) est la médiatrice de [${M}${A}].`]
         }
       ]);
-      const autres = melanger(Object.keys(PROP).filter(k => k !== sc.or && k !== sc.piege)).slice(0, 2);
-      const or = [sc.or, sc.piege, ...autres].map(k => PROP[k]);
-      // Mélange de chaque liste en retenant où sont passées les phrases d'origine
-      const listes = [sc.sais, or, sc.donc].map(l => melanger(l.map((t, i) => ({ t, i }))));
-      const bonnes = listes.map(l => l.findIndex(o => o.i === 0));
-      const etapes = ["Je sais que", "Or", "Donc"];
-      return {
-        consigne: `${sc.enonce}<br>Pour chaque étape, choisis la bonne phrase.`,
-        classeLigne: "demo",
-        ligne: etapes.map(e => `<div class="etape"><span class="mot">${e} :</span>[s]</div>`).join(""),
-        listes: listes.map(l => l.map(o => o.t)),
-        verifier(v) {
-          if (v.some(x => x == null)) return { etat: "incomplet", message: "Choisis une phrase pour chacune des trois étapes." };
-          const fausses = etapes.filter((e, k) => v[k] !== bonnes[k]);
-          if (!fausses.length) return { etat: "juste" };
-          const conseils = [`À revoir : ${fausses.map(e => "« " + e + " »").join(", ")}.`];
-          if (listes[0][v[0]].i === 1) conseils.push("Dans « Je sais que », on écrit les informations de l'énoncé, pas ce que l'on veut démontrer.");
-          if (listes[1][v[1]].i === 1) conseils.push("Attention à ne pas confondre deux propriétés qui se ressemblent : relis bien le « si » et le « alors ».");
-          return { etat: "faux", message: conseils.join(" ") };
+      return demonstration(sc, ["mediatrice", "reciproque", "milieu", "symetrie"]);
+    }
+  },
+
+  {
+    groupe: F3,
+    id: "construire-mediatrice",
+    titre: "Construire la médiatrice",
+    description: "Mesurer, placer le milieu, poser l'équerre, tracer, coder.",
+    generer() {
+      const Lw = 640, Lh = 440;
+      const s = figureGeo(Lw, Lh, "Construction");
+      s.classList.add("construction", "geo-manipuler");
+      const [X, Y, I] = tirerLettres(3);
+      const L = alea(25, 45) * 2 / 10;              // longueur en cm, avec un nombre pair de millimètres
+      const alpha = alea(-15, 15);
+      const u = dir(alpha), n = V.normal(u);
+      const A = { x: 80 + alea(0, 30), y: 250 }, B = V.plus(A, V.fois(u, L * CM)), M = V.milieu(A, B);
+      dessinerTrait(s, A, B, "segment", "geo-objet");
+      dessinerPoint(s, A, X, { vers: V.fois(u, -1) });
+      dessinerPoint(s, B, Y, { vers: u });
+      const regle = creerRegle(11), equerre = creerEquerre();
+      regle.placer(40, 330, 0); equerre.placer(300, 425, 0);
+      s.append(regle);
+      const mRegle = rendreMobile(s, regle, { points: [A, B], angles: [-alpha, 180 - alpha] });
+      const mEquerre = rendreMobile(s, equerre, { points: [M], angles: [0, 90, 180, 270].map(k => k - alpha) });
+      return atelier(s, [
+        {
+          nom: "Mesurer",
+          texte: `Mesure le segment [${X}${Y}] avec la règle : le zéro sur ${X}, la règle le long du segment.`,
+          champ: `${X}${Y} = [d] cm`,
+          valider: v => Math.abs(v - L) < 0.05 || `Vérifie ta mesure : le zéro de la règle doit être sur ${X} et on lit la graduation sous ${Y}.`,
+          montrer: () => regle.placer(A.x, A.y, -alpha),
+          reponse: L
         },
-        indice: "« Or » est une propriété du cours : son « si » doit correspondre à ce que tu sais, et son « alors » à ce que tu veux démontrer.",
-        correction: etapes.map((e, k) => `<br><strong>${e} :</strong> ${[sc.sais, or, sc.donc][k][0]}`).join(""),
-        surCorrection() {
-          document.querySelectorAll(".ligne.demo .liste").forEach((l, k) => l.children[bonnes[k]].classList.add("bonne"));
+        {
+          nom: "Calculer",
+          texte: `Où placer le milieu ${I} ? Calcule la distance ${X}${I}.`,
+          champ: `${X}${I} = [d] cm`,
+          valider: v => Math.abs(v - L / 2) < 0.05 || `Le milieu est à la moitié de ${X}${Y} : ${ecrireNombre(L)} ÷ 2.`,
+          reponse: L / 2
+        },
+        {
+          nom: "Placer le milieu",
+          texte: `Clique sur le segment pour placer ${I} à ${ecrireNombre(L / 2)} cm de ${X} (aide-toi de la règle).`,
+          clic: { depart: A, direction: u, longueur: L, nom: I, cible: L / 2, message: t => `Ton point est à ${ecrireNombre(t)} cm de ${X} : il doit être à ${ecrireNombre(L / 2)} cm.` }
+        },
+        {
+          nom: "Équerre",
+          texte: `Pose l'équerre : un côté de l'angle droit le long de [${X}${Y}], le sommet de l'angle droit sur ${I}. Puis clique sur « Tracer ».`,
+          avant: () => s.append(equerre),
+          tracer: () => mEquerre.surPoint(M) ? true : `L'équerre n'est pas bien placée : le sommet de l'angle droit doit être exactement sur ${I}, et un côté le long du segment.`,
+          montrer: () => equerre.placer(M.x, M.y, -alpha),
+          dessin: () => { dessinerDroite(s, M, n, "(d)", Lw, Lh, "geo-trace"); }
+        },
+        {
+          nom: "Coder",
+          texte: "Code la figure : que faut-il indiquer pour montrer que (d) est la médiatrice ?",
+          codage: [["L'angle droit en " + I, true], [`Les longueurs égales ${X}${I} = ${I}${Y}`, true], ["La longueur de (d)", false]],
+          dessin: () => { codageAngleDroit(s, M, u, n); codageLongueur(s, A, M, 2); codageLongueur(s, M, B, 2); },
+          fin: `Bravo ! (d) est perpendiculaire à [${X}${Y}] et passe par son milieu ${I} : c'est la médiatrice de [${X}${Y}].`
         }
+      ], () => { mRegle.bloquer(); mEquerre.bloquer(); });
+    }
+  },
+
+  {
+    groupe: F3,
+    id: "programme-construction",
+    titre: "Le programme de construction",
+    description: "Remettre dans l'ordre les étapes qui permettent d'obtenir la figure.",
+    generer() {
+      const prog = choisir(PROGRAMMES)();
+      const etapes = prog.etapes;
+      const zone = el("div", { class: "ordre-etapes" });
+      const reserve = el("div", { class: "ordre-reserve" }), liste = el("ol", { class: "ordre-liste", "data-vide": "Clique sur les étapes dans l'ordre" });
+      let actif = true;
+      melanger([...etapes.keys()]).forEach(i => {
+        const b = el("button", { type: "button", class: "ordre-etape", "data-i": String(i) }, etapes[i].texte);
+        b.addEventListener("click", () => {
+          if (!actif) return;
+          if (b.parentNode === reserve) { const li = el("li"); li.append(b); liste.append(li); }
+          else { const li = b.parentNode; reserve.append(b); li.remove(); }
+        });
+        reserve.append(b);
+      });
+      zone.append(liste, reserve);
+      return {
+        consigne: `Voici une figure. Remets dans l'ordre les étapes de son programme de construction : clique sur les étapes dans l'ordre (clique à nouveau sur une étape rangée pour la retirer).`,
+        figure: [prog.figure, zone],
+        verifier() {
+          const ordre = [...liste.querySelectorAll(".ordre-etape")].map(b => Number(b.dataset.i));
+          if (ordre.length < etapes.length) return { etat: "incomplet", message: "Range toutes les étapes avant de valider." };
+          // chaque étape doit venir après celles dont elle a besoin
+          const place = [];
+          for (let k = 0; k < ordre.length; k++) {
+            const i = ordre[k];
+            const manque = (etapes[i].apres || []).filter(j => !place.includes(j));
+            if (manque.length) return { etat: "faux", message: `L'étape n° ${k + 1} (« ${etapes[i].texte} ») arrive trop tôt : il faut d'abord « ${etapes[manque[0]].texte} ».` };
+            place.push(i);
+          }
+          return { etat: "juste" };
+        },
+        indice: "Commence par ce qui ne dépend de rien. Un point ou une droite ne peut être utilisé qu'après avoir été construit.",
+        correction: "Un ordre possible :<br>" + etapes.map((e, k) => `${k + 1}. ${e.texte}`).join("<br>"),
+        bloquer() { actif = false; }
       };
     }
   },
@@ -759,71 +1090,112 @@ const ACTIVITES = [
 
   {
     groupe: F4,
-    id: "conservation",
-    titre: "Ce que conserve la symétrie",
-    description: "Longueurs, angles, périmètres, aires, alignement, milieux.",
+    id: "construire-symetrique",
+    titre: "Construire le symétrique d'un point",
+    description: "Sans quadrillage : équerre, règle, puis report de la longueur.",
     generer() {
-      const [X, Y, Z] = tirerLettres(3);
-      const x = alea(15, 95) / 10;
-      const cas = alea(0, 5);
-      const indice = CONSERVE;
-      if (cas === 0) {
-        return {
-          consigne: `Le segment [${prime(X + Y)}] est le symétrique du segment [${X}${Y}] par rapport à la droite (d), et ${X}${Y} = ${cm(x)}. Combien mesure ${prime(X + Y)} ?`,
-          ligne: `${prime(X + Y)} = [d] cm`,
-          verifier: v => verifierNombre(v[0], x),
-          indice,
-          correction: `La symétrie axiale conserve les longueurs : ${prime(X + Y)} = ${X}${Y} = ${cm(x)}.`
-        };
-      }
-      if (cas === 1) {
-        const a = alea(15, 165);
-        const [ang, angP] = [angle(X + Y + Z), angle(prime(X + Y + Z))];
-        return {
-          consigne: `L'angle ${angP} est le symétrique de l'angle ${ang} par rapport à la droite (d), et ${ang} = ${a}°. Combien mesure ${angP} ?`,
-          ligne: `${angP} = [n] °`,
-          verifier: v => verifierNombre(v[0], a),
-          indice,
-          correction: `La symétrie axiale conserve les angles : ${angP} = ${ang} = ${a}°.`
-        };
-      }
-      if (cas === 2) {
-        const a = alea(30, 70) / 10, b = alea(30, 70) / 10;
-        const c = alea(Math.ceil((Math.abs(a - b) + 0.6) * 10), Math.floor((a + b - 0.6) * 10)) / 10;
-        const p = Math.round((a + b + c) * 10) / 10;
-        return {
-          consigne: `Les triangles ${X}${Y}${Z} et ${prime(X + Y + Z)} sont symétriques par rapport à la droite (d). On donne ${X}${Y} = ${cm(a)}, ${Y}${Z} = ${cm(b)} et ${X}${Z} = ${cm(c)}. Quel est le périmètre du triangle ${prime(X + Y + Z)} ?`,
-          ligne: "[d] cm",
-          verifier: v => verifierNombre(v[0], p),
-          indice: "Les côtés du triangle symétrique ont les mêmes longueurs que ceux du triangle de départ.",
-          correction: `La symétrie conserve les longueurs, donc les deux triangles ont les mêmes côtés et le même périmètre : ${ecrireNombre(a)} + ${ecrireNombre(b)} + ${ecrireNombre(c)} = ${cm(p)}.`
-        };
-      }
-      if (cas === 3) {
-        const A = alea(4, 60);
-        return {
-          consigne: `Une figure a une aire de ${A} cm². Quelle est l'aire de sa symétrique par rapport à une droite (d) ?`,
-          ligne: "[d] cm²",
-          verifier: v => verifierNombre(v[0], A),
-          indice,
-          correction: `La symétrie axiale conserve les aires : la figure symétrique a aussi une aire de ${A} cm².`
-        };
-      }
-      const [consigne, options, correction] = cas === 4
-        ? [`Les points ${X}, ${Y} et ${Z} sont alignés. Leurs symétriques ${X}′, ${Y}′ et ${Z}′ par rapport à la droite (d) sont-ils alignés ?`,
-           ["Oui", "Non", "On ne peut pas savoir"],
-           `La symétrie axiale conserve l'alignement : ${X}′, ${Y}′ et ${Z}′ sont alignés.`]
-        : [`${Z} est le milieu du segment [${X}${Y}]. On construit les symétriques ${X}′, ${Y}′ et ${Z}′ de ces points par rapport à la droite (d). Que peut-on dire du point ${Z}′ ?`,
-           [`${Z}′ est le milieu de [${X}′${Y}′].`, `${Z}′ est sur l'axe (d).`, "On ne peut rien dire."],
-           `La symétrie axiale conserve les milieux : ${Z}′ est le milieu de [${X}′${Y}′].`];
-      return {
-        consigne,
-        choix: melanger([...options]),
-        verifier: (v, c) => ({ etat: c === options[0] ? "juste" : "faux" }),
-        indice,
-        correction
-      };
+      const Lw = 640, Lh = 460;
+      const s = figureGeo(Lw, Lh, "Construction");
+      s.classList.add("construction", "geo-manipuler");
+      const [Mn, Hn] = tirerLettres(2);
+      const beta = choisir([alea(-60, -20), alea(20, 60), alea(95, 150)]);
+      const u = dir(beta), n0 = V.normal(u);
+      const Hp = { x: 300 + alea(-30, 30), y: 220 + alea(-20, 20) };
+      const d = alea(20, 38) / 10;                       // distance MH en cm
+      const cote = choisir([-1, 1]);
+      const nn = V.fois(n0, cote);
+      const Mp = V.plus(Hp, V.fois(nn, d * CM));
+      dessinerDroite(s, Hp, u, "(d)", Lw, Lh);
+      dessinerPoint(s, Mp, Mn, { vers: nn });
+      const regle = creerRegle(9), equerre = creerEquerre();
+      regle.placer(40, 400, 0); equerre.placer(300, 445, 0);
+      s.append(equerre);
+      const angleH = Math.atan2(Mp.y - Hp.y, Mp.x - Hp.x) / DEG; // direction de H vers M, à l'écran
+      const mEquerre = rendreMobile(s, equerre, { points: [Hp], angles: [0, 90, 180, 270].map(k => k - beta) });
+      const mRegle = rendreMobile(s, regle, { points: [Hp, Mp], angles: [angleH, angleH + 180] });
+      return atelier(s, [
+        {
+          nom: "Perpendiculaire",
+          texte: `Place l'équerre : un côté de l'angle droit le long de (d), l'autre côté passant par ${Mn}. Fais-la glisser le long de (d). Puis clique sur « Tracer ».`,
+          tracer: () => mEquerre.surPoint(Hp) ? true : `L'équerre n'est pas bien placée : un côté le long de (d), et l'autre côté doit passer exactement par ${Mn}.`,
+          montrer: () => equerre.placer(Hp.x, Hp.y, -beta),
+          dessin: () => {
+            dessinerTrait(s, V.moins(Hp, V.fois(nn, 5.5 * CM)), V.plus(Hp, V.fois(nn, 5.5 * CM)), "segment", "geo-trace");
+            dessinerPoint(s, Hp, Hn, { vers: V.plus(V.fois(u, 1), V.fois(nn, -0.6)) });
+            codageAngleDroit(s, Hp, u, nn);
+          }
+        },
+        {
+          nom: "Mesurer",
+          avant: () => s.append(regle),
+          texte: `La perpendiculaire coupe (d) en ${Hn}. Mesure ${Mn}${Hn} avec la règle.`,
+          champ: `${Mn}${Hn} = [d] cm`,
+          valider: v => Math.abs(v - d) < 0.05 || `Vérifie ta mesure : le zéro de la règle sur ${Hn} (ou sur ${Mn}), la règle le long de la perpendiculaire.`,
+          montrer: () => regle.placer(Hp.x, Hp.y, angleH),
+          reponse: d
+        },
+        {
+          nom: "Reporter",
+          texte: `Place ${Mn}′ sur la perpendiculaire, de l'autre côté de (d), tel que ${Hn}${Mn}′ = ${Hn}${Mn} = ${ecrireNombre(d)} cm. Clique sur la perpendiculaire.`,
+          clic: { depart: Hp, direction: V.fois(nn, -1), longueur: 5.5, nom: Mn + "′", cible: d, deuxSens: true,
+            message: t => t < 0 ? `Ce point est du même côté que ${Mn} : ${Mn}′ doit être de l'autre côté de (d).` : `Ton point est à ${ecrireNombre(t)} cm de ${Hn} : il doit être à ${ecrireNombre(d)} cm.` },
+          dessin: () => { codageLongueur(s, Hp, Mp, 2); codageLongueur(s, Hp, V.plus(Hp, V.fois(nn, -d * CM)), 2); },
+          fin: `Bravo ! (d) est la médiatrice de [${Mn}${Mn}′] : ${Mn}′ est le symétrique de ${Mn} par rapport à (d).`
+        }
+      ], () => { mRegle.bloquer(); mEquerre.bloquer(); });
     }
-  }
+  },
+
+  {
+    groupe: F4,
+    id: "demonstration-symetrie",
+    titre: "Rédiger une démonstration avec la symétrie",
+    description: "Je sais que… / Or… / Donc…, avec les propriétés de la symétrie axiale.",
+    generer() {
+      const [A, B, C, I] = tirerLettres(4);
+      const x = alea(15, 95) / 10, X = cm(x);
+      const a = alea(30, 70) / 10, b = alea(30, 70) / 10, c = alea(Math.ceil((Math.abs(a - b) + 0.6) * 10), Math.floor((a + b - 0.6) * 10)) / 10;
+      const p = Math.round((a + b + c) * 10) / 10, aire = alea(6, 40);
+      const sc = choisir([
+        {
+          enonce: `${A}′ et ${B}′ sont les symétriques de ${A} et ${B} par rapport à la droite (d), et ${A}${B} = ${X}. Démontre que ${A}′${B}′ = ${X}.`,
+          sais: [`Le segment [${A}′${B}′] est le symétrique du segment [${A}${B}] par rapport à (d).`, `${A}′${B}′ = ${X}.`, `(d) est la médiatrice de [${A}${B}].`],
+          or: "symLongueurs", piege: "mediatrice",
+          donc: [`${A}′${B}′ = ${A}${B}, c'est-à-dire ${A}′${B}′ = ${X}.`, `${A}′${B}′ = 2 × ${A}${B}.`, `(d) est la médiatrice de [${A}′${B}′].`]
+        },
+        {
+          enonce: `${A}′ est le symétrique de ${A} par rapport à la droite (d). Démontre que (d) est la médiatrice du segment [${A}${A}′].`,
+          sais: [`${A}′ est le symétrique de ${A} par rapport à (d).`, `(d) est la médiatrice de [${A}${A}′].`, `${A} appartient à (d).`],
+          or: "symDefinition", piege: "reciproque",
+          donc: [`(d) est la médiatrice de [${A}${A}′].`, `${A}${A}′ = 2 × ${A}(d).`, `${A} et ${A}′ sont confondus.`]
+        },
+        {
+          enonce: `Le point ${A} appartient à la droite (d). Démontre que ${A} est son propre symétrique par rapport à (d).`,
+          sais: [`${A} appartient à l'axe de symétrie (d).`, `${A} est son propre symétrique.`, `${A} est le milieu de (d).`],
+          or: "symAxe", piege: "symDefinition",
+          donc: [`Le symétrique de ${A} par rapport à (d) est ${A} lui-même.`, `(d) est la médiatrice de [${A}${A}].`, `${A} n'a pas de symétrique.`]
+        },
+        {
+          enonce: `Les triangles ${A}${B}${C} et ${A}′${B}′${C}′ sont symétriques par rapport à la droite (d). Le périmètre du triangle ${A}${B}${C} est ${cm(p)}. Démontre que le périmètre de ${A}′${B}′${C}′ est ${cm(p)}.`,
+          sais: [`Le triangle ${A}′${B}′${C}′ est le symétrique du triangle ${A}${B}${C} par rapport à (d).`, `Le périmètre de ${A}′${B}′${C}′ est ${cm(p)}.`, `(d) est la médiatrice de [${A}${B}].`],
+          or: "symLongueurs", piege: "symAires",
+          donc: [`Les côtés des deux triangles ont les mêmes longueurs : le périmètre de ${A}′${B}′${C}′ est aussi ${cm(p)}.`, `Le périmètre de ${A}′${B}′${C}′ est 2 × ${cm(p)}.`, `Les deux triangles ont la même aire.`]
+        },
+        {
+          enonce: `${I} est le milieu de [${A}${B}]. ${A}′, ${B}′ et ${I}′ sont les symétriques de ${A}, ${B} et ${I} par rapport à (d). Démontre que ${I}′ est le milieu de [${A}′${B}′].`,
+          sais: [`${I} est le milieu de [${A}${B}], et ${A}′, ${B}′, ${I}′ sont les symétriques de ${A}, ${B}, ${I} par rapport à (d).`, `${I}′ est le milieu de [${A}′${B}′].`, `${I} appartient à (d).`],
+          or: "symMilieux", piege: "milieu",
+          donc: [`${I}′ est le milieu de [${A}′${B}′].`, `${I}′ = ${I}.`, `(d) est la médiatrice de [${A}′${B}′].`]
+        },
+        {
+          enonce: `La figure F′ est la symétrique de la figure F par rapport à la droite (d), et l'aire de F est ${aire} cm². Démontre que l'aire de F′ est ${aire} cm².`,
+          sais: [`F′ est la symétrique de F par rapport à (d).`, `L'aire de F′ est ${aire} cm².`, `F et F′ ont le même périmètre.`],
+          or: "symAires", piege: "symLongueurs",
+          donc: [`L'aire de F′ est égale à l'aire de F : ${aire} cm².`, `L'aire de F′ est ${2 * aire} cm².`, `F′ = F.`]
+        }
+      ]);
+      return demonstration(sc, ["symLongueurs", "symAires", "symMilieux", "symDefinition", "symAxe", "mediatrice", "reciproque"]);
+    }
+  },
 
 ];

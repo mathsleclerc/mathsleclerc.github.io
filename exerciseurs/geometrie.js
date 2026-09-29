@@ -113,3 +113,83 @@ function dessinerDroite(s, O, u, nom, largeur, hauteur, classe = "geo-trait") {
     dessinerTexte(s, V.plus(p, V.fois(V.normal(u), 15)), nom, "geo-nom");
   }
 }
+
+/* ---------- Instruments : règle graduée et équerre ----------
+   CM pixels par centimètre. Un instrument est un groupe SVG qu'on fait glisser et
+   tourner (poignée ↻) ; il s'aimante près des positions utiles (points et directions). */
+const CM = 42;
+
+function instrument(classe, dessin, poigneeX, poigneeY) {
+  const g = svg("g", { class: "instrument " + classe });
+  dessin(g);
+  const poignee = svg("g", { class: "outil-poignee" },
+    svg("circle", { cx: poigneeX, cy: poigneeY, r: 13 }),
+    svg("text", { x: poigneeX, y: poigneeY + 5 }, "↻"));
+  g.append(poignee);
+  g.pos = { x: 0, y: 0, rot: 0 };
+  g.placer = (x, y, rot) => {
+    g.pos = { x, y, rot: ((rot % 360) + 360) % 360 };
+    g.setAttribute("transform", `translate(${x},${y}) rotate(${g.pos.rot})`);
+  };
+  return g;
+}
+
+/* Règle : le zéro est à l'origine, sur le bord du haut ; graduations en millimètres */
+function creerRegle(longueurCm = 11) {
+  const L = longueurCm * CM;
+  return instrument("regle", g => {
+    g.append(svg("rect", { x: -14, y: 0, width: L + 28, height: 40, rx: 4, class: "regle-corps" }));
+    for (let mm = 0; mm <= longueurCm * 10; mm++) {
+      const x = mm * CM / 10, l = mm % 10 === 0 ? 14 : mm % 5 === 0 ? 9 : 5;
+      g.append(svg("line", { x1: x, y1: 0, x2: x, y2: l, class: "regle-grad" }));
+      if (mm % 10 === 0) g.append(svg("text", { x, y: 27, class: "regle-num" }, String(mm / 10)));
+    }
+    g.append(svg("text", { x: L + 4, y: 36, class: "regle-cm" }, "cm"));
+  }, L + 34, 20);
+}
+
+/* Équerre : le sommet de l'angle droit est à l'origine ; un côté vers la droite, l'autre vers le haut */
+function creerEquerre() {
+  const a = 6.5 * CM, b = 4.5 * CM;
+  return instrument("equerre", g => {
+    g.append(svg("path", { d: `M0,0 L${a},0 L0,${-b} Z M18,-18 L${a - 60},-18 L18,${-b + 42} Z`, class: "equerre-corps", "fill-rule": "evenodd" }),
+      svg("path", { d: "M0,-14 L14,-14 L14,0", class: "equerre-coin" }));
+  }, a + 22, -4);
+}
+
+/* Rend un instrument mobile. aimants : { points: [{x, y}], angles: [rotations en degrés] } */
+function rendreMobile(s, outil, aimants) {
+  let mode = null, depart = null, actif = true;
+  const coord = e => { const p = s.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(s.getScreenCTM().inverse()); };
+  const ecart = (a, b) => Math.abs(((a - b) % 360 + 540) % 360 - 180);
+  outil.addEventListener("pointerdown", e => {
+    if (!actif) return;
+    e.preventDefault(); e.stopPropagation();
+    mode = e.target.closest(".outil-poignee") ? "tourner" : "glisser";
+    const p = coord(e);
+    depart = { px: p.x, py: p.y, ...outil.pos };
+    s.setPointerCapture?.(e.pointerId);
+    s.append(outil); // l'instrument manipulé passe au premier plan
+  });
+  s.addEventListener("pointermove", e => {
+    if (!mode) return;
+    const p = coord(e);
+    if (mode === "glisser") {
+      let x = depart.x + p.x - depart.px, y = depart.y + p.y - depart.py;
+      for (const q of aimants.points) if (Math.hypot(x - q.x, y - q.y) < 14) { x = q.x; y = q.y; }
+      outil.placer(x, y, outil.pos.rot);
+    } else {
+      let rot = Math.atan2(p.y - outil.pos.y, p.x - outil.pos.x) / DEG;
+      for (const r of aimants.angles) if (ecart(rot, r) < 4) rot = r;
+      outil.placer(outil.pos.x, outil.pos.y, rot);
+    }
+  });
+  const fin = () => { mode = null; };
+  s.addEventListener("pointerup", fin);
+  s.addEventListener("pointercancel", fin);
+  return {
+    bloquer: () => { actif = false; },
+    /* Vrai si l'instrument est sur un des points, orienté selon un des angles */
+    surPoint: (q, angles = aimants.angles) => Math.hypot(outil.pos.x - q.x, outil.pos.y - q.y) < 1 && angles.some(r => ecart(outil.pos.rot, r) < 0.5)
+  };
+}

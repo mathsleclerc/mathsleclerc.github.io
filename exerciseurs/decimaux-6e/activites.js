@@ -113,22 +113,6 @@ function droite({ n = 10, debut, pas, etiquettes, point = null, lettre = "A", cl
   return res;
 }
 
-/* ---------- Ranger en cliquant ---------- */
-function rangement(items) {
-  const depart = el("div", { class: "jetons" }), arrivee = el("div", { class: "jetons rangee", "data-vide": "Clique sur les nombres dans l'ordre" });
-  let actif = true;
-  melanger([...items.keys()]).forEach(i => {
-    const b = el("button", { type: "button", class: "jeton", "data-i": String(i) }, items[i].texte);
-    b.addEventListener("click", () => { if (actif) (b.parentNode === depart ? arrivee : depart).append(b); });
-    depart.append(b);
-  });
-  return {
-    noeud: el("div", { class: "ranger" }, depart, el("p", { class: "fleche-ranger" }, "↓"), arrivee),
-    ordre: () => [...arrivee.children].map(b => Number(b.dataset.i)),
-    bloquer: () => { actif = false; }
-  };
-}
-
 /* ---------- Repère cartésien (premier quadrant) ----------
    xmax, ymax : bornes ; pasX, pasY : graduations ; tout en unités réelles */
 function repere({ xmax = 6, ymax = 5, pasX = 1, pasY = 1, nomX = "", nomY = "", etiqX = pasX, etiqY = pasY, largeur = 420, hauteur = 330, fin = 0 }) {
@@ -550,7 +534,7 @@ const ACTIVITES = [
         const vals = [e * 1000 + f * 100, e * 1000 + f * 10, e * 1000 + f * 100 + g * 10, e * 1000 + f * 10 + g, f * 1000 + e * 100].map(Math.round);
         items = [...new Set(vals)].map(v => ({ v, texte: d(v), court: d(v) }));
       }
-      const r = rangement(items);
+      const r = rangement(items, croissant ? "<" : ">");
       const ordre = [...items.keys()].sort((i, j) => croissant ? items[i].v - items[j].v : items[j].v - items[i].v);
       return {
         consigne: `${contexte ? contexte + " : r" : "R"}ange dans l'ordre <strong>${croissant ? "croissant" : "décroissant"}</strong>${contexte === "Temps au 100 m" ? " (le plus petit temps est le meilleur)" : ""}. Clique sur les nombres dans l'ordre.`,

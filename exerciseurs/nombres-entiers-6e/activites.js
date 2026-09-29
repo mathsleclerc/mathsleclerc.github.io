@@ -147,19 +147,32 @@ function tableauNumeration(n, { cliquable = false } = {}) {
 
 /* ---------- Demi-droite graduée ----------
    n intervalles ; la graduation k vaut debut + k × pas ; « etiquettes » : graduations dont on écrit la valeur. */
-function demiDroite({ n, debut, pas, etiquettes, point = null, lettre = "A", principales = 0, clic = false }) {
+function demiDroite({ n, debut, pas, etiquettes, point = null, lettre = "A", principales = 0, clic = false, surligne = null }) {
   const x0 = 30, L = 420, y = 48, e = L / n, W = x0 + L + 34;
   const X = k => x0 + k * e;
-  const s = svg("svg", { viewBox: `0 0 ${W} 92`, width: W, height: 92, class: "droite" + (clic ? " droite-clic" : "") });
+  const s = svg("svg", { viewBox: `0 -30 ${W} 122`, width: W, height: 122, class: "droite" + (clic ? " droite-clic" : "") });
   s.append(svg("line", { x1: x0 - (debut ? 14 : 0), y1: y, x2: W - 10, y2: y, class: "axe" }));
   s.append(svg("path", { d: `M${W - 6},${y} l-11,-5.5 v11 z`, class: "fleche" }));
   for (let k = 0; k <= n; k++) {
     const grand = principales ? k % principales === 0 : k === 0 && !debut;
     s.append(svg("line", { x1: X(k), y1: y - (grand ? 11 : 7), x2: X(k), y2: y + (grand ? 11 : 7), class: grand ? "grad maj" : "grad" }));
   }
-  for (const k of etiquettes) {
-    const t = nb(debut + k * pas);
-    s.append(svg("text", { x: X(k), y: y + 32, class: "etiq" + (t.length > 7 ? " longue" : "") }, t));
+  // Une graduation repassée en orange (de k à k + 1)
+  if (surligne != null) s.append(svg("line", { x1: X(surligne), y1: y, x2: X(surligne + 1), y2: y, class: "grad-surlignee" }));
+  // Étiquettes : si deux nombres se chevauchent, le second passe au-dessus de l'axe, avec une flèche
+  let finPrecedente = -Infinity;
+  for (const k of [...etiquettes].sort((a, b) => a - b)) {
+    const t = nb(debut + k * pas), longue = t.length > 7;
+    const demiLargeur = t.length * (longue ? 3.6 : 4.6);
+    const dessus = X(k) - demiLargeur < finPrecedente + 6;
+    if (dessus) {
+      s.append(svg("text", { x: X(k), y: y - 34, class: "etiq" + (longue ? " longue" : "") }, t),
+        svg("line", { x1: X(k), y1: y - 29, x2: X(k), y2: y - 14, class: "etiq-fleche" }),
+        svg("path", { d: `M${X(k) - 4},${y - 18} L${X(k)},${y - 12} L${X(k) + 4},${y - 18}`, class: "etiq-fleche" }));
+    } else {
+      s.append(svg("text", { x: X(k), y: y + 32, class: "etiq" + (longue ? " longue" : "") }, t));
+      finPrecedente = X(k) + demiLargeur;
+    }
   }
   const res = { svg: s, position: null, actif: true };
   res.marquer = (k, classe, texte) => {
@@ -209,6 +222,162 @@ function graduationAuHasard() {
   }
   const pas = choisir([1, 2, 5, 10, 20, 25, 50, 100, 200, 500]);
   return { type, n: 10, pas, debut: type === "zero" ? 0 : alea(3, 40) * pas, principales: 0 };
+}
+
+/* ---------- Division posée, étape par étape ----------
+   1. choisir le premier dividende partiel (clic sur les chiffres) ;
+   2. à chaque étape : chiffre du quotient, produit, reste ; on abaisse le chiffre suivant. */
+function divisionPosee(a, b) {
+  const A = String(a), L = A.length;
+  const gauche = el("div", { class: "pot-gauche" });
+  gauche.style.gridTemplateColumns = `repeat(${L + 2}, 1.4em)`;
+  const quotient = el("div", { class: "pot-quotient" });
+  const potence = el("div", { class: "potence" }, gauche,
+    el("div", { class: "pot-droite" }, el("div", { class: "pot-diviseur" }, String(b)), quotient));
+  const message = el("p", { class: "pot-message" });
+  const ok = el("button", { type: "button", class: "btn petit-btn" }, "OK");
+  const aide = el("button", { type: "button", class: "btn discret petit-btn" }, "Montre-moi cette étape");
+  const noeud = el("div", { class: "pot-bloc" }, potence, el("div", { class: "pot-controle" }, message, ok, aide));
+  const place = (texte, col, ligne, classe = "") => {
+    const c = el("span", { class: "pot-case " + classe }, texte);
+    c.style.gridColumn = String(col); c.style.gridRow = String(ligne);
+    gauche.append(c);
+    return c;
+  };
+  // Écrit un nombre chiffre par chiffre, son dernier chiffre dans la colonne « fin »
+  const ecrireNombreEn = (n, fin, ligne, classe = "") => [...String(n)].map((c, i, t) => place(c, fin - t.length + 1 + i, ligne, classe));
+  const champ = (fin, ligne, largeur) => {
+    const i = el("input", { class: "case pot-champ", inputmode: "numeric", autocomplete: "off", "aria-label": "Nombre" });
+    i.style.gridColumn = `${fin - largeur + 1} / span ${largeur}`; i.style.gridRow = String(ligne);
+    gauche.append(i);
+    i.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); ok.click(); } });
+    return i;
+  };
+  const dire = (t, type = "") => { message.innerHTML = t; message.className = "pot-message " + type; };
+
+  // colonne du chiffre i du dividende : i + 2 (la colonne 1 sert au signe −)
+  const chiffres = [...A].map((c, i) => {
+    const bt = el("button", { type: "button", class: "pot-chiffre" }, c);
+    bt.style.gridColumn = String(i + 2); bt.style.gridRow = "1";
+    gauche.append(bt);
+    return bt;
+  });
+  let etat = "choisir", e = 0, P = 0, ligne = 1, k = 0, qTexte = "", reste = 0, actif = true, saisie = null, cases = [];
+  let e0 = 0;
+  while (Number(A.slice(0, e0 + 1)) < b) e0++;
+
+  const choisirPartiel = i => {
+    if (!actif || etat !== "choisir") return;
+    const x = Number(A.slice(0, i + 1));
+    if (i < e0) { dire(`${nb(x)} &lt; ${b} : on ne peut pas mettre ${b} dans ${nb(x)}. Prends un chiffre de plus.`, "attention"); return; }
+    if (i > e0) { dire(`On peut déjà mettre ${b} dans ${nb(Number(A.slice(0, e0 + 1)))} : prends moins de chiffres.`, "attention"); return; }
+    chiffres.forEach((c, j) => { c.disabled = true; c.classList.toggle("partiel", j <= e0); });
+    e = e0; P = x;
+    const n = L - e0;
+    cases = [...Array(n)].map(() => el("span", { class: "pot-q" }));
+    quotient.replaceChildren(...cases);
+    dire(`Premier dividende partiel : <strong>${nb(P)}</strong>. Le quotient aura ${n} chiffre${n > 1 ? "s" : ""}.`, "bien");
+    etat = "attente";
+    setTimeout(() => { if (etat === "attente") etapeChiffre(); }, 700);
+  };
+  chiffres.forEach((c, i) => c.addEventListener("click", () => choisirPartiel(i)));
+
+  const etapeChiffre = () => {
+    etat = "chiffre";
+    saisie = el("input", { class: "case pot-champ q", inputmode: "numeric", autocomplete: "off", maxlength: "1", "aria-label": "Chiffre du quotient" });
+    saisie.addEventListener("keydown", ev => { if (ev.key === "Enter") { ev.preventDefault(); ev.stopPropagation(); ok.click(); } });
+    cases[k].replaceChildren(saisie);
+    saisie.focus({ preventScroll: true });
+    dire(`Dans <strong>${nb(P)}</strong>, combien de fois ${b} ? Écris le chiffre du quotient.`);
+  };
+  const etapeProduit = () => {
+    etat = "produit";
+    const larg = String(P).length;
+    place("−", e + 2 - larg, ligne + 1, "signe");
+    saisie = champ(e + 2, ligne + 1, larg);
+    saisie.focus({ preventScroll: true });
+    dire(`Calcule le produit : ${qTexte.at(-1)} × ${b}.`);
+  };
+  const etapeReste = () => {
+    etat = "reste";
+    saisie = champ(e + 2, ligne + 2, String(P).length);
+    saisie.focus({ preventScroll: true });
+    dire(`Soustrais : ${nb(P)} − ${nb(Number(qTexte.at(-1)) * b)}.`);
+  };
+
+  const valider = () => {
+    if (!actif || !saisie) return;
+    const x = lireEntier(saisie.value);
+    if (isNaN(x)) { dire("Écris un nombre entier.", "attention"); return; }
+    const q = Math.floor(P / b);
+    if (etat === "chiffre") {
+      if (x > 9 || x * b > P) { dire(`${x} × ${b} = ${nb(x * b)} : c'est plus que ${nb(P)} ! Essaie un chiffre plus petit.`, "attention"); return; }
+      if ((x + 1) * b <= P) { dire(`${x + 1} × ${b} = ${nb((x + 1) * b)} : c'est encore plus petit que ${nb(P)}. Tu peux mettre plus !`, "attention"); return; }
+      qTexte += String(x);
+      cases[k].replaceChildren(String(x));
+      etapeProduit();
+    } else if (etat === "produit") {
+      if (x !== q * b) { dire(`Vérifie ton calcul : ${q} × ${b}.`, "attention"); return; }
+      saisie.remove();
+      ecrireNombreEn(q * b, e + 2, ligne + 1, "souligne");
+      etapeReste();
+    } else if (etat === "reste") {
+      if (x !== P - q * b) { dire(`Vérifie ta soustraction : ${nb(P)} − ${nb(q * b)}.`, "attention"); return; }
+      saisie.remove();
+      reste = x;
+      ecrireNombreEn(reste, e + 2, ligne + 2);
+      if (e < L - 1) {
+        // on abaisse le chiffre suivant
+        e++; ligne += 2; k++;
+        place(A[e], e + 2, ligne, "abaisse");
+        chiffres[e].classList.add("abaisse-source");
+        P = reste * 10 + Number(A[e]);
+        dire(`Le reste ${reste} est plus petit que ${b}. On abaisse le chiffre ${A[e]} : on obtient ${nb(P)}.`, "bien");
+        saisie = null;
+        etat = "attente";
+        setTimeout(() => { if (etat === "attente") etapeChiffre(); }, 900);
+      } else {
+        etat = "fini"; saisie = null;
+        ok.remove(); aide.remove();
+        dire(`Terminé ! Le quotient est <strong>${nb(Number(qTexte))}</strong> et le reste est <strong>${reste}</strong> (${reste} &lt; ${b}). Complète l'égalité, puis valide.`, "bien");
+      }
+    }
+  };
+  ok.addEventListener("click", valider);
+  // « Montre-moi » : fait l'étape en cours à la place de l'élève
+  aide.addEventListener("click", () => {
+    if (!actif) return;
+    if (etat === "choisir") { choisirPartiel(e0); return; }
+    if (!saisie) return;
+    const q = Math.floor(P / b);
+    saisie.value = etat === "chiffre" ? q : etat === "produit" ? q * b : P - q * b;
+    valider();
+  });
+  dire(`Clique sur le dernier chiffre du <strong>premier dividende partiel</strong> : le plus petit nombre formé par les premiers chiffres de ${nb(a)} dans lequel on peut mettre ${b}.`);
+  return {
+    noeud,
+    fini: () => etat === "fini",
+    bloquer: () => { actif = false; ok.disabled = true; chiffres.forEach(c => { c.disabled = true; }); },
+    /* Pour la correction : termine la division automatiquement */
+    terminer() {
+      actif = true;
+      if (etat === "choisir") {
+        chiffres.forEach((c, j) => { c.disabled = true; c.classList.toggle("partiel", j <= e0); });
+        e = e0; P = Number(A.slice(0, e0 + 1));
+        cases = [...Array(L - e0)].map(() => el("span", { class: "pot-q" }));
+        quotient.replaceChildren(...cases);
+        etat = "attente";
+      }
+      let tours = 0;
+      while (etat !== "fini" && tours++ < 60) {
+        if (etat === "attente") etapeChiffre();
+        const q = Math.floor(P / b);
+        saisie.value = etat === "chiffre" ? q : etat === "produit" ? q * b : P - q * b;
+        valider();
+      }
+      actif = false;
+    }
+  };
 }
 
 /* ---------- Problèmes à plusieurs questions ----------
@@ -556,22 +725,13 @@ const ACTIVITES = [
         items = [...vus].map(v => ({ v, texte: nb(v), court: nb(v) }));
       }
       const ordreJuste = [...items.keys()].sort((i, j) => croissant ? items[i].v - items[j].v : items[j].v - items[i].v);
-      const depart = el("div", { class: "jetons" }), arrivee = el("div", { class: "jetons rangee", "data-vide": "Clique sur les nombres dans l'ordre" });
-      let actif = true;
-      melanger([...items.keys()]).forEach(i => {
-        const b = el("button", { type: "button", class: "jeton", "data-i": String(i) }, items[i].texte);
-        b.addEventListener("click", () => {
-          if (!actif) return;
-          (b.parentNode === depart ? arrivee : depart).append(b);
-        });
-        depart.append(b);
-      });
       const sens = croissant ? "<" : ">";
+      const r = rangement(items, sens);
       return {
         consigne: `${items.contexte ? items.contexte + " : r" : "R"}ange dans l'ordre <strong>${croissant ? "croissant" : "décroissant"}</strong> (du plus ${croissant ? "petit au plus grand" : "grand au plus petit"}). Clique sur les nombres dans l'ordre ; clique à nouveau sur un nombre rangé pour le retirer.`,
-        figure: el("div", { class: "ranger" }, depart, el("p", { class: "fleche-ranger" }, "↓"), arrivee),
+        figure: r.noeud,
         verifier() {
-          const ordre = [...arrivee.children].map(b => Number(b.dataset.i));
+          const ordre = r.ordre();
           if (ordre.length < items.length) return { etat: "incomplet", message: "Range tous les nombres avant de valider." };
           const k = ordre.findIndex((i, p) => items[i].v !== items[ordreJuste[p]].v);
           if (k < 0) return { etat: "juste" };
@@ -579,7 +739,7 @@ const ACTIVITES = [
         },
         indice: croissant ? "Commence par le plus petit : le moins de chiffres, puis compare de gauche à droite." : "Commence par le plus grand : le plus de chiffres, puis compare de gauche à droite.",
         correction: ordreJuste.map(i => items.contexte ? `${items[i].court} (${nb(items[i].v)})` : items[i].texte).join(` ${symbole(sens)} `),
-        bloquer() { actif = false; }
+        bloquer: r.bloquer
       };
     }
   },
@@ -717,10 +877,10 @@ const ACTIVITES = [
       const g = graduationAuHasard();
       let i, j;
       if (g.principales) { i = 0; j = 10; } else { i = alea(0, 3); j = alea(i + 2, Math.min(i + 6, g.n)); }
-      const d = demiDroite({ ...g, etiquettes: [i, j] });
+      const d = demiDroite({ ...g, etiquettes: [i, j], surligne: i });
       const ecart = (j - i) * g.pas;
       return {
-        consigne: "Combien vaut une graduation (l'écart entre deux traits qui se suivent) ?",
+        consigne: "Combien vaut une graduation ? C'est l'écart entre deux traits qui se suivent, comme celle repassée en orange.",
         figure: d.svg,
         ligne: "[n]",
         verifier(v) {
@@ -944,6 +1104,34 @@ const ACTIVITES = [
   },
 
   /* ================= Feuille 5 ================= */
+
+  {
+    groupe: F5,
+    id: "poser-division",
+    titre: "Poser une division",
+    description: "La division euclidienne posée, étape par étape.",
+    generer() {
+      const b = Math.random() < 0.55 ? alea(2, 9) : alea(11, 35);
+      const a = alea(Math.max(101, 10 * b + 1), b < 10 ? 9999 : 4999);
+      const q = Math.floor(a / b), r = a % b;
+      const w = divisionPosee(a, b);
+      return {
+        consigne: `Pose et effectue la division euclidienne de <strong>${nb(a)}</strong> par <strong>${b}</strong>, étape par étape.`,
+        figure: w.noeud,
+        ligne: `${nb(a)} = ${b} × [n] + [n]`,
+        verifier(v) {
+          if (!w.fini()) return { etat: "incomplet", message: "Termine d'abord la division, étape par étape (bouton OK sous la division)." };
+          const x = v.map(lireNombre);
+          if (x.some(isNaN)) return { etat: "incomplet", message: "Complète l'égalité euclidienne." };
+          return x[0] === q && x[1] === r ? { etat: "juste" } : { etat: "faux", message: "Recopie le quotient et le reste trouvés dans la division." };
+        },
+        indice: "À chaque étape : combien de fois le diviseur dans le dividende partiel ? On multiplie, on soustrait, puis on abaisse le chiffre suivant.",
+        correction: `${nb(a)} = ${b} × ${nb(q)} + ${r}, avec ${r} &lt; ${b} : le quotient est ${nb(q)} et le reste ${r}.`,
+        surCorrection: () => w.terminer(),
+        bloquer: w.bloquer
+      };
+    }
+  },
 
   {
     groupe: F5,

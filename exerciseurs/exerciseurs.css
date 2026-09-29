@@ -384,3 +384,76 @@ body.integre main { padding-top: 16px; }
 .graphique .courbe-point { fill: var(--cours); }
 .graphique .lecture { fill: none; stroke: var(--corrige); stroke-width: 2; stroke-dasharray: 5 4; }
 .graphique.petit .courbe { stroke-width: 2; }
+.rangee .signe { align-self: center; font-weight: 700; font-size: 1.2rem; color: var(--exercices); }
+.droite .grad-surlignee { stroke: var(--exercices); stroke-width: 6; stroke-linecap: round; opacity: .85; }
+.droite .etiq-fleche { stroke: var(--texte-doux); stroke-width: 1.3; fill: none; }
+
+/* ----- Division posée ----- */
+.pot-bloc { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.potence { display: flex; align-items: flex-start; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.pot-gauche { display: grid; grid-auto-rows: 1.9em; align-items: center; padding-right: 10px; }
+.pot-case, .pot-chiffre { display: grid; place-items: center; height: 1.8em; }
+.pot-chiffre { font: inherit; border: 0; background: transparent; color: var(--texte); cursor: pointer; border-radius: 6px; padding: 0; }
+.pot-chiffre:hover:not(:disabled) { background: var(--bleu-clair); }
+.pot-chiffre:disabled { cursor: default; }
+.pot-chiffre.partiel { box-shadow: inset 0 -3px 0 var(--exercices); }
+.pot-chiffre.abaisse-source { color: var(--cours); font-weight: 700; }
+.pot-case.abaisse { color: var(--cours); font-weight: 700; }
+.pot-case.souligne { border-bottom: 2px solid var(--texte); }
+.pot-case.signe { color: var(--texte-doux); }
+.pot-champ { width: 100%; height: 1.7em; font-size: 1.1rem; text-align: right; padding: 0 4px; }
+.pot-champ.q { width: 1.6em; text-align: center; }
+.pot-droite { border-left: 2px solid var(--texte); min-width: 4.5em; }
+.pot-diviseur { border-bottom: 2px solid var(--texte); padding: 0 10px; height: 1.9em; display: grid; align-items: center; }
+.pot-quotient { display: flex; gap: 2px; padding: 4px 8px; min-height: 1.9em; align-items: center; }
+.pot-q { display: grid; place-items: center; min-width: 1em; font-weight: 700; color: var(--cours); }
+.pot-controle { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: 560px; }
+.pot-message { margin: 0; padding: 8px 12px; border-radius: 8px; background: var(--fond); border-left: 4px solid var(--cours); }
+.pot-message.attention { border-color: var(--exercices); }
+.pot-message.bien { border-color: var(--corrige); }
+
+/* ----- Listes de choix courts, en ligne ----- */
+.liste.courte { display: inline-flex; flex-wrap: wrap; gap: 6px; vertical-align: middle; }
+.liste.courte .option { padding: 6px 12px 6px 32px; min-width: 64px; font-size: 1.1rem; }
+.liste.courte .option::before { left: 10px; }
+.etape-pb.enonce-ligne { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 1.15rem; }
+
+/* ----- Instruments : règle et équerre ----- */
+.instrument { cursor: grab; }
+.instrument:active { cursor: grabbing; }
+.regle-corps { fill: color-mix(in srgb, #f3e3a1 78%, transparent); stroke: #b39a3e; stroke-width: 1.2; }
+.regle-grad { stroke: #3d3212; stroke-width: .9; }
+.regle-num { font: 11px "Fira Sans", sans-serif; text-anchor: middle; fill: #3d3212; }
+.regle-cm { font: 10px "Fira Sans", sans-serif; fill: #3d3212; }
+.equerre-corps { fill: color-mix(in srgb, #9ed3e8 55%, transparent); stroke: #3c8aa8; stroke-width: 1.5; }
+.equerre-coin { fill: none; stroke: #3c8aa8; stroke-width: 1.5; }
+.outil-poignee { cursor: alias; }
+.outil-poignee circle { fill: var(--cours); }
+.outil-poignee text { font: 700 16px "Fira Sans", sans-serif; text-anchor: middle; fill: #fff; pointer-events: none; }
+.construction .geo-trace { stroke: var(--exercices); stroke-width: 2; }
+.construction .geo-point-eleve line { stroke: var(--exercices); stroke-width: 2.5; }
+.construction .geo-point-eleve text { fill: var(--exercices); font-weight: 700; }
+.atelier-controle { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.atelier-message { margin: 0; padding: 10px 14px; border-radius: 10px; background: var(--fond); border-left: 4px solid var(--cours); max-width: 620px; }
+.atelier-message.attention { border-color: var(--exercices); }
+.atelier-message.bien { border-color: var(--corrige); }
+.atelier-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; font-size: 1.1rem; }
+.etapes-construction { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.etapes-construction span { font-size: .8rem; padding: 3px 10px; border-radius: 999px; background: var(--fond); color: var(--texte-doux); border: 1px solid var(--bord); }
+.etapes-construction span.faite { background: var(--corrige); color: #fff; border-color: var(--corrige); }
+.etapes-construction span.en-cours { border-color: var(--cours); color: var(--texte); font-weight: 500; }
+
+/* ----- Programme de construction : remettre les étapes dans l'ordre ----- */
+.ordre-etapes { display: grid; gap: 12px; width: 100%; max-width: 620px; }
+.ordre-liste { margin: 0; padding: 10px 10px 10px 34px; min-height: 52px; border: 2px dashed var(--bord); border-radius: 12px; display: grid; gap: 6px; }
+.ordre-liste:empty { list-style: none; padding-left: 10px; }
+.ordre-liste:empty::before { content: attr(data-vide); color: var(--texte-doux); }
+.ordre-liste li::marker { font-weight: 700; color: var(--exercices); }
+.ordre-reserve { display: grid; gap: 6px; }
+.ordre-etape {
+  font: inherit; text-align: left; cursor: pointer; width: 100%; padding: 8px 12px; border-radius: 10px;
+  border: 1px solid var(--bord); background: var(--carte); color: var(--texte);
+}
+.ordre-etape:hover { border-color: var(--cours); }
+.ordre-liste .ordre-etape { background: var(--bleu-clair); border-color: var(--cours); }
+.instrument.range { opacity: .18; pointer-events: none; }

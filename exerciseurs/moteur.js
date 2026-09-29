@@ -161,9 +161,12 @@ function construireLigne(ligne, modele, listes = []) {
       place.replaceWith(i);
       lecteurs.push(() => i.value);
     } else if (t.type === "s") {
-      const liste = el("div", { class: "liste", role: "radiogroup" });
+      const options = listes[nbListes++] || [];
+      // Choix courts (∈, ∉, ⊥, //…) : présentés en ligne
+      const courte = options.every(o => String(o).replace(/<[^>]+>/g, "").length <= 16);
+      const liste = el("div", { class: "liste" + (courte ? " courte" : ""), role: "radiogroup" });
       let valeur = null;
-      (listes[nbListes++] || []).forEach((o, i) => {
+      options.forEach((o, i) => {
         const option = el("button", { class: "option", type: "button", role: "radio", "aria-checked": "false", onclick: () => {
           valeur = i;
           for (const b of liste.children) b.setAttribute("aria-checked", String(b === option));
@@ -230,6 +233,31 @@ function relier(gauche, droite) {
   };
 }
 
+/* ---------- Ranger en cliquant ----------
+   items : [{ texte }] ; signe : « < » ou « > », affiché entre les nombres au fur et à mesure qu'ils sont rangés. */
+function rangement(items, signe) {
+  const depart = el("div", { class: "jetons" }), arrivee = el("div", { class: "jetons rangee", "data-vide": "Clique sur les nombres dans l'ordre" });
+  let actif = true;
+  const majSignes = () => {
+    arrivee.querySelectorAll(".signe").forEach(x => x.remove());
+    [...arrivee.querySelectorAll(".jeton")].slice(1).forEach(b => b.before(el("span", { class: "signe", "aria-hidden": "true" }, signe)));
+  };
+  melanger([...items.keys()]).forEach(i => {
+    const b = el("button", { type: "button", class: "jeton", "data-i": String(i) }, items[i].texte);
+    b.addEventListener("click", () => {
+      if (!actif) return;
+      (b.parentNode === depart ? arrivee : depart).append(b);
+      majSignes();
+    });
+    depart.append(b);
+  });
+  return {
+    noeud: el("div", { class: "ranger" }, depart, el("p", { class: "fleche-ranger" }, "↓"), arrivee),
+    ordre: () => [...arrivee.querySelectorAll(".jeton")].map(b => Number(b.dataset.i)),
+    bloquer: () => { actif = false; }
+  };
+}
+
 /* ---------- Pages ---------- */
 const BRAVO = ["Bravo !", "Exact !", "Très bien !", "Parfait !", "C'est juste !"];
 
@@ -239,7 +267,7 @@ function lancerExerciseur({ intro, activites }) {
   const scores = {};
   const melange = {
     id: "melange", titre: "Tout mélanger", description: "Des questions de toutes les activités, au hasard.",
-    generer() { const a = choisir(activites); return Object.assign(a.generer(), { etiquette: a.titre }); }
+    generer(stats) { const a = choisir(activites); return Object.assign(a.generer(stats), { etiquette: a.titre }); }
   };
 
   function afficher() {
@@ -302,7 +330,7 @@ function lancerExerciseur({ intro, activites }) {
     function nouvelleQuestion() {
       n++;
       numero.textContent = "Question " + n;
-      const q = act.generer();
+      const q = act.generer(s); // l'activité peut s'adapter à la série de réussites (s.serie)
       let essais = 0, finie = false;
 
       corps.replaceChildren();

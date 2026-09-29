@@ -80,6 +80,7 @@ const ACTIVITES = [
         verifier: v => verifierFraction(v[0], a, b),
         indice: "Compte en combien de parts égales l'unité est partagée : c'est le dénominateur. Compte ensuite les parts coloriées : c'est le numérateur.",
         correction: `L'unité est partagée en ${b} parts égales et ${a} parts sont coloriées : la fraction coloriée est ${frac(a, b)}.`
+          + (pgcd(a, b) > 1 ? ` En simplifiant, ${frac(a, b)} = ${frac(`${a} ÷ ${pgcd(a, b)}`, `${b} ÷ ${pgcd(a, b)}`)} = ${frac(a / pgcd(a, b), b / pgcd(a, b))} : c'est la fraction irréductible.` : ` Cette fraction est irréductible : on ne peut pas la simplifier.`)
       };
     }
   },
@@ -126,30 +127,6 @@ const ACTIVITES = [
         correction: `Chaque graduation vaut ${frac(1, b)}. On compte ${graduations(a)} à partir de 0 : le point ${lettre} est placé en vert.`,
         surCorrection: () => d.marquer(a, "pt correct", lettre),
         bloquer: () => { d.actif = false; }
-      };
-    }
-  },
-
-  {
-    groupe: G1,
-    id: "quotient",
-    titre: "Fraction et quotient",
-    description: "Une fraction est le résultat d'une division.",
-    generer() {
-      const b = alea(2, 12);
-      let a;
-      do a = alea(1, 15); while (a % b === 0);
-      const [consigne, ligne] = choisir([
-        ["Complète avec une fraction.", `${b} × [f] = ${a}`],
-        ["Complète avec une fraction.", `[f] × ${b} = ${a}`],
-        ["Écris le quotient sous forme d'une fraction.", `${a} ÷ ${b} = [f]`],
-        [`Quel nombre, multiplié par ${b}, donne ${a} ? Réponds par une fraction.`, "[f]"]
-      ]);
-      return {
-        consigne, ligne,
-        verifier: v => verifierFraction(v[0], a, b),
-        indice: `Rappel : ${frac("<i>a</i>", "<i>b</i>")} est le nombre qui, multiplié par <i>b</i>, donne <i>a</i>.`,
-        correction: `${frac(a, b)} est le nombre qui, multiplié par ${b}, donne ${a} : ${b} × ${frac(a, b)} = ${a}. C'est le quotient ${a} ÷ ${b}.`
       };
     }
   },
@@ -252,38 +229,6 @@ const ACTIVITES = [
         },
         indice,
         correction: `${a} = ${n} × ${b} + ${r}, donc ${frac(a, b)} = ${n} + ${frac(r, b)}. Comme ${frac(r, b)} est compris entre 0 et 1 : ${n} ${inf} ${frac(a, b)} ${inf} ${n + 1}.`
-      };
-    }
-  },
-
-  {
-    groupe: G1,
-    id: "fractions-decimales",
-    titre: "Fractions décimales",
-    description: "Passer d'une fraction décimale à un nombre décimal, et inversement.",
-    generer() {
-      const p = alea(1, 3), den = 10 ** p;
-      const unite = ["dixième", "centième", "millième"][p - 1];
-      let a;
-      do a = alea(1, 3 * den); while (a % 10 === 0);
-      const texte = ecrireNombre(a / den);
-      const lecture = `« ${a} ${unite}${a > 1 ? "s" : ""} »`;
-      const indice = `${frac(1, den)} se lit « un ${unite} ».`;
-      if (Math.random() < 0.5) {
-        return {
-          consigne: "Écris cette fraction décimale sous forme d'un nombre décimal.",
-          ligne: `${frac(a, den)} = [d]`,
-          verifier: v => verifierNombre(v[0], a / den),
-          indice,
-          correction: `${frac(a, den)} se lit ${lecture} : ${frac(a, den)} = ${texte}.`
-        };
-      }
-      return {
-        consigne: "Complète avec une fraction décimale.",
-        ligne: `${texte} = [f/${den}]`,
-        verifier: v => verifierNombre(v[0].num, a),
-        indice,
-        correction: `${texte} se lit ${lecture}, donc ${texte} = ${frac(a, den)}.`
       };
     }
   },
@@ -398,7 +343,7 @@ const ACTIVITES = [
     id: "denominateurs-differents",
     titre: "Changer les deux dénominateurs",
     description: "Chercher des « parts communes » : un multiple des deux dénominateurs.",
-    generer() {
+    generer(stats = {}) {
       const [b, d] = melanger(choisir([[2, 3], [3, 4], [2, 5], [4, 5], [3, 5], [4, 6], [6, 8], [4, 10], [6, 9], [5, 6], [3, 8], [2, 7], [3, 10]]));
       const m = ppcm(b, d), kb = m / b, kd = m / d;
       let a = alea(1, b - 1), c = alea(1, d - 1);
@@ -408,11 +353,11 @@ const ACTIVITES = [
       let [x, y, kx, ky, bx, by] = [a, c, kb, kd, b, d];
       if (!plus && a * kb < c * kd) [x, y, kx, ky, bx, by] = [c, a, kd, kb, d, b];
       const op = plus ? "+" : "−", r = plus ? x * kx + y * ky : x * kx - y * ky;
-      const defi = Math.random() < 0.3;
+      const defi = (stats.serie || 0) >= 3; // après 3 réussites de suite, on n'indique plus le dénominateur
       const correction = `${m} est un multiple de ${bx} et de ${by}. ${frac(x, bx)} = ${frac(`${x} × ${kx}`, `${bx} × ${kx}`)} = ${frac(x * kx, m)} et ${frac(y, by)} = ${frac(`${y} × ${ky}`, `${by} × ${ky}`)} = ${frac(y * ky, m)}.<br>Donc ${frac(x, bx)} ${op} ${frac(y, by)} = ${frac(x * kx, m)} ${op} ${frac(y * ky, m)} = ${frac(r, m)}.`;
       if (defi) {
         return {
-          consigne: "Défi : calcule.",
+          consigne: "Trois réussites de suite : cette fois, le dénominateur commun n'est plus donné. Calcule.",
           ligne: `${frac(x, bx)} ${op} ${frac(y, by)} = [f]`,
           verifier: v => verifierFraction(v[0], r, m),
           indice: `Cherche un nombre qui est un multiple de ${bx} et de ${by}, puis écris les deux fractions avec ce dénominateur.`,
