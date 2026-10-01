@@ -61,6 +61,7 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°2 : Perpendiculaires et parallèles",   fichier: "pdf/6e/ch2-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Médiatrice et démonstration",      fichier: "pdf/6e/ch2-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : La symétrie axiale",               fichier: "pdf/6e/ch2-exercices-4.pdf" },
+          { type: "video",     titre: "Vidéo — La symétrie axiale",                                 lien: "https://www.youtube.com/watch?v=comZ5rHHkS0" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les droites et la symétrie",    lien: "exerciseurs/droites-symetrie-6e/" }
         ]
       },
