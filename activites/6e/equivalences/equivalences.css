@@ -1,0 +1,128 @@
+/* Activité « Résolution de problèmes — Équivalences » — complète style.css et exerciseurs.css */
+
+:root {
+  --poids: #6b7686;
+  --metal: #8a95a5;
+  --etiquette: #f3d36b;
+  --etiquette-bord: #b8901c;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --poids: #8d9aab; --metal: #5a6778; --etiquette: #e2bf4a; --etiquette-bord: #f6e2a0; }
+}
+
+main.eq { max-width: 1100px; }
+
+/* ----- Étapes ----- */
+.etapes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.etape {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  font: inherit; font-size: .92rem; padding: 6px 12px 6px 6px; border-radius: 999px;
+  border: 1px solid var(--bord); background: var(--carte); color: var(--texte-doux);
+}
+.etape .num {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--fond); color: var(--texte); font-weight: 700; font-size: .85rem;
+}
+.etape.active { border-color: var(--activite); color: var(--texte); }
+.etape.active .num { background: var(--activite); color: #fff; }
+.etape.faite .num { background: var(--corrige); color: #fff; }
+
+.mission {
+  background: var(--carte); border: 1px solid var(--bord); border-left: 5px solid var(--activite);
+  border-radius: 14px; padding: 14px 20px; margin-bottom: 16px; box-shadow: var(--ombre);
+}
+.mission h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.mission p { margin: 0; color: var(--texte-doux); }
+
+/* ----- Atelier : balances + carnet ----- */
+.atelier { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .atelier { grid-template-columns: 1fr; } }
+.zone, .carnet {
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 14px; box-shadow: var(--ombre); padding: 14px 18px 18px;
+}
+.zone-tete { display: flex; justify-content: space-between; align-items: center; color: var(--texte-doux); font-size: .9rem; }
+.zone .consigne { margin: 10px 0 8px; font-size: 1.05rem; }
+
+/* ----- Une balance (ou un panier) ----- */
+.bloc { border: 1px solid var(--bord); border-radius: 12px; padding: 8px 10px 10px; margin-bottom: 12px; background: var(--fond); }
+.bloc-tete { font-weight: 700; color: var(--texte-doux); font-size: .9rem; }
+.dessin { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; touch-action: manipulation; }
+.dessin .pied { fill: var(--metal); }
+.dessin .barre-fleau { fill: var(--texte-doux); }
+.dessin .pivot { fill: var(--texte); }
+.dessin .fil { stroke: var(--texte-doux); stroke-width: 1.5; }
+.dessin .plateau-fond { fill: var(--metal); }
+.dessin .mobile { transform-origin: 280px 50px; transform-box: view-box; }
+.dessin .mobile.secoue { animation: secousse .8s ease-in-out; }
+@keyframes secousse { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-7deg); } 60% { transform: rotate(4deg); } 80% { transform: rotate(-2deg); } }
+.dessin .boite { fill: var(--carte); stroke: var(--bord); stroke-width: 2; }
+.dessin .boite-titre { fill: var(--texte-doux); font: 700 15px "Fira Sans", sans-serif; text-anchor: middle; }
+.dessin .egal { fill: var(--texte); font: 700 44px "Fira Sans", sans-serif; text-anchor: middle; }
+.dessin .egal.secoue { animation: clignote .8s; }
+@keyframes clignote { 30%, 70% { fill: var(--video); } }
+
+.dessin .objet { cursor: pointer; }
+.dessin .objet:hover, .dessin .objet:focus-visible { filter: drop-shadow(0 0 4px var(--cours)); outline: none; }
+.dessin .emoji { font-size: 30px; text-anchor: middle; dominant-baseline: auto; }
+.dessin .poids { fill: var(--poids); }
+.dessin .etiq { fill: var(--etiquette); stroke: var(--etiquette-bord); stroke-width: 1.5; }
+.dessin .etiq-trou { fill: var(--carte); stroke: var(--etiquette-bord); stroke-width: 1; }
+.dessin .texte-poids { fill: #fff; font: 700 16px "Fira Sans", sans-serif; text-anchor: middle; }
+.dessin .texte-etiq { fill: #4a3a08; font: 700 16px "Fira Sans", sans-serif; text-anchor: middle; }
+.dessin .cache .texte-poids, .dessin .cache .texte-etiq { font-style: italic; }
+.dessin .compas-trait { stroke: #4b5563; stroke-width: 3; stroke-linecap: round; fill: none; }
+.dessin .compas-tete { fill: #c4302b; }
+.dessin .compas-mine { fill: #1c2430; }
+.dessin .menu { stroke-width: 1.5; }
+.dessin .menu-enfant { fill: #f2a33a; stroke: #a3620e; }
+.dessin .menu-adulte { fill: #3f7fd0; stroke: #244f8a; }
+.dessin .texte-menu { fill: #fff; font: 700 10px "Fira Sans", sans-serif; text-anchor: middle; }
+@media (prefers-color-scheme: dark) { .dessin .compas-trait { stroke: #c5ccd6; } .dessin .compas-mine { fill: #e6eaf0; } }
+
+.barre-outils { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 4px; }
+.barre-outils .btn { padding: 6px 12px; font-size: .92rem; }
+
+/* ----- Construction des balances (à partir d'un énoncé) ----- */
+.construire { display: grid; gap: 8px; margin-top: 6px; }
+.construire .cote { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+.construire .cote > .lib { color: var(--texte-doux); font-size: .9rem; min-width: 9em; text-align: right; }
+.compteur { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--bord); border-radius: 999px; padding: 2px 4px; background: var(--carte); }
+.compteur .btn { padding: 2px 10px; font-size: 1rem; }
+.compteur .ico { font-size: 1.3rem; min-width: 1.6em; text-align: center; }
+@media (max-width: 600px) { .construire .cote > .lib { min-width: 0; width: 100%; text-align: center; } }
+
+/* ----- Outils, coach, phrases réponses ----- */
+.outils { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 4px; }
+.outils .btn { padding: 8px 14px; }
+.coach {
+  margin-top: 12px; padding: 10px 14px; border-radius: 10px; background: var(--fond);
+  border-left: 5px solid var(--cours); min-height: 1.5em;
+}
+.coach:empty { display: none; }
+.coach.ok { border-color: var(--corrige); }
+.coach.attention { border-color: var(--exercices); }
+.phrases { margin-top: 14px; display: grid; gap: 10px; justify-items: center; }
+.phrases h3 { margin: 0; font-size: 1rem; color: var(--texte-doux); }
+.phrase { font-size: 1.15rem; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; justify-content: center; }
+.phrase .case { width: 5em; }
+.phrase .case.juste { border-color: var(--corrige); }
+.phrase .case.faux { border-color: var(--video); }
+.phrases .actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.correction {
+  margin-top: 14px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--bord);
+  color: var(--corrige); background: var(--fond);
+}
+.correction strong { color: var(--texte); }
+
+/* ----- Carnet ----- */
+.carnet h3 { margin: 0 0 2px; font-size: 1.05rem; }
+.carnet-aide { margin: 0 0 10px; color: var(--texte-doux); font-size: .85rem; }
+.carnet ol { margin: 0; padding-left: 22px; display: grid; gap: 10px; max-height: 620px; overflow-y: auto; }
+.carnet li .action { display: block; color: var(--texte-doux); font-size: .88rem; }
+.carnet li .calcul { font-size: 1.15rem; font-variant-numeric: tabular-nums; display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.carnet li.a-faire { background: var(--bleu-clair); border-radius: 8px; padding: 6px 8px; }
+.carnet .case.petit { width: 4.6em; font-size: 1.05rem; padding: 2px 6px; }
+.carnet .case.faux { border-color: var(--video); }
+.carnet .btn.petit { padding: 3px 10px; font-size: .9rem; }
+.carnet .vide { color: var(--texte-doux); font-style: italic; list-style: none; margin-left: -22px; }
+.ico-texte { font-size: 1.15em; }
