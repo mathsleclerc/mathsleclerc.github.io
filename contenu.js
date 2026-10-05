@@ -79,6 +79,12 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°6 : Fractions sur une demi-droite graduée", fichier: "pdf/6e/ch3-exercices-6.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°7 : Additionner et soustraire des fractions", fichier: "pdf/6e/ch3-exercices-7.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°8 : Problèmes de fraction restante",   fichier: "pdf/6e/ch3-exercices-8.pdf" },
+          { type: "video",     titre: "Vidéo — Comprendre une fraction",                             lien: "https://www.youtube.com/watch?v=SdMpLup_zgk" },
+          { type: "video",     titre: "Vidéo — Fraction d'une grandeur",                             lien: "https://www.youtube.com/watch?v=8mmIgYtxUCY" },
+          { type: "video",     titre: "Vidéo — Fractions égales",                                    lien: "https://www.youtube.com/watch?v=Q2Wu3A9cWbI" },
+          { type: "video",     titre: "Vidéo — Pourcentages",                                        lien: "https://www.youtube.com/watch?v=2Oxn5MHV1Bo" },
+          { type: "video",     titre: "Vidéo — Fractions sur une demi-droite graduée",               lien: "https://www.youtube.com/watch?v=1y_zYfl0uZg" },
+          { type: "video",     titre: "Vidéo — Additionner et soustraire des fractions",             lien: "https://www.youtube.com/watch?v=O6vJTgzxZX8" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les fractions", lien: "exerciseurs/fractions-6e/" }
         ]
       },
