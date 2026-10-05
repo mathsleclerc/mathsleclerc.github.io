@@ -39,7 +39,8 @@ const NIVEAUX = {
   "6e": {
     nom: "Sixième",
     activites: [
-      { type: "activite", titre: "Résolution de problèmes — Équivalences", lien: "activites/6e/equivalences/" }
+      { type: "activite", titre: "Résolution de problèmes — Équivalences", lien: "activites/6e/equivalences/" },
+      { type: "activite", titre: "Les triominos des écritures décimales", lien: "activites/6e/triominos/" }
     ],
     chapitres: [
       {

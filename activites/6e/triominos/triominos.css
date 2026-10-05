@@ -1,0 +1,62 @@
+/* Activité « Les triominos des écritures décimales » — complète style.css et exerciseurs.css */
+
+:root { --piece: #2a9d8f; --piece-fond: #ffffff; --emplacement: #b8c4d4; }
+@media (prefers-color-scheme: dark) {
+  :root { --piece: #4cc3b4; --piece-fond: #1f2733; --emplacement: #3b4757; }
+}
+
+main.tri { max-width: 1280px; }
+
+.mission {
+  background: var(--carte); border: 1px solid var(--bord); border-left: 5px solid var(--activite);
+  border-radius: 14px; padding: 14px 20px; margin-bottom: 16px; box-shadow: var(--ombre);
+}
+.mission h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.mission p { margin: 0; color: var(--texte-doux); }
+.mission strong { color: var(--texte); }
+
+.zone {
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 14px; box-shadow: var(--ombre); padding: 14px 18px 18px;
+}
+.zone-tete { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--texte-doux); font-size: .9rem; }
+
+/* ----- La table : plateau + pièces ----- */
+.table { width: 100%; height: auto; display: block; margin-top: 8px; touch-action: none; user-select: none; -webkit-user-select: none; }
+.zone-pieces { fill: var(--fond); stroke: var(--bord); stroke-dasharray: 6 5; }
+.titre-zone { fill: var(--texte-doux); font: 500 15px "Fira Sans", sans-serif; }
+.emplacement { fill: none; stroke: var(--emplacement); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.contour-plateau { fill: var(--fond); stroke: var(--emplacement); stroke-width: 2; }
+
+.piece { cursor: grab; }
+.piece.glisse { cursor: grabbing; }
+.piece.tourne { transition: transform .25s ease; }
+.piece .corps { fill: var(--piece-fond); stroke: var(--piece); stroke-width: 2; stroke-linejoin: round; }
+.piece:hover .corps, .piece:focus-visible .corps { stroke-width: 3.5; }
+.piece:focus-visible { outline: none; }
+.piece.glisse .corps { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .25)); }
+.piece .lab { fill: var(--texte); font: 500 15px "Fira Sans", sans-serif; }
+.piece .lab-frac { font-size: 13px; }
+.piece .barre { stroke: var(--texte); stroke-width: 1.2; }
+
+.jonction { stroke-width: 6; stroke-linecap: round; pointer-events: none; opacity: .85; }
+.jonction.juste { stroke: var(--corrige); }
+.jonction.faux { stroke: var(--video); }
+
+/* ----- Outils, coach ----- */
+.outils { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
+.outils .btn { padding: 8px 14px; }
+.coach {
+  margin-top: 12px; padding: 10px 14px; border-radius: 10px; background: var(--fond);
+  border-left: 5px solid var(--cours); min-height: 1.5em;
+}
+.coach:empty { display: none; }
+.coach.ok { border-color: var(--corrige); }
+.coach.attention { border-color: var(--exercices); }
+
+/* Bouton « tourner » au centre de chaque pièce */
+.piece .tourner { cursor: pointer; }
+.piece .tourner circle { fill: var(--fond); stroke: var(--piece); stroke-width: 1.5; }
+.piece .tourner .fleche-rot { fill: none; stroke: var(--piece); stroke-width: 2.2; stroke-linecap: round; }
+.piece .tourner .pointe-rot { fill: none; stroke: var(--piece); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.piece .tourner:hover circle { fill: var(--piece); }
+.piece .tourner:hover .fleche-rot, .piece .tourner:hover .pointe-rot { stroke: #fff; }

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Les triominos des écritures décimales — Activité 6e</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../style.css">
+  <link rel="stylesheet" href="../../../exerciseurs/exerciseurs.css">
+  <link rel="stylesheet" href="triominos.css">
+</head>
+<body>
+  <header class="bandeau">
+    <div class="interieur">
+      <div class="fil"><a href="../../../niveau.html?n=6e">← Sixième</a></div>
+      <h1>Les triominos des écritures décimales</h1>
+      <p>Activité · Chapitre 6 — Nombres décimaux</p>
+    </div>
+  </header>
+
+  <main class="tri">
+    <section class="mission">
+      <h2>Reconstitue le grand triangle</h2>
+      <p>Fais glisser les 16 pièces sur le grand triangle. Pour tourner une pièce, clique sur le bouton ↻ au centre de la pièce (ou clique sur la pièce sans la déplacer ; clic droit pour tourner dans l'autre sens). Deux côtés qui se touchent doivent porter <strong>deux écritures du même nombre</strong> (virgule, fraction, nombre mixte, pourcentage…). Attention : les nombres qui n'ont pas de partenaire se trouvent sur le bord !</p>
+    </section>
+    <div class="zone">
+      <div class="zone-tete">
+        <span id="etat">0 pièce posée sur 16</span>
+        <span class="pastille">Indices utilisés : <strong id="indices">0</strong></span>
+      </div>
+      <div id="table"></div>
+      <div class="outils">
+        <button class="btn principal" type="button" id="verifier">Vérifier</button>
+        <button class="btn" type="button" id="indice">Indice</button>
+        <button class="btn" type="button" id="melanger">Tout recommencer</button>
+      </div>
+      <div class="coach" id="coach" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <footer id="pied"></footer>
+
+  <script src="../../../contenu.js"></script>
+  <script src="../../../app.js"></script>
+  <script src="../../../exerciseurs/moteur.js"></script>
+  <script src="triominos.js"></script>
+</body>
+</html>
