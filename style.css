@@ -215,3 +215,77 @@ footer { padding: 0 16px 30px; color: var(--texte-doux); font-size: .85rem; text
 }
 .lecteur-cadre { position: relative; aspect-ratio: 16 / 9; background: #000; }
 .lecteur-cadre iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* ----- L'attribut hidden l'emporte toujours (recherche) ----- */
+[hidden] { display: none !important; }
+
+/* ----- Pastilles de navigation entre chapitres (toujours visibles) ----- */
+.pastilles {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin;
+  margin: -8px -16px 16px; padding: 10px 16px;
+  background: var(--fond); border-bottom: 1px solid var(--bord);
+}
+.pastille {
+  flex: none; display: grid; place-items: center; min-width: 36px; height: 36px; padding: 0 8px;
+  border-radius: 999px; border: 1px solid var(--bord); background: var(--carte);
+  text-decoration: none; font-weight: 700; font-size: .92rem; color: var(--texte);
+  font-variant-numeric: tabular-nums;
+}
+.pastille:hover { border-color: var(--bleu); }
+.pastille.actif { background: var(--bleu); border-color: var(--bleu); color: #fff; }
+.pastille.activites { color: var(--activite); }
+.pastille.activites.actif { background: var(--activite); border-color: var(--activite); color: #fff; }
+.pastille.vide { color: var(--texte-doux); font-weight: 500; opacity: .7; }
+.pastille.masquee { opacity: .3; }
+.chapitre { scroll-margin-top: 70px; }
+
+/* ----- Sous-parties d'un chapitre ----- */
+.sous-partie + .sous-partie { margin-top: 18px; }
+.sous-partie h3 {
+  margin: 4px 0 10px; font-size: .82rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--texte-doux);
+}
+.sous-partie .videos { margin-top: 0; }
+
+/* L'exerciseur, mis en avant en tête de « S'entraîner » */
+.ressources .ressource.t-exerciseur {
+  grid-column: 1 / -1; border: 2px solid var(--exerciseur);
+  background: color-mix(in srgb, var(--exerciseur) 8%, var(--carte));
+}
+.ressource.t-exerciseur .icone { width: 44px; height: 44px; }
+.ressource.t-exerciseur .texte strong { font-weight: 700; }
+.ressource.t-exerciseur .texte span { color: var(--exerciseur); font-weight: 500; }
+
+/* ----- Bouton « Haut de page » ----- */
+.haut-de-page {
+  position: fixed; right: 16px; bottom: 16px; z-index: 6;
+  font: inherit; font-weight: 500; font-size: .95rem; cursor: pointer;
+  padding: 10px 16px; border-radius: 999px; border: 0;
+  background: var(--bleu); color: #fff; box-shadow: 0 4px 14px rgba(20, 40, 80, .25);
+}
+.haut-de-page:hover { background: var(--bleu-fonce); }
+@media (max-width: 520px) {
+  .haut-de-page { width: 46px; height: 46px; padding: 0; font-size: 1.2rem; }
+  .haut-de-page span { display: none; }
+}
+
+/* ----- Feuilles d'exercices regroupées (bloc à déplier) ----- */
+.groupe-fiches {
+  margin-top: 10px; border: 1px solid var(--bord); border-radius: 10px; background: var(--fond);
+}
+.groupe-fiches > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+}
+.groupe-fiches > summary::-webkit-details-marker { display: none; }
+.groupe-fiches > summary:hover .groupe-titre { text-decoration: underline; }
+.groupe-icone {
+  flex: none; width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center;
+  background: var(--exercices); color: #fff; font-size: .72rem; font-weight: 700;
+}
+.groupe-titre { flex: 1; font-weight: 500; }
+.groupe-compte { color: var(--texte-doux); font-size: .88rem; white-space: nowrap; }
+.groupe-fiches .fleche { color: var(--texte-doux); transition: transform .2s; }
+.groupe-fiches[open] > summary .fleche { transform: rotate(90deg); }
+.groupe-fiches > .ressources { padding: 0 10px 10px; }
+.groupe-fiches .ressource { background: var(--carte); }
