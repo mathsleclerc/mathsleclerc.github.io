@@ -92,29 +92,69 @@ const NIVEAUX = {
       {
         titre: "Chapitre 4 — Proportionnalité",
         ressources: [
+          { type: "cours",     titre: "Cours — Proportionnalité",                                 fichier: "pdf/6e/ch4-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Proportionnel ou pas ?",         fichier: "pdf/6e/ch4-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Multiplier, diviser, additionner", fichier: "pdf/6e/ch4-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Le retour à l'unité",            fichier: "pdf/6e/ch4-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Résoudre des problèmes",         fichier: "pdf/6e/ch4-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Les échelles",                   fichier: "pdf/6e/ch4-exercices-5.pdf" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur la proportionnalité", lien: "exerciseurs/proportionnalite-6e/" }
         ]
       },
       {
         titre: "Chapitre 5 — Angles",
         ressources: [
+          { type: "cours",     titre: "Cours — Angles",                                           fichier: "pdf/6e/ch5-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire et notations",       fichier: "pdf/6e/ch5-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Mesurer un angle",               fichier: "pdf/6e/ch5-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Tracer un angle",                fichier: "pdf/6e/ch5-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Calculer la mesure d'un angle",  fichier: "pdf/6e/ch5-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : La bissectrice",                 fichier: "pdf/6e/ch5-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Construire une figure",          fichier: "pdf/6e/ch5-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Le diagramme circulaire",        fichier: "pdf/6e/ch5-exercices-7.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°8 : Problèmes",                      fichier: "pdf/6e/ch5-exercices-8.pdf" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les angles", lien: "exerciseurs/angles-6e/" }
         ]
       },
       {
         titre: "Chapitre 6 — Nombres décimaux",
         ressources: [
+          { type: "cours",     titre: "Cours — Nombres décimaux",                                 fichier: "pdf/6e/ch6-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Valeur des chiffres et décompositions", fichier: "pdf/6e/ch6-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Fractions décimales et écriture à virgule", fichier: "pdf/6e/ch6-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Pourcentage et nombre mixte",    fichier: "pdf/6e/ch6-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Décimaux sur une demi-droite graduée", fichier: "pdf/6e/ch6-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Comparer, ranger, encadrer, intercaler", fichier: "pdf/6e/ch6-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Arrondir un nombre décimal",     fichier: "pdf/6e/ch6-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Problèmes bilan",                fichier: "pdf/6e/ch6-exercices-7.pdf" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les nombres décimaux", lien: "exerciseurs/decimaux-6e/" }
         ]
       },
       {
         titre: "Chapitre 7 — Cercles et disques",
         ressources: [
+          { type: "cours",     titre: "Cours — Cercles et disques",                               fichier: "pdf/6e/ch7-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Cercle et disque",               fichier: "pdf/6e/ch7-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Programmes de construction",     fichier: "pdf/6e/ch7-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Périmètre : calculs",            fichier: "pdf/6e/ch7-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Périmètre : problèmes",          fichier: "pdf/6e/ch7-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Médiatrice d'un segment",        fichier: "pdf/6e/ch7-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Symétrique et bissectrice",      fichier: "pdf/6e/ch7-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Distances et régionnement",      fichier: "pdf/6e/ch7-exercices-7.pdf" }
         ]
       },
       {
         titre: "Chapitre 8 — Opérations sur les nombres décimaux",
         ressources: [
+          { type: "cours",     titre: "Cours — Opérations sur les nombres décimaux",              fichier: "pdf/6e/ch8-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Additionner et soustraire",      fichier: "pdf/6e/ch8-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Multiplier des décimaux",        fichier: "pdf/6e/ch8-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Division décimale",              fichier: "pdf/6e/ch8-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Contrôler un résultat",          fichier: "pdf/6e/ch8-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Choisir l'opération",            fichier: "pdf/6e/ch8-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes à étapes",             fichier: "pdf/6e/ch8-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Valeur manquante",               fichier: "pdf/6e/ch8-exercices-7.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°8 : Approfondissement",              fichier: "pdf/6e/ch8-exercices-8.pdf" }
         ]
       },
       {
