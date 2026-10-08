@@ -72,7 +72,7 @@ const NIVEAUX = {
         titre: "Chapitre 3 — Fractions et partage",
         ressources: [
           { type: "cours",     titre: "Cours — Fractions et partage",                                fichier: "pdf/6e/ch3-cours.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°1 : Fractions et partage de surfaces",  fichier: "pdf/6e/ch3-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Fractions et partage de surfaces",  fichier: "pdf/6e/ch3-exercices-1.pdf", correction: "https://youtu.be/StCESByUlJg" },
           { type: "exercices", titre: "Feuille d'exercices n°2 : Fractions de longueurs et de grandeurs", fichier: "pdf/6e/ch3-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Égalités de fractions",             fichier: "pdf/6e/ch3-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Fractions d'une quantité",          fichier: "pdf/6e/ch3-exercices-4.pdf" },
