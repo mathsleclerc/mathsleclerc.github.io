@@ -457,3 +457,63 @@ body.integre main { padding-top: 16px; }
 .ordre-etape:hover { border-color: var(--cours); }
 .ordre-liste .ordre-etape { background: var(--bleu-clair); border-color: var(--cours); }
 .instrument.range { opacity: .18; pointer-events: none; }
+
+/* ----- Cercles et disques ----- */
+.geo-cercle { fill: none; stroke: var(--cours); stroke-width: 2.5; }
+.geo-cercle-fin { fill: none; stroke: var(--texte-doux); stroke-width: 1.2; }
+.geo-disque { fill: color-mix(in srgb, var(--cours) 18%, transparent); stroke: var(--cours); stroke-width: 2.5; }
+.geo-zone { fill: color-mix(in srgb, var(--exercices) 22%, transparent); stroke: none; }
+.geo-cote { font-size: 14px !important; fill: var(--texte-doux) !important; }
+.geo-pointille { stroke: var(--texte-doux); stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; }
+
+/* ----- Compas ----- */
+.compas { cursor: grab; }
+.compas.range { opacity: .18; pointer-events: none; }
+.compas-branche { stroke: #6b7686; stroke-width: 6; stroke-linecap: round; }
+.compas-branche.mine-branche { stroke: #8a95a5; }
+.compas-pointe { fill: color-mix(in srgb, #6b7686 30%, transparent); stroke: #3d4654; stroke-width: 1.5; }
+.compas-pointe-centre { fill: #c4302b; }
+.compas-mine { fill: color-mix(in srgb, var(--exercices) 45%, transparent); stroke: var(--exercices); stroke-width: 2; cursor: ew-resize; }
+.compas-tourner { cursor: alias; }
+.compas-tourner circle { fill: var(--cours); }
+.compas-tourner text { font: 700 16px "Fira Sans", sans-serif !important; text-anchor: middle; fill: #fff !important; pointer-events: none; }
+.geo text.compas-ecart { font-size: 13px; font-weight: 700; fill: var(--cours); pointer-events: none; }
+.compas-arc { fill: none; stroke: var(--exercices); stroke-width: 2; stroke-linecap: round; }
+.outils-compas { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.outils-compas .btn { padding: 6px 12px; font-size: .9rem; }
+
+/* ----- Points à sélectionner ----- */
+.pt-choix { cursor: pointer; }
+.pt-choix circle { fill: var(--carte); stroke: var(--texte-doux); stroke-width: 2; }
+.pt-choix text { font-size: 14px !important; }
+.pt-choix.choisi circle { fill: var(--cours); stroke: var(--cours); }
+.pt-choix.bon circle { stroke: var(--corrige); stroke-width: 4; }
+.pt-choix.mauvais circle { stroke: var(--video); stroke-width: 4; }
+
+/* ----- Calculatrice ----- */
+.calculatrice { position: fixed; right: 16px; bottom: 16px; z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.calc-ouvrir {
+  font: inherit; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 999px; border: 0;
+  background: var(--bleu); color: #fff; box-shadow: 0 4px 14px rgba(20, 40, 80, .25);
+}
+.calc-panneau {
+  width: 250px; padding: 10px 12px 12px; border-radius: 14px; background: var(--carte);
+  border: 1px solid var(--bord); box-shadow: 0 8px 28px rgba(20, 40, 80, .25);
+}
+.calc-tete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.calc-fermer { font: inherit; border: 0; background: transparent; color: var(--texte-doux); cursor: pointer; font-size: 1rem; }
+.calc-ecran { width: 100%; font: inherit; font-size: 1.15rem; padding: 6px 8px; border: 1px solid var(--bord); border-radius: 8px; background: var(--fond); color: var(--texte); text-align: right; }
+.calc-resultat { display: block; min-height: 1.6em; text-align: right; font-size: 1.2rem; font-weight: 700; color: var(--cours); padding: 4px 2px; font-variant-numeric: tabular-nums; }
+.calc-resultat.erreur { color: var(--video); font-size: .95rem; }
+.calc-touches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.calc-touche { font: inherit; font-size: 1.05rem; padding: 8px 0; border-radius: 8px; border: 1px solid var(--bord); background: var(--fond); color: var(--texte); cursor: pointer; }
+.calc-touche:hover { border-color: var(--cours); }
+.calc-touche.op, .calc-touche.fonction { color: var(--cours); font-weight: 700; }
+.calc-touche.pi { color: var(--exercices); font-weight: 700; }
+.calc-touche.egal { grid-column: 1 / -1; background: var(--bleu); border-color: var(--bleu); color: #fff; font-weight: 700; }
+.calc-aide { margin: 8px 0 0; font-size: .78rem; color: var(--texte-doux); text-align: center; }
+@media (max-width: 520px) { .calc-ouvrir { padding: 10px 12px; } }
+body:has(.calculatrice) main { padding-bottom: 90px; }
+.geo .carte-nom { fill: #1c2430; font-size: 13px; font-weight: 500; }
+.geo .carte-echelle { fill: #1c2430; font-size: 13px; font-weight: 500; }
+.aide-compas { width: 100%; text-align: center; font-size: .85rem; color: var(--texte-doux); }

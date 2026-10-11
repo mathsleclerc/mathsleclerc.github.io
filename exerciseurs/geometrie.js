@@ -193,3 +193,162 @@ function rendreMobile(s, outil, aimants) {
     surPoint: (q, angles = aimants.angles) => Math.hypot(outil.pos.x - q.x, outil.pos.y - q.y) < 1 && angles.some(r => ecart(outil.pos.rot, r) < 0.5)
   };
 }
+
+/* ---------- Compas ----------
+   La pointe sèche est en P, la mine en T, à l'écartement r. On fait glisser :
+   – la pointe (ou une branche) pour déplacer le compas ;
+   – la mine pour régler l'écartement (elle s'aimante sur les points, sinon au millimètre) ;
+   – la poignée ↻ pour faire tourner le compas autour de la pointe : la mine trace un arc.
+   Chaque arc tracé est mémorisé : { c: centre, r: rayon, a0, a1 } (angles en radians, sens de l'écran). */
+function creerCompas(s, { aimants = [], P = { x: 100, y: 100 }, r = 2 * CM, a = 0, rMax = 7.5 * CM } = {}) {
+  const traces = svg("g", { class: "compas-traces" });
+  const g = svg("g", { class: "compas" });
+  s.append(traces, g);
+  const etat = { P: { ...P }, r, a };
+  const arcs = [];
+  let actif = true, mode = null, depart = null, arcEnCours = null, chemin = null;
+  const surArc = [];
+
+  const pointeT = () => V.plus(etat.P, V.fois(V.angle(etat.a), etat.r));
+  // la charnière est toujours au-dessus du milieu des deux pointes (compas vu de côté)
+  const charniere = () => {
+    const L = 130, h = Math.sqrt(Math.max(L * L - (etat.r / 2) ** 2, 40 * 40));
+    return V.plus(V.milieu(etat.P, pointeT()), { x: 0, y: -h });
+  };
+  function dessiner() {
+    const T = pointeT(), Hh = charniere();
+    g.replaceChildren(
+      svg("line", { x1: etat.P.x, y1: etat.P.y, x2: Hh.x, y2: Hh.y, class: "compas-branche" }),
+      svg("line", { x1: T.x, y1: T.y, x2: Hh.x, y2: Hh.y, class: "compas-branche mine-branche" }),
+      svg("circle", { cx: etat.P.x, cy: etat.P.y, r: 10, class: "compas-pointe" }),
+      svg("circle", { cx: etat.P.x, cy: etat.P.y, r: 2.5, class: "compas-pointe-centre" }),
+      svg("circle", { cx: T.x, cy: T.y, r: 9, class: "compas-mine" }),
+      svg("g", { class: "compas-tourner" }, svg("circle", { cx: Hh.x, cy: Hh.y, r: 14 }), svg("text", { x: Hh.x, y: Hh.y + 5 }, "↻")),
+      svg("text", { x: Hh.x, y: Hh.y - 22, class: "compas-ecart" }, ecrireNombre(Math.round(etat.r / CM * 10) / 10) + " cm")
+    );
+  }
+  const coord = e => { const p = s.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(s.getScreenCTM().inverse()); };
+  const cheminArc = (c, rr, a0, a1) => {
+    const n = Math.max(2, Math.ceil(Math.abs(a1 - a0) / (2 * DEG)));
+    let d = "";
+    for (let i = 0; i <= n; i++) {
+      const t = a0 + (a1 - a0) * i / n, p = V.plus(c, V.fois(V.angle(t), rr));
+      d += (i ? " L" : "M") + p.x.toFixed(1) + "," + p.y.toFixed(1);
+    }
+    return d;
+  };
+  function ajouterArc(c, rr, a0, a1) {
+    if (a1 - a0 > 2 * Math.PI) a1 = a0 + 2 * Math.PI;
+    if (a0 - a1 > 2 * Math.PI) a1 = a0 - 2 * Math.PI;
+    const arc = { c: { ...c }, r: rr, a0, a1 };
+    arc.noeud = svg("path", { d: cheminArc(c, rr, a0, a1), class: "compas-arc" });
+    traces.append(arc.noeud);
+    arcs.push(arc);
+    surArc.forEach(f => f(arc));
+    return arc;
+  }
+
+  g.addEventListener("pointerdown", e => {
+    if (!actif) return;
+    e.preventDefault(); e.stopPropagation();
+    const cible = e.target.closest(".compas-tourner, .compas-mine");
+    mode = !cible ? "deplacer" : cible.classList.contains("compas-mine") ? "ecarter" : "tracer";
+    const p = coord(e);
+    depart = { p, P: { ...etat.P }, a: etat.a };
+    if (mode === "tracer") {
+      arcEnCours = { a0: etat.a, a1: etat.a, prec: Math.atan2(p.y - etat.P.y, p.x - etat.P.x) };
+      chemin = svg("path", { class: "compas-arc" });
+      traces.append(chemin);
+    }
+    s.setPointerCapture?.(e.pointerId);
+  });
+  s.addEventListener("pointermove", e => {
+    if (!mode) return;
+    const p = coord(e);
+    if (mode === "deplacer") {
+      let P2 = V.plus(depart.P, V.moins(p, depart.p));
+      for (const q of aimants) if (Math.hypot(P2.x - q.x, P2.y - q.y) < 14) P2 = { ...q };
+      etat.P = P2;
+    } else if (mode === "ecarter") {
+      let T = p;
+      const proche = aimants.find(q => Math.hypot(T.x - q.x, T.y - q.y) < 12 && Math.hypot(q.x - etat.P.x, q.y - etat.P.y) > 5);
+      if (proche) T = proche;
+      let rr = Math.hypot(T.x - etat.P.x, T.y - etat.P.y);
+      if (!proche) rr = Math.round(rr / (CM / 10)) * CM / 10;
+      etat.r = Math.min(rMax, Math.max(0.5 * CM, rr));
+      etat.a = Math.atan2(T.y - etat.P.y, T.x - etat.P.x);
+    } else {
+      const phi = Math.atan2(p.y - etat.P.y, p.x - etat.P.x);
+      let d = phi - arcEnCours.prec;
+      if (d > Math.PI) d -= 2 * Math.PI;
+      if (d < -Math.PI) d += 2 * Math.PI;
+      arcEnCours.prec = phi;
+      arcEnCours.a1 = Math.max(arcEnCours.a0 - 2 * Math.PI, Math.min(arcEnCours.a0 + 2 * Math.PI, arcEnCours.a1 + d));
+      etat.a = arcEnCours.a1;
+      chemin.setAttribute("d", cheminArc(etat.P, etat.r, arcEnCours.a0, arcEnCours.a1));
+    }
+    dessiner();
+  });
+  const fin = () => {
+    if (mode === "tracer") {
+      chemin.remove();
+      if (Math.abs(arcEnCours.a1 - arcEnCours.a0) > 3 * DEG) ajouterArc(etat.P, etat.r, arcEnCours.a0, arcEnCours.a1);
+      arcEnCours = null;
+    }
+    mode = null;
+  };
+  s.addEventListener("pointerup", fin);
+  s.addEventListener("pointercancel", fin);
+  dessiner();
+
+  return {
+    noeud: g, arcs,
+    get P() { return etat.P; }, get r() { return etat.r; },
+    /* Place le compas : pointe en P, écartement r (pixels), mine dans la direction a */
+    placer(P2, r2, a2 = etat.a) { etat.P = { ...P2 }; etat.r = r2; etat.a = a2; dessiner(); },
+    /* Trace un arc à la place de l'élève (bouton « Montre-moi ») */
+    tracer(a0, a1) { etat.a = a1; dessiner(); return ajouterArc(etat.P, etat.r, a0, a1); },
+    effacerDernier() { const arc = arcs.pop(); arc?.noeud.remove(); },
+    effacerTout() { while (arcs.length) arcs.pop().noeud.remove(); },
+    surArc: f => surArc.push(f),
+    premierPlan() { s.append(g); },
+    bloquer() { actif = false; g.classList.add("range"); },
+    cacher(oui = true) { g.style.display = oui ? "none" : ""; }
+  };
+}
+
+/* Un arc passe-t-il par le point M ? (même rayon à 1,5 mm près, angle couvert à 4° près) */
+function arcPassePar(arc, M, tolR = 0.15 * CM) {
+  if (Math.abs(Math.hypot(M.x - arc.c.x, M.y - arc.c.y) - arc.r) > tolR) return false;
+  const t = Math.atan2(M.y - arc.c.y, M.x - arc.c.x);
+  const lo = Math.min(arc.a0, arc.a1) - 4 * DEG, hi = Math.max(arc.a0, arc.a1) + 4 * DEG;
+  for (let k = -2; k <= 2; k++) { const u = t + 2 * Math.PI * k; if (u >= lo && u <= hi) return true; }
+  return false;
+}
+/* Arcs de centre C (à 1 mm près), éventuellement de rayon r */
+function arcsDeCentre(arcs, C, r = null) {
+  return arcs.filter(a => Math.hypot(a.c.x - C.x, a.c.y - C.y) < 0.1 * CM && (r == null || Math.abs(a.r - r) < 0.1 * CM));
+}
+/* Le cercle de centre C et de rayon r est-il tracé en entier (éventuellement en plusieurs arcs) ? */
+function cercleTrace(arcs, C, r) {
+  const liste = arcsDeCentre(arcs, C, r);
+  for (let k = 0; k < 72; k++) {
+    const t = k * 5 * DEG, M = V.plus(C, V.fois(V.angle(t), r));
+    if (!liste.some(a => arcPassePar(a, M))) return false;
+  }
+  return true;
+}
+/* Points d'intersection de deux cercles (0 ou 2 points) */
+function intersectionCercles(C1, r1, C2, r2) {
+  const d = Math.hypot(C2.x - C1.x, C2.y - C1.y);
+  if (d < 1e-9 || d > r1 + r2 || d < Math.abs(r1 - r2)) return [];
+  const a = (r1 * r1 - r2 * r2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, r1 * r1 - a * a));
+  const u = V.unitaire(V.moins(C2, C1)), M = V.plus(C1, V.fois(u, a)), n = V.normal(u);
+  return [V.plus(M, V.fois(n, h)), V.moins(M, V.fois(n, h))];
+}
+/* Cercle (ou disque) dessiné : centre C, rayon r en pixels */
+function dessinerCercle(s, C, r, classe = "geo-cercle") {
+  const c = svg("circle", { cx: C.x, cy: C.y, r, class: classe });
+  s.append(c);
+  return c;
+}

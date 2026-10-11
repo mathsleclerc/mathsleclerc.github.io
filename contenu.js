@@ -140,7 +140,8 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°4 : Périmètre : problèmes",          fichier: "pdf/6e/ch7-exercices-4.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°5 : Médiatrice d'un segment",        fichier: "pdf/6e/ch7-exercices-5.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°6 : Symétrique et bissectrice",      fichier: "pdf/6e/ch7-exercices-6.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°7 : Distances et régionnement",      fichier: "pdf/6e/ch7-exercices-7.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Distances et régionnement",      fichier: "pdf/6e/ch7-exercices-7.pdf" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les cercles et les disques", lien: "exerciseurs/cercles-disques-6e/" }
         ]
       },
       {
