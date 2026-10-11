@@ -52,7 +52,7 @@ function pageAccueil() {
 
 /* ---------- Page d'un niveau ---------- */
 /* Texte sans accents ni majuscules, pour la recherche */
-function normaliser(t) {
+function normaliserRecherche(t) {
   return (t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
@@ -104,7 +104,7 @@ function pageNiveau() {
 
     const carte = r => {
       const e = r.type === "video" ? carteVideo(r) : carteRessource(r);
-      e.dataset.texte = normaliser(r.titre + " " + (TYPES[r.type] || TYPES.lien).libelle);
+      e.dataset.texte = normaliserRecherche(r.titre + " " + (TYPES[r.type] || TYPES.lien).libelle);
       elements.push(e);
       return e;
     };
@@ -157,7 +157,7 @@ function pageNiveau() {
     );
     if (ouvert) details.open = true; // premier chapitre ouvert
     details._ouvertAuDepart = !!ouvert;
-    details._titre = normaliser(ch.titre + " " + (ch.description || ""));
+    details._titre = normaliserRecherche(ch.titre + " " + (ch.description || ""));
     details._elements = elements;
     details._vide = !res.length;
     zone.append(details);
@@ -197,7 +197,7 @@ function pageNiveau() {
 
   // ----- Recherche : on n'affiche que les ressources qui correspondent -----
   function filtrer() {
-    const mots = normaliser(recherche.value).split(/\s+/).filter(Boolean);
+    const mots = normaliserRecherche(recherche.value).split(/\s+/).filter(Boolean);
     const trouve = t => mots.every(m => t.includes(m));
     for (const b of blocs) {
       if (!mots.length) {
