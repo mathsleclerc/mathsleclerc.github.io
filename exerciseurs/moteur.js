@@ -65,10 +65,16 @@ function disque(b, colories) {
   return s;
 }
 
-function rectangle(b, colories) {
+/* Les dispositions possibles d'un rectangle partagé en b parts : [lignes, colonnes]. */
+function dispositionsRectangle(b) {
   const dispositions = [[1, b]];
   for (let l = 2; l <= 4; l++) if (b % l === 0 && b / l >= l) dispositions.push([l, b / l]);
-  const [lig, col] = choisir(dispositions);
+  return dispositions;
+}
+
+/* disposition (facultatif) : pour dessiner plusieurs unités avec le même découpage. */
+function rectangle(b, colories, disposition = choisir(dispositionsRectangle(b))) {
+  const [lig, col] = disposition;
   const cw = Math.min(50, 240 / col), ch = lig === 1 ? 60 : 40;
   const w = cw * col, h = ch * lig;
   const s = svg("svg", { viewBox: `-2 -2 ${w + 4} ${h + 4}`, width: w + 4, height: h + 4, role: "img",
@@ -261,7 +267,9 @@ function rangement(items, signe) {
 /* ---------- Pages ---------- */
 const BRAVO = ["Bravo !", "Exact !", "Très bien !", "Parfait !", "C'est juste !"];
 
-function lancerExerciseur({ intro, activites }) {
+/* parcours (facultatif) : un test en plusieurs questions, une par étape, avec un bilan à la fin.
+   { id, titre, description, etapes: [{ competence, activites: ["id", …] }] } */
+function lancerExerciseur({ intro, activites, parcours }) {
   if (window.self !== window.top) document.body.classList.add("integre"); // affiché dans une iframe
   const app = document.getElementById("app");
   const scores = {};
@@ -274,7 +282,7 @@ function lancerExerciseur({ intro, activites }) {
     const id = decodeURIComponent(location.hash.slice(1));
     const act = id === "melange" ? melange : activites.find(a => a.id === id);
     app.replaceChildren();
-    if (act) pageActivite(act); else pageMenu();
+    if (parcours && id === parcours.id) pageParcours(); else if (act) pageActivite(act); else pageMenu();
   }
 
   function carte(a, badge, classe = "") {
@@ -302,6 +310,118 @@ function lancerExerciseur({ intro, activites }) {
       app.append(grille);
     }
     grille.append(carte(melange, "Mix", "melange"));
+    if (parcours) grille.append(carte(parcours, "Test", "test"));
+  }
+
+  /* ----- Parcours « Je me teste » : un seul essai par question, puis un bilan ----- */
+  function pageParcours() {
+    const etapes = parcours.etapes;
+    const resultats = [];
+    const numero = el("span", { class: "num" });
+    const corps = el("div", { class: "exercice-corps" });
+    const progression = el("div", { class: "progression", "aria-hidden": "true" },
+      ...etapes.map(() => el("span")));
+    app.append(
+      el("div", { class: "barre" }, el("a", { class: "retour", href: "#" }, "← Toutes les activités")),
+      el("section", { class: "exercice" },
+        el("div", { class: "exercice-tete" }, el("h2", {}, parcours.titre), numero),
+        progression, corps));
+    question(0);
+
+    function question(k) {
+      if (k === etapes.length) return bilan();
+      const etape = etapes[k];
+      const choisie = choisir(etape.activites), act = activites.find(a => a.id === choisie);
+      const q = act.generer({ tentees: 0, reussies: 0, serie: 0 });
+      numero.textContent = `Question ${k + 1} / ${etapes.length}`;
+      let finie = false, choisi = null;
+      corps.replaceChildren(el("p", { class: "etiquette" }, etape.competence));
+      const consigne = el("p", { class: "consigne" });
+      consigne.innerHTML = q.consigne;
+      corps.append(consigne);
+      if (q.figure) corps.append(el("div", { class: "figure" }, ...[].concat(q.figure)));
+      const ligne = el("div", { class: "ligne" + (q.classeLigne ? " " + q.classeLigne : "") });
+      const saisie = construireLigne(ligne, q.ligne || "", q.listes);
+      if (q.ligne) corps.append(ligne);
+      if (q.apresLigne) corps.append(el("div", { class: "apres-ligne" }, ...[].concat(q.apresLigne)));
+      const actions = el("div", { class: "actions" });
+      const retour = el("div", { class: "retour-eleve", "aria-live": "polite" });
+      corps.append(actions, retour);
+      corps.onkeydown = e => {
+        if (e.key !== "Enter" || e.target.tagName === "BUTTON") return;
+        e.preventDefault();
+        if (!finie) valider();
+      };
+      const message = (classe, titre, ...textes) => {
+        const boite = el("div", { class: "message " + classe });
+        boite.innerHTML = (titre ? `<strong class="titre">${titre}</strong> ` : "") + textes.filter(Boolean).join(" ");
+        retour.replaceChildren(boite);
+      };
+      const boutons = [];
+      if (q.choix) {
+        q.choix.forEach((c, i) => {
+          const texte = typeof c === "string";
+          const b = el("button", { class: "btn " + (texte ? "btn-choix long" : "btn-figure"), type: "button", onclick: () => {
+            choisi = texte ? c : i;
+            if (saisie.choix && texte) { saisie.choix.innerHTML = c; saisie.choix.dataset.valeur = c; }
+            valider();
+          } }, texte ? "" : c.cloneNode(true));
+          if (texte) b.innerHTML = c;
+          boutons.push(b);
+        });
+      } else boutons.push(el("button", { class: "btn principal", type: "button", onclick: valider }, "Valider"));
+      boutons.push(el("button", { class: "btn discret", type: "button", onclick: () => fin(false, null) }, "Je ne sais pas"));
+      actions.replaceChildren(...boutons);
+      saisie.cases[0]?.focus({ preventScroll: true });
+
+      function valider() {
+        const r = q.verifier(saisie.lire(), choisi);
+        if (r.etat === "incomplet") { message("incomplet", "", r.message); return; }
+        fin(r.etat === "juste", r.message);
+      }
+
+      function fin(juste, texte) {
+        finie = true;
+        resultats[k] = { juste, act };
+        progression.children[k].className = juste ? "juste" : "faux";
+        for (const c of saisie.cases) c.disabled = true;
+        if (juste) message("juste", choisir(BRAVO), texte);
+        else {
+          if (texte === null) message("correction", "Correction :", q.correction);
+          else message("faux", "Ce n'est pas ça.", texte, "<br><strong>Correction :</strong>", q.correction);
+          q.surCorrection?.();
+        }
+        q.bloquer?.();
+        const derniere = k === etapes.length - 1;
+        const suite = el("button", { class: "btn principal", type: "button", onclick: () => { question(k + 1); window.scrollTo(0, 0); } },
+          derniere ? "Voir mon bilan →" : "Question suivante →");
+        actions.replaceChildren(suite);
+        suite.focus({ preventScroll: true });
+      }
+    }
+
+    function bilan() {
+      const total = resultats.filter(r => r.juste).length;
+      numero.textContent = "Bilan";
+      const avis = total === etapes.length ? "Parfait : tout est acquis !"
+        : total >= etapes.length * 0.7 ? "Très bien ! Revois les points en rouge pour être prêt(e)."
+        : total >= etapes.length * 0.4 ? "C'est un bon début. Entraîne-toi sur les points en rouge, puis refais le test."
+        : "Reprends le cours et entraîne-toi sur les points en rouge, puis refais le test.";
+      const liste = el("ul", { class: "bilan" }, ...etapes.map((e, k) => {
+        const { juste, act } = resultats[k];
+        return el("li", { class: juste ? "juste" : "faux" },
+          el("span", { class: "marque", "aria-label": juste ? "réussi" : "à revoir" }, juste ? "✓" : "✗"),
+          el("span", { class: "comp" }, e.competence, act.groupe ? el("small", {}, act.groupe) : ""),
+          juste ? "" : el("a", { class: "btn", href: "#" + act.id }, "S'entraîner"));
+      }));
+      corps.replaceChildren(
+        el("p", { class: "score-test" }, el("strong", {}, `${total} / ${etapes.length}`), " réponses justes"),
+        el("p", { class: "consigne" }, avis),
+        liste,
+        el("div", { class: "actions" },
+          el("button", { class: "btn principal", type: "button", onclick: () => { app.replaceChildren(); pageParcours(); } }, "Refaire le test"),
+          el("a", { class: "btn", href: "#" }, "Toutes les activités")));
+    }
   }
 
   function pageActivite(act) {

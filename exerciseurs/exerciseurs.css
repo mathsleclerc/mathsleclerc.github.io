@@ -517,3 +517,37 @@ body:has(.calculatrice) main { padding-bottom: 90px; }
 .geo .carte-nom { fill: #1c2430; font-size: 13px; font-weight: 500; }
 .geo .carte-echelle { fill: #1c2430; font-size: 13px; font-weight: 500; }
 .aide-compas { width: 100%; text-align: center; font-size: .85rem; color: var(--texte-doux); }
+
+/* ----- Parcours « Je me teste » ----- */
+.carte-activite.test .badge { background: var(--exerciseur); }
+.carte-activite.test:hover { border-color: var(--exerciseur); }
+.progression { display: flex; gap: 4px; padding: 0 20px; margin-top: 4px; }
+.progression span { flex: 1; height: 6px; border-radius: 3px; background: var(--bord); }
+.progression span.juste { background: var(--corrige); }
+.progression span.faux { background: var(--video); }
+.score-test { font-size: 1.15rem; margin: 18px 0 0; }
+.score-test strong { font-size: 2rem; color: var(--cours); margin-right: 4px; }
+.bilan { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 8px; }
+.bilan li {
+  display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+  border: 1px solid var(--bord); border-radius: 10px; border-left: 5px solid var(--corrige);
+}
+.bilan li.faux { border-left-color: var(--video); }
+.bilan .marque { font-weight: 700; font-size: 1.2rem; width: 1.2em; text-align: center; color: var(--corrige); }
+.bilan li.faux .marque { color: var(--video); }
+.bilan .comp { flex: 1; display: flex; flex-direction: column; }
+.bilan .comp small { color: var(--texte-doux); font-size: .82rem; }
+.bilan .btn { padding: 6px 12px; text-decoration: none; }
+
+/* ----- Fractions : figures à colorier, bandes à deux couleurs ----- */
+.fig-clic .fig-part { cursor: pointer; }
+.fig-clic .fig-part:hover { fill: var(--bleu-clair); }
+.fig-clic .fig-part.coloriee:hover { fill: var(--exercices); opacity: .8; }
+.fig-clic.bloquee .fig-part { cursor: default; }
+.fig-part.bleue { fill: var(--cours); }
+.fig-part.verte { fill: var(--corrige); }
+.fig-part.attendue { stroke: var(--corrige); stroke-width: 3; }
+.fig-schema text { font-family: inherit; font-size: 17px; text-anchor: middle; fill: var(--texte); }
+.fig-schema .valeur { font-weight: 700; fill: var(--cours); }
+.fig-schema .accolade { fill: none; stroke: var(--texte-doux); stroke-width: 1.5; }
+.legende-unites { width: 100%; text-align: center; color: var(--texte-doux); font-size: .9rem; margin: -6px 0 0; }
