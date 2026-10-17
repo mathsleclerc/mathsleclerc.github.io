@@ -1058,8 +1058,8 @@ const ACTIVITES = [
   {
     groupe: F7,
     id: "trois-fractions",
-    titre: "Trois fractions, résultats plus grands que 1",
-    description: "1/6 + 1/6 + 1/6, 3/4 + 5/8 = 11/8…",
+    titre: "Aller plus loin",
+    description: "Trois fractions, sommes plus grandes que 1… (1/6 + 1/6 + 1/6, 3/4 + 5/8 = 11/8)",
     generer() {
       const cas = choisir(["trois", "trois", "decomposer", "multiple"]);
       if (cas === "trois") {
