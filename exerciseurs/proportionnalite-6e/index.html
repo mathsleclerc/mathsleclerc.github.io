@@ -26,11 +26,13 @@
   <script src="../../contenu.js"></script>
   <script src="../../app.js"></script>
   <script src="../moteur.js"></script>
+  <script src="../geometrie.js"></script>
   <script src="activites.js"></script>
   <script>
     lancerExerciseur({
-      intro: "Choisissez une activité : elles suivent le plan de la leçon. Les questions sont tirées au hasard : entraînez-vous autant que vous voulez ! En cas d'erreur, vous pouvez réessayer ou afficher la correction.",
-      activites: ACTIVITES
+      intro: "Choisissez une activité : elles sont rangées comme les feuilles d'exercices. Les questions sont tirées au hasard : entraînez-vous autant que vous voulez ! En cas d'erreur, vous pouvez réessayer ou afficher la correction.",
+      activites: ACTIVITES,
+      parcours: PARCOURS
     });
   </script>
 </body>

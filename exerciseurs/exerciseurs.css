@@ -551,3 +551,8 @@ body:has(.calculatrice) main { padding-bottom: 90px; }
 .fig-schema .valeur { font-weight: 700; fill: var(--cours); }
 .fig-schema .accolade { fill: none; stroke: var(--texte-doux); stroke-width: 1.5; }
 .legende-unites { width: 100%; text-align: center; color: var(--texte-doux); font-size: .9rem; margin: -6px 0 0; }
+
+/* ----- Proportionnalité : échelle graphique ----- */
+.echelle-noir { fill: #1c2430; stroke: #1c2430; }
+.echelle-blanc { fill: #fff; stroke: #1c2430; }
+.geo .carte-echelle { fill: var(--texte); font-size: 14px; }
