@@ -10,7 +10,7 @@
    Une question contient : consigne, figure (facultatif), ligne (avec les
    cases à compléter, voir moteur.js), verifier(), indice et correction.
 
-   PARCOURS (en bas du fichier) : le test « Je me teste » en 10 questions.
+   PARCOURS (en bas du fichier) : le test « Je me teste » en 15 questions.
    ===================================================================== */
 
 const inf = "&lt;", sup = "&gt;";
@@ -1338,17 +1338,22 @@ const ACTIVITES = [
 const PARCOURS = {
   id: "je-me-teste",
   titre: "Je me teste",
-  description: "10 questions sur tout le chapitre, un seul essai, puis un bilan de ce qui est à revoir.",
+  description: "15 questions sur tout le chapitre, un seul essai, puis un bilan de ce qui est à revoir.",
   etapes: [
-    { competence: "Lire une fraction", activites: ["lire-fraction", "parts-egales"] },
+    { competence: "Lire une fraction", activites: ["lire-fraction"] },
+    { competence: "Des parts égales ?", activites: ["parts-egales"] },
     { competence: "Représenter une fraction", activites: ["colorier"] },
     { competence: "Fractions supérieures à 1", activites: ["colorier-plus-que-un", "entier-et-fraction"] },
     { competence: "Fractions égales", activites: ["egalites", "egalites-bandes"] },
+    { competence: "Reconnaître des fractions égales", activites: ["trouver-intrus"] },
     { competence: "Fraction d'une quantité", activites: ["fraction-d-une-quantite", "quantite-schema"] },
     { competence: "Pourcentages et fractions", activites: ["pourcentages-fractions", "quel-pourcentage"] },
     { competence: "Calculer un pourcentage", activites: ["pourcentages-usuels", "calculer-pourcentage"] },
+    { competence: "Problèmes de pourcentages", activites: ["problemes-pourcentages"] },
     { competence: "Demi-droite graduée", activites: ["lire-abscisse", "placer-point", "placer-differents"] },
-    { competence: "Additionner et soustraire", activites: ["meme-denominateur", "addition-bande", "denominateurs-multiples"] },
+    { competence: "Comparer et encadrer", activites: ["comparer", "encadrer", "relier-ecritures"] },
+    { competence: "Additionner avec le même dénominateur", activites: ["meme-denominateur", "addition-bande"] },
+    { competence: "Dénominateurs différents", activites: ["denominateurs-multiples", "denominateurs-differents"] },
     { competence: "Fraction restante", activites: ["fraction-restante", "problemes-fractions"] }
   ]
 };
