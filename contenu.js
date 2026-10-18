@@ -165,31 +165,68 @@ const NIVEAUX = {
       {
         titre: "Chapitre 9 — Triangles",
         ressources: [
+          { type: "cours",     titre: "Cours — Triangles",                                     fichier: "pdf/6e/ch9-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire et codage",       fichier: "pdf/6e/ch9-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Construire avec trois longueurs", fichier: "pdf/6e/ch9-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Construire avec des angles",  fichier: "pdf/6e/ch9-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Triangles particuliers",      fichier: "pdf/6e/ch9-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Somme des angles : calculer", fichier: "pdf/6e/ch9-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Somme des angles : construire et raisonner", fichier: "pdf/6e/ch9-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Médiatrices et cercle circonscrit", fichier: "pdf/6e/ch9-exercices-7.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°8 : Bilan : triangles",           fichier: "pdf/6e/ch9-exercices-8.pdf" }
         ]
       },
       {
         titre: "Chapitre 10 — Fraction quotient",
         ressources: [
+          { type: "cours",     titre: "Cours — Fraction quotient",                             fichier: "pdf/6e/ch10-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Fraction et division",        fichier: "pdf/6e/ch10-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Le quotient",                 fichier: "pdf/6e/ch10-exercices-2.pdf" }
         ]
       },
       {
         titre: "Chapitre 11 — Probabilités",
         ressources: [
+          { type: "cours",     titre: "Cours — Probabilités",                                  fichier: "pdf/6e/ch11-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Expériences aléatoires et évènements", fichier: "pdf/6e/ch11-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : L'échelle des probabilités",  fichier: "pdf/6e/ch11-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer une probabilité",    fichier: "pdf/6e/ch11-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Expériences à deux étapes",   fichier: "pdf/6e/ch11-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Fréquence et probabilité",    fichier: "pdf/6e/ch11-exercices-5.pdf" }
         ]
       },
       {
         titre: "Chapitre 12 — Repérage dans le temps",
         ressources: [
+          { type: "cours",     titre: "Cours — Repérage dans le temps",                        fichier: "pdf/6e/ch12-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Lire l'heure, unités de durée", fichier: "pdf/6e/ch12-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Convertir des durées",        fichier: "pdf/6e/ch12-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Écriture décimale d'une durée", fichier: "pdf/6e/ch12-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Calculer avec des horaires et des durées", fichier: "pdf/6e/ch12-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Problèmes de durées",         fichier: "pdf/6e/ch12-exercices-5.pdf" }
         ]
       },
       {
         titre: "Chapitre 13 — Aires et volumes",
         ressources: [
+          { type: "cours",     titre: "Cours — Aires et volumes",                              fichier: "pdf/6e/ch13-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Aires par comptage",          fichier: "pdf/6e/ch13-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Unités d'aire et conversions", fichier: "pdf/6e/ch13-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Aire du carré et du rectangle", fichier: "pdf/6e/ch13-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Problèmes d'aires",           fichier: "pdf/6e/ch13-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Vision dans l'espace",        fichier: "pdf/6e/ch13-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Volumes",                     fichier: "pdf/6e/ch13-exercices-6.pdf" }
         ]
       },
       {
         titre: "Chapitre 14 — Statistiques",
         ressources: [
+          { type: "cours",     titre: "Cours — Statistiques",                                  fichier: "pdf/6e/ch14-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Recueillir et organiser des données", fichier: "pdf/6e/ch14-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Tableaux à double entrée",    fichier: "pdf/6e/ch14-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Construire et filtrer un tableau", fichier: "pdf/6e/ch14-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Diagrammes en barres",        fichier: "pdf/6e/ch14-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Diagrammes circulaires et études de cas", fichier: "pdf/6e/ch14-exercices-5.pdf" }
         ]
       }
     ]
