@@ -185,7 +185,9 @@ const NIVEAUX = {
         ressources: [
           { type: "cours",     titre: "Cours — Fraction quotient",                             fichier: "pdf/6e/ch10-cours.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Fraction et division",        fichier: "pdf/6e/ch10-exercices-1.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°2 : Le quotient",                 fichier: "pdf/6e/ch10-exercices-2.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Le quotient",                 fichier: "pdf/6e/ch10-exercices-2.pdf" },
+          { type: "test", titre: "Je me teste — Fraction quotient", lien: "exerciseurs/fraction-quotient-6e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur la fraction quotient", lien: "exerciseurs/fraction-quotient-6e/" }
         ]
       },
       {
