@@ -198,7 +198,9 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°2 : L'échelle des probabilités",  fichier: "pdf/6e/ch11-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer une probabilité",    fichier: "pdf/6e/ch11-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Expériences à deux étapes",   fichier: "pdf/6e/ch11-exercices-4.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°5 : Fréquence et probabilité",    fichier: "pdf/6e/ch11-exercices-5.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Fréquence et probabilité",    fichier: "pdf/6e/ch11-exercices-5.pdf" },
+          { type: "test", titre: "Je me teste — Probabilités", lien: "exerciseurs/probabilites-6e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les probabilités", lien: "exerciseurs/probabilites-6e/" }
         ]
       },
       {
@@ -209,7 +211,9 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°2 : Convertir des durées",        fichier: "pdf/6e/ch12-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Écriture décimale d'une durée", fichier: "pdf/6e/ch12-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Calculer avec des horaires et des durées", fichier: "pdf/6e/ch12-exercices-4.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°5 : Problèmes de durées",         fichier: "pdf/6e/ch12-exercices-5.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Problèmes de durées",         fichier: "pdf/6e/ch12-exercices-5.pdf" },
+          { type: "test", titre: "Je me teste — Repérage dans le temps", lien: "exerciseurs/temps-6e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les durées", lien: "exerciseurs/temps-6e/" }
         ]
       },
       {
@@ -221,7 +225,9 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°3 : Aire du carré et du rectangle", fichier: "pdf/6e/ch13-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Problèmes d'aires",           fichier: "pdf/6e/ch13-exercices-4.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°5 : Vision dans l'espace",        fichier: "pdf/6e/ch13-exercices-5.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°6 : Volumes",                     fichier: "pdf/6e/ch13-exercices-6.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Volumes",                     fichier: "pdf/6e/ch13-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Aires et volumes", lien: "exerciseurs/aires-volumes-6e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les aires et les volumes", lien: "exerciseurs/aires-volumes-6e/" }
         ]
       },
       {
@@ -232,7 +238,9 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°2 : Tableaux à double entrée",    fichier: "pdf/6e/ch14-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Construire et filtrer un tableau", fichier: "pdf/6e/ch14-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Diagrammes en barres",        fichier: "pdf/6e/ch14-exercices-4.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°5 : Diagrammes circulaires et études de cas", fichier: "pdf/6e/ch14-exercices-5.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Diagrammes circulaires et études de cas", fichier: "pdf/6e/ch14-exercices-5.pdf" },
+          { type: "test", titre: "Je me teste — Statistiques", lien: "exerciseurs/statistiques-6e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les statistiques", lien: "exerciseurs/statistiques-6e/" }
         ]
       }
     ]

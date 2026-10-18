@@ -613,3 +613,24 @@ input.virgule + * { margin-left: 0; }
 .zone-rotation { display: flex; justify-content: center; }
 .relier-item .geo { max-width: 100%; height: auto; }
 .btn-figure .geo { max-width: 100%; height: auto; }
+
+/* ----- Probabilités, aires, statistiques (ch. 11 à 14) ----- */
+.sac .sac-fond { fill: var(--bleu-clair); stroke: var(--texte-doux); stroke-width: 1.5; }
+.sac .bille { stroke: rgba(0, 0, 0, .25); stroke-width: 1; }
+.deux-sacs { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; text-align: center; }
+.deux-sacs p { margin: 0 0 4px; font-weight: 700; }
+.roue .secteur-roue { stroke: var(--carte); stroke-width: 2; }
+.roue .roue-fleche { fill: var(--texte); }
+.tab-des td.case-favorable { background: color-mix(in srgb, var(--corrige) 30%, transparent); font-weight: 700; }
+.fig-aire .aire-case { fill: color-mix(in srgb, var(--cours) 45%, transparent); stroke: var(--cours); stroke-width: 1; }
+.cubes { max-width: 100%; height: auto; }
+.cubes .cube-dessus { fill: #cfe0f6; stroke: #2c4a72; stroke-width: 1.2; stroke-linejoin: round; }
+.cubes .cube-gauche { fill: #7fa6d8; stroke: #2c4a72; stroke-width: 1.2; stroke-linejoin: round; }
+.cubes .cube-droite { fill: #4f7fc0; stroke: #2c4a72; stroke-width: 1.2; stroke-linejoin: round; }
+.liste-donnees { display: inline-block; margin: 6px 0; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.barres-stat { max-width: 100%; height: auto; }
+.barres-stat .barre { fill: var(--cours); }
+.barres-stat .barres-grille { stroke: var(--bord); stroke-width: 1; }
+.barres-stat .barres-axe { stroke: var(--texte); stroke-width: 2; }
+.barres-stat .barres-axe-txt { font: 13px "Fira Sans", sans-serif; fill: var(--texte); }
+.tab-effectifs .case { width: 3.6em; }
