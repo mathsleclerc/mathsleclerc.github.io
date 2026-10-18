@@ -14,6 +14,8 @@
      "lien"       → un autre site :     mettre  lien: "https://..."
      "exerciseur" → un exerciseur en ligne du site : mettre  lien: "exerciseurs/..."
      "activite"   → une activité interactive : mettre  lien: "activites/6e/..."
+     "test"       → le test « Je me teste » d'un exerciseur, affiché dans « Se tester » :
+                    mettre  lien: "exerciseurs/.../#je-me-teste"  (et  detail: "…" pour le sous-titre)
 
    Section « Activités » d'un niveau (en haut de la page, hors chapitres) :
    déposez l'activité dans le dossier activites/6e/ (un fichier .html, ou un
@@ -86,6 +88,7 @@ const NIVEAUX = {
           { type: "video",     titre: "Vidéo — Pourcentages",                                        lien: "https://www.youtube.com/watch?v=2Oxn5MHV1Bo" },
           { type: "video",     titre: "Vidéo — Fractions sur une demi-droite graduée",               lien: "https://www.youtube.com/watch?v=1y_zYfl0uZg" },
           { type: "video",     titre: "Vidéo — Additionner et soustraire des fractions",             lien: "https://www.youtube.com/watch?v=O6vJTgzxZX8" },
+          { type: "test", titre: "Je me teste — Fractions", lien: "exerciseurs/fractions-6e/#je-me-teste", detail: "15 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les fractions", lien: "exerciseurs/fractions-6e/" }
         ]
       },
@@ -98,6 +101,7 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°3 : Le retour à l'unité",            fichier: "pdf/6e/ch4-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Résoudre des problèmes",         fichier: "pdf/6e/ch4-exercices-4.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°5 : Les échelles",                   fichier: "pdf/6e/ch4-exercices-5.pdf" },
+          { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-6e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur la proportionnalité", lien: "exerciseurs/proportionnalite-6e/" }
         ]
       },

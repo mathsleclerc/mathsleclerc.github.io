@@ -146,6 +146,7 @@ a.ressource:hover { border-color: currentColor; }
 .t-lien .icone { background: var(--lien); }
 .t-exerciseur .icone { background: var(--exerciseur); font-size: 1.1rem; }
 .t-activite .icone { background: var(--activite); font-size: 1.1rem; }
+.t-test .icone { background: var(--corrige); font-size: 1.2rem; }
 
 /* ----- Section « Activités » (hors chapitres) ----- */
 .chapitre.activites > summary { border-left-color: var(--activite); }
@@ -256,6 +257,15 @@ footer { padding: 0 16px 30px; color: var(--texte-doux); font-size: .85rem; text
 .ressource.t-exerciseur .icone { width: 44px; height: 44px; }
 .ressource.t-exerciseur .texte strong { font-weight: 700; }
 .ressource.t-exerciseur .texte span { color: var(--exerciseur); font-weight: 500; }
+
+/* Le test « Je me teste », mis en avant dans « Se tester » */
+.ressources .ressource.t-test {
+  grid-column: 1 / -1; border: 2px solid var(--corrige);
+  background: color-mix(in srgb, var(--corrige) 8%, var(--carte));
+}
+.ressource.t-test .icone { width: 44px; height: 44px; }
+.ressource.t-test .texte strong { font-weight: 700; }
+.ressource.t-test .texte span { color: var(--corrige); font-weight: 500; }
 
 /* ----- Bouton « Haut de page » ----- */
 .haut-de-page {

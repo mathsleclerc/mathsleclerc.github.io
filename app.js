@@ -7,7 +7,8 @@ const TYPES = {
   video:     { libelle: "Vidéo",             icone: "▶" },
   lien:      { libelle: "Lien",              icone: "↗" },
   exerciseur:{ libelle: "Exerciseur",        icone: "✎" },
-  activite:  { libelle: "Activité",          icone: "★" }
+  activite:  { libelle: "Activité",          icone: "★" },
+  test:      { libelle: "Se tester",         icone: "✓" }
 };
 
 function el(tag, attrs = {}, ...enfants) {
@@ -59,6 +60,7 @@ function normaliserRecherche(t) {
 /* Sous-parties d'un chapitre : le cours, l'entraînement (exerciseur en premier), les vidéos */
 const SOUS_PARTIES = [
   { titre: "Le cours", types: ["cours", "corrige"] },
+  { titre: "Se tester", types: ["test"] },
   { titre: "S'entraîner", types: ["exerciseur", "exercices", "activite", "lien"] },
   { titre: "Vidéos", types: ["video"] }
 ];
@@ -244,12 +246,12 @@ function carteRessource(r) {
   const t = TYPES[r.type] || TYPES.lien;
   const href = r.fichier || r.lien || "#";
   const estPdf = !!r.fichier;
-  const estExerciseur = r.type === "exerciseur" || r.type === "activite";
+  const estExerciseur = r.type === "exerciseur" || r.type === "activite" || r.type === "test";
   const carte = el("div", { class: "ressource t-" + (TYPES[r.type] ? r.type : "lien") },
     el("span", { class: "icone", "aria-hidden": "true" }, t.icone),
     el("a", { class: "texte", href, target: estExerciseur ? "_self" : "_blank", rel: "noopener", style: "text-decoration:none" },
       el("strong", {}, r.titre || t.libelle),
-      el("span", {}, estPdf ? "Ouvrir le PDF" : r.type === "activite" ? "Lancer l'activité" : estExerciseur ? "S'entraîner en ligne" : "Ouvrir le lien")
+      el("span", {}, r.detail || (estPdf ? "Ouvrir le PDF" : r.type === "activite" ? "Lancer l'activité" : r.type === "test" ? "Faire le test en ligne" : estExerciseur ? "S'entraîner en ligne" : "Ouvrir le lien"))
     ),
     estPdf ? el("a", { class: "telecharger", href, download: "" }, "Télécharger") : null
   );
