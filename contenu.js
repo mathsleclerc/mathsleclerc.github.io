@@ -159,7 +159,9 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°5 : Choisir l'opération",            fichier: "pdf/6e/ch8-exercices-5.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes à étapes",             fichier: "pdf/6e/ch8-exercices-6.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°7 : Valeur manquante",               fichier: "pdf/6e/ch8-exercices-7.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°8 : Approfondissement",              fichier: "pdf/6e/ch8-exercices-8.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°8 : Approfondissement",              fichier: "pdf/6e/ch8-exercices-8.pdf" },
+          { type: "test", titre: "Je me teste — Opérations", lien: "exerciseurs/operations-6e/#je-me-teste", detail: "18 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les opérations", lien: "exerciseurs/operations-6e/" }
         ]
       },
       {

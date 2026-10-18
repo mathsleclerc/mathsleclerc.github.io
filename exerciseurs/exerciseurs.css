@@ -556,3 +556,41 @@ body:has(.calculatrice) main { padding-bottom: 90px; }
 .echelle-noir { fill: #1c2430; stroke: #1c2430; }
 .echelle-blanc { fill: #fff; stroke: #1c2430; }
 .geo .carte-echelle { fill: var(--texte); font-size: 14px; }
+
+/* ----- Opérations (ch. 8) : opérations posées, virgule, schémas ----- */
+.pose { display: flex; justify-content: center; width: 100%; overflow-x: auto; }
+.pose-grille { display: inline-grid; grid-auto-rows: 2.1em; align-items: center; justify-items: center; column-gap: 2px; font-size: 1.35rem; font-variant-numeric: tabular-nums; position: relative; }
+.pose-chiffre { min-width: .9em; text-align: center; }
+.pose-chiffre.decale { color: var(--texte-doux); }
+.pose-signe { color: var(--texte-doux); font-weight: 700; }
+.pose-trait { align-self: start; justify-self: stretch; border-top: 2px solid var(--texte); height: 0; }
+.pose-case { width: 1.55em; height: 1.75em; padding: 0; font-size: 1.15rem; text-align: center; }
+.pose-case.retenue { width: 1.15em; height: 1.15em; padding: 0; font-size: .95rem; border-width: 1.5px; border-style: dashed; color: var(--exercices); align-self: end; }
+.case.mauvaise { border-color: var(--video); }
+.case.bonne { border-color: var(--corrige); }
+.virgule { position: relative; }
+.virgule::after { content: ","; position: absolute; right: -.32em; bottom: -.05em; font-weight: 700; color: var(--texte); pointer-events: none; }
+input.virgule + * { margin-left: 0; }
+.pot-q.virgule::after { color: var(--cours); }
+.pot-chiffre.virgule::after { right: .12em; }
+.pose-choix { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+.pose-options { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.pose-option { padding: 10px 22px; }
+.pose-texte { display: block; white-space: pre; font-family: "Fira Mono", ui-monospace, Menlo, monospace; font-size: 1.2rem; line-height: 1.5; text-align: left; }
+.pose-pile { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+.pose-titre { align-self: flex-start; margin: 8px 0 0; }
+.pose-fin { margin: 0; font-size: 1.25rem; display: flex; align-items: center; gap: 8px; }
+.virgule-zone { display: flex; align-items: flex-end; justify-content: center; font-size: 2rem; font-variant-numeric: tabular-nums; }
+.virgule-chiffre { padding: 0 2px; }
+.virgule-trou { width: .9em; height: 1.6em; border: 0; border-bottom: 3px dotted var(--bord); background: transparent; color: var(--cours); font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
+.virgule-trou:hover:not(:disabled) { border-bottom-color: var(--cours); background: var(--bleu-clair); }
+.virgule-trou.choisi { border-bottom-color: var(--cours); }
+.compte-zone { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; font-size: 1.3rem; }
+.compte-champ { width: min(16em, 80vw); text-align: left; }
+.carre-magique { border-collapse: collapse; margin: 0 auto; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.carre-magique td { border: 2px solid var(--texte-doux); width: 4.2em; height: 2.6em; text-align: center; }
+.carre-magique .case { width: 3.6em; }
+.aide-schema { display: flex; justify-content: center; width: 100%; overflow-x: auto; }
+.option .fig-schema.barres { display: block; max-width: 100%; height: auto; }
+.fig-schema.barres text { font-size: 16px; }
+.fig-part.ecart { fill: var(--bleu-clair); stroke-dasharray: 4 3; }
