@@ -594,3 +594,22 @@ input.virgule + * { margin-left: 0; }
 .option .fig-schema.barres { display: block; max-width: 100%; height: auto; }
 .fig-schema.barres text { font-size: 16px; }
 .fig-part.ecart { fill: var(--bleu-clair); stroke-dasharray: 4 3; }
+
+/* ----- Triangles (ch. 9) : zones cliquables, règle, assiette ----- */
+.zone-clic { cursor: pointer; }
+.zone-cote { stroke: transparent; stroke-width: 18; stroke-linecap: round; }
+.zone-cote:hover { stroke: color-mix(in srgb, var(--cours) 22%, transparent); }
+.zone-angle { fill: transparent; }
+.zone-angle:hover { fill: color-mix(in srgb, var(--cours) 18%, transparent); }
+.zone-sommet { fill: transparent; }
+.zone-sommet:hover { fill: color-mix(in srgb, var(--cours) 25%, transparent); }
+.zone-cote.choisi { stroke: color-mix(in srgb, var(--exercices) 55%, transparent); }
+.zone-angle.choisi, .zone-sommet.choisi { fill: color-mix(in srgb, var(--exercices) 55%, transparent); }
+.zone-cote.bonne { stroke: color-mix(in srgb, var(--corrige) 55%, transparent); }
+.zone-angle.bonne, .zone-sommet.bonne { fill: color-mix(in srgb, var(--corrige) 55%, transparent); }
+.geo .regle-etiquette { font-size: 12px; fill: var(--texte-doux); }
+.assiette { fill: none; stroke: #b5793a; stroke-width: 7; stroke-linecap: round; }
+.geo-cercle-correct { fill: none; }
+.zone-rotation { display: flex; justify-content: center; }
+.relier-item .geo { max-width: 100%; height: auto; }
+.btn-figure .geo { max-width: 100%; height: auto; }

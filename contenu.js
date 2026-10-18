@@ -175,7 +175,9 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°5 : Somme des angles : calculer", fichier: "pdf/6e/ch9-exercices-5.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°6 : Somme des angles : construire et raisonner", fichier: "pdf/6e/ch9-exercices-6.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°7 : Médiatrices et cercle circonscrit", fichier: "pdf/6e/ch9-exercices-7.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°8 : Bilan : triangles",           fichier: "pdf/6e/ch9-exercices-8.pdf" }
+          { type: "exercices", titre: "Feuille d'exercices n°8 : Bilan : triangles",           fichier: "pdf/6e/ch9-exercices-8.pdf" },
+          { type: "test", titre: "Je me teste — Triangles", lien: "exerciseurs/triangles-6e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les triangles", lien: "exerciseurs/triangles-6e/" }
         ]
       },
       {
