@@ -378,6 +378,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : proportionnalité", lien: "exerciseurs/proportionnalite-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 10 — Statistiques",
+        ressources: [
+          { type: "cours",     titre: "Cours — Statistiques", fichier: "pdf/5e/ch10-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Recueillir et organiser", fichier: "pdf/5e/ch10-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Effectifs et fréquences", fichier: "pdf/5e/ch10-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Diagrammes en barres et circulaires", fichier: "pdf/5e/ch10-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Histogrammes et graphiques", fichier: "pdf/5e/ch10-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : La moyenne", fichier: "pdf/5e/ch10-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Interpréter et critiquer", fichier: "pdf/5e/ch10-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Statistiques", lien: "exerciseurs/statistiques-5e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : statistiques", lien: "exerciseurs/statistiques-5e/" }
+        ]
       }
     ]
   },
