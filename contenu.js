@@ -84,6 +84,7 @@ const NIVEAUX = {
       },
       {
         titre: "Chapitre 3 — Fractions et partage",
+        enCours: true,
         ressources: [
           { type: "cours",     titre: "Cours — Fractions et partage",                                fichier: "pdf/6e/ch3-cours.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Fractions et partage de surfaces",  fichier: "pdf/6e/ch3-exercices-1.pdf", correction: "https://youtu.be/StCESByUlJg" },
