@@ -567,6 +567,21 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Trigonométrie : le cosinus", lien: "exerciseurs/trigonometrie-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : trigonométrie : le cosinus", lien: "exerciseurs/trigonometrie-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 9 — Puissances",
+        ressources: [
+          { type: "cours",     titre: "Cours — Puissances", fichier: "pdf/4e/ch9-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Puissances d'un nombre", fichier: "pdf/4e/ch9-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer avec des puissances", fichier: "pdf/4e/ch9-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Puissances de 10", fichier: "pdf/4e/ch9-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Calculer avec des puissances de 10", fichier: "pdf/4e/ch9-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Notation scientifique", fichier: "pdf/4e/ch9-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Préfixes et ordres de grandeur", fichier: "pdf/4e/ch9-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Résoudre des problèmes", fichier: "pdf/4e/ch9-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Puissances", lien: "exerciseurs/puissances-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : puissances", lien: "exerciseurs/puissances-4e/" }
+        ]
       }
     ]
   },
