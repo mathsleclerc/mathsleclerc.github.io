@@ -453,7 +453,23 @@ const NIVEAUX = {
 
   "4e": {
     nom: "Quatrième",
-    chapitres: []
+    chapitres: [
+      {
+        titre: "Chapitre 1 — Proportionnalité",
+        ressources: [
+          { type: "cours",     titre: "Cours — Proportionnalité", fichier: "pdf/4e/ch1-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Reconnaître la proportionnalité", fichier: "pdf/4e/ch1-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Quatrième proportionnelle", fichier: "pdf/4e/ch1-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Vitesses et grandeurs quotients", fichier: "pdf/4e/ch1-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Pourcentages et coefficient multiplicateur", fichier: "pdf/4e/ch1-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Ratios, partages et échelles", fichier: "pdf/4e/ch1-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Une grandeur en fonction d'une autre", fichier: "pdf/4e/ch1-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Résoudre des problèmes", fichier: "pdf/4e/ch1-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-4e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : proportionnalité", lien: "exerciseurs/proportionnalite-4e/" }
+        ]
+      }
+    ]
   },
 
   "3e": {
