@@ -596,6 +596,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Statistiques", lien: "exerciseurs/statistiques-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : statistiques", lien: "exerciseurs/statistiques-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 11 — Transformations du plan",
+        ressources: [
+          { type: "cours",     titre: "Cours — Transformations du plan", fichier: "pdf/4e/ch11-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Reconnaître une transformation", fichier: "pdf/4e/ch11-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Construire l'image par une translation", fichier: "pdf/4e/ch11-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Propriétés de la translation", fichier: "pdf/4e/ch11-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : La rotation", fichier: "pdf/4e/ch11-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Agrandissement et réduction", fichier: "pdf/4e/ch11-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Frises, pavages, problèmes", fichier: "pdf/4e/ch11-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Transformations du plan", lien: "exerciseurs/transformations-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : transformations du plan", lien: "exerciseurs/transformations-4e/" }
+        ]
       }
     ]
   },
