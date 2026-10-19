@@ -18,7 +18,7 @@ function ecrireNombre(x) {
   return e.replace(/\B(?=(\d{3})+(?!\d))/g, "\u202f") + (d ? "," + d : "");
 }
 function lireNombre(s) {
-  s = String(s).replace(/\s/g, "").replace(",", ".");
+  s = String(s).replace(/\s/g, "").replace(",", ".").replace(/^[−–]/, "-").replace(/^\+/, "");
   return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN;
 }
 function lireEntier(s) { const x = lireNombre(s); return Number.isInteger(x) ? x : NaN; }
@@ -143,12 +143,13 @@ function droiteGraduee(b, { max = unitesDroite(), point = null, lettre = "A", cl
 /* ---------- Lignes de réponse ----------
    Dans q.ligne, les cases à compléter s'écrivent :
      [n]      un nombre entier          [d]    un nombre décimal
+     [r]      un nombre relatif (clavier avec le signe moins)
      [f]      une fraction complète     [f/12] numérateur à trouver, dénominateur 12
      [f3/]    dénominateur à trouver    [c]    un symbole choisi parmi q.choix
      [s]      une liste de phrases à choisir : elles sont dans q.listes (une liste par [s]) */
 function construireLigne(ligne, modele, listes = []) {
   const trous = [];
-  ligne.innerHTML = modele.replace(/\[(n|d|c|s)\]|\[f(\d*)\/?(\d*)\]/g, (m, t, num, den) => {
+  ligne.innerHTML = modele.replace(/\[(n|d|r|c|s)\]|\[f(\d*)\/?(\d*)\]/g, (m, t, num, den) => {
     trous.push(t ? { type: t } : { type: "f", num, den });
     return `<span data-trou="${trous.length - 1}"></span>`;
   });
@@ -162,8 +163,9 @@ function construireLigne(ligne, modele, listes = []) {
   let choix = null, nbListes = 0;
   trous.forEach((t, k) => {
     const place = ligne.querySelector(`[data-trou="${k}"]`);
-    if (t.type === "n" || t.type === "d") {
-      const i = nouvelleCase(t.type === "n" ? "numeric" : "decimal", "Réponse");
+    if (t.type === "n" || t.type === "d" || t.type === "r") {
+      const i = nouvelleCase(t.type === "n" ? "numeric" : t.type === "d" ? "decimal" : "text", "Réponse");
+      if (t.type === "r") i.classList.add("large");
       place.replaceWith(i);
       lecteurs.push(() => i.value);
     } else if (t.type === "s") {

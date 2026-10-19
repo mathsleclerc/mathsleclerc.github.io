@@ -304,6 +304,21 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Angles et parallélisme", lien: "exerciseurs/angles-paralleles-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : angles et parallélisme", lien: "exerciseurs/angles-paralleles-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 5 — Nombres relatifs et repérage",
+        ressources: [
+          { type: "cours",     titre: "Cours — Nombres relatifs et repérage", fichier: "pdf/5e/ch5-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Découvrir les nombres relatifs", fichier: "pdf/5e/ch5-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : La droite graduée", fichier: "pdf/5e/ch5-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Repérage dans le plan", fichier: "pdf/5e/ch5-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Comparer et ranger", fichier: "pdf/5e/ch5-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Additionner des relatifs", fichier: "pdf/5e/ch5-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Soustraire des relatifs", fichier: "pdf/5e/ch5-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Enchaîner les calculs, problèmes", fichier: "pdf/5e/ch5-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Nombres relatifs et repérage", lien: "exerciseurs/relatifs-5e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : nombres relatifs et repérage", lien: "exerciseurs/relatifs-5e/" }
+        ]
       }
     ]
   },
