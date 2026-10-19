@@ -539,6 +539,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Droite des milieux et théorème de Thalès", lien: "exerciseurs/thales-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : droite des milieux et théorème de Thalès", lien: "exerciseurs/thales-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 7 — Probabilités",
+        ressources: [
+          { type: "cours",     titre: "Cours — Probabilités", fichier: "pdf/4e/ch7-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire des probabilités", fichier: "pdf/4e/ch7-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer des probabilités", fichier: "pdf/4e/ch7-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Contraire, « et », « ou »", fichier: "pdf/4e/ch7-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Expériences à deux épreuves", fichier: "pdf/4e/ch7-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Fréquences et simulation", fichier: "pdf/4e/ch7-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Résoudre des problèmes", fichier: "pdf/4e/ch7-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Probabilités", lien: "exerciseurs/probabilites-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : probabilités", lien: "exerciseurs/probabilites-4e/" }
+        ]
       }
     ]
   },
