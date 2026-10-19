@@ -275,6 +275,21 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — La symétrie centrale", lien: "exerciseurs/symetrie-centrale-5e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : la symétrie centrale", lien: "exerciseurs/symetrie-centrale-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 3 — Fractions et divisibilité",
+        ressources: [
+          { type: "cours",     titre: "Cours — Fractions et divisibilité", fichier: "pdf/5e/ch3-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Multiples, diviseurs et critères", fichier: "pdf/5e/ch3-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Nombres premiers et décomposition", fichier: "pdf/5e/ch3-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Diviser par un nombre décimal", fichier: "pdf/5e/ch3-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Fractions égales et simplification", fichier: "pdf/5e/ch3-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Comparer des fractions", fichier: "pdf/5e/ch3-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Additionner et soustraire des fractions", fichier: "pdf/5e/ch3-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Résoudre des problèmes", fichier: "pdf/5e/ch3-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Fractions et divisibilité", lien: "exerciseurs/fractions-5e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : fractions et divisibilité", lien: "exerciseurs/fractions-5e/" }
+        ]
       }
     ]
   },
