@@ -482,6 +482,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Nombres relatifs", lien: "exerciseurs/relatifs-4e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : nombres relatifs", lien: "exerciseurs/relatifs-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 3 — Racine carrée et théorème de Pythagore",
+        ressources: [
+          { type: "cours",     titre: "Cours — Racine carrée et théorème de Pythagore", fichier: "pdf/4e/ch3-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Carrés et racines carrées", fichier: "pdf/4e/ch3-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer l'hypoténuse", fichier: "pdf/4e/ch3-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer un côté de l'angle droit", fichier: "pdf/4e/ch3-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Le triangle est-il rectangle ?", fichier: "pdf/4e/ch3-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Triangle rectangle et cercle circonscrit", fichier: "pdf/4e/ch3-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Résoudre des problèmes", fichier: "pdf/4e/ch3-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Racine carrée et théorème de Pythagore", lien: "exerciseurs/pythagore-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : racine carrée et théorème de Pythagore", lien: "exerciseurs/pythagore-4e/" }
+        ]
       }
     ]
   },
