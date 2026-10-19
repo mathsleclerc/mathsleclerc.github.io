@@ -511,6 +511,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Fractions et nombres rationnels", lien: "exerciseurs/fractions-4e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : fractions et nombres rationnels", lien: "exerciseurs/fractions-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 5 — Calcul littéral",
+        ressources: [
+          { type: "cours",     titre: "Cours — Calcul littéral", fichier: "pdf/4e/ch5-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Expressions littérales", fichier: "pdf/4e/ch5-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Réduire une expression", fichier: "pdf/4e/ch5-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Développer", fichier: "pdf/4e/ch5-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Factoriser", fichier: "pdf/4e/ch5-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : La double distributivité", fichier: "pdf/4e/ch5-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Démontrer avec le calcul littéral", fichier: "pdf/4e/ch5-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Calcul littéral", lien: "exerciseurs/calcul-litteral-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral", lien: "exerciseurs/calcul-litteral-4e/" }
+        ]
       }
     ]
   },
