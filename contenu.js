@@ -333,6 +333,21 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Triangles : droites remarquables et aire", lien: "exerciseurs/triangles-5e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : triangles : droites remarquables et aire", lien: "exerciseurs/triangles-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 7 — Calcul littéral et puissances",
+        ressources: [
+          { type: "cours",     titre: "Cours — Calcul littéral et puissances", fichier: "pdf/5e/ch7-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Écrire avec des lettres", fichier: "pdf/5e/ch7-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Carrés et cubes", fichier: "pdf/5e/ch7-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer la valeur d'une expression", fichier: "pdf/5e/ch7-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Tester une égalité, somme ou produit", fichier: "pdf/5e/ch7-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Réduire une expression", fichier: "pdf/5e/ch7-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Développer et factoriser", fichier: "pdf/5e/ch7-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Motifs et formules", fichier: "pdf/5e/ch7-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Calcul littéral et puissances", lien: "exerciseurs/calcul-litteral-5e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral et puissances", lien: "exerciseurs/calcul-litteral-5e/" }
+        ]
       }
     ]
   },
