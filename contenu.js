@@ -406,6 +406,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Calcul littéral : raisonner et résoudre", lien: "exerciseurs/equations-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral : raisonner et résoudre", lien: "exerciseurs/equations-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 12 — Solides et volumes",
+        ressources: [
+          { type: "cours",     titre: "Cours — Solides et volumes", fichier: "pdf/5e/ch12-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Solides et perspective", fichier: "pdf/5e/ch12-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Patrons", fichier: "pdf/5e/ch12-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Aire d'un disque", fichier: "pdf/5e/ch12-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Volumes et capacités", fichier: "pdf/5e/ch12-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Volume du pavé et du prisme", fichier: "pdf/5e/ch12-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Volume du cylindre, problèmes", fichier: "pdf/5e/ch12-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Solides et volumes", lien: "exerciseurs/solides-volumes-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : solides et volumes", lien: "exerciseurs/solides-volumes-5e/" }
+        ]
       }
     ]
   },
