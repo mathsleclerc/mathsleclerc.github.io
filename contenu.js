@@ -392,6 +392,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Statistiques", lien: "exerciseurs/statistiques-5e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : statistiques", lien: "exerciseurs/statistiques-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 11 — Calcul littéral : raisonner et résoudre",
+        ressources: [
+          { type: "cours",     titre: "Cours — Calcul littéral : raisonner et résoudre", fichier: "pdf/5e/ch11-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Démontrer avec des lettres", fichier: "pdf/5e/ch11-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Contre-exemples et conjectures", fichier: "pdf/5e/ch11-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Tester une solution", fichier: "pdf/5e/ch11-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Résoudre des équations", fichier: "pdf/5e/ch11-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Mettre un problème en équation", fichier: "pdf/5e/ch11-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Programmes et algorithmes", fichier: "pdf/5e/ch11-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Calcul littéral : raisonner et résoudre", lien: "exerciseurs/equations-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral : raisonner et résoudre", lien: "exerciseurs/equations-5e/" }
+        ]
       }
     ]
   },
