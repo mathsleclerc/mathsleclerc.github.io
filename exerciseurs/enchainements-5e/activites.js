@@ -11,6 +11,7 @@ const F3 = "Feuille 3 — Parenthèses et nature d'une expression";
 const F4 = "Feuille 4 — Traduire par une seule expression";
 const F5 = "Feuille 5 — Distributivité et calcul astucieux";
 const F6 = "Feuille 6 — Résoudre des problèmes";
+const F7 = "Feuille 7 — Durées et horaires";
 
 const rr = x => Math.round(x * 1e6) / 1e6;
 const nb = x => ecrireNombre(rr(x));
@@ -20,6 +21,7 @@ const NATURES = ["une somme", "une différence", "un produit", "un quotient"];
 const ecr = s => s.replace(/\*/g, " × ").replace(/\//g, " ÷ ").replace(/ - /g, " − ").replace(/\./g, ",");
 /* Valeur d'une expression écrite avec * / + - et parenthèses (sans priorité cachée : celle de JavaScript est la bonne) */
 const val = s => rr(Function('"use strict";return (' + s.replace(/\[/g, "(").replace(/\]/g, ")") + ")")());
+const fdur = d => (d >= 60 ? Math.floor(d / 60) + " h " : "") + (d % 60 ? (d % 60) + " min" : "");
 const avecUnite = (x, u) => nb(x) + (u ? " " + u : "");
 
 /* Une question « calculer cette expression » ; etapes : liste d'écritures intermédiaires pour la correction */
@@ -595,6 +597,69 @@ const ACTIVITES = [
         bloquer: () => { champ.disabled = true; }
       };
     }
+  },
+  /* ================= Feuille 7 ================= */
+  {
+    groupe: F7,
+    id: "convertir-durees",
+    titre: "Convertir des durées",
+    description: "1 h = 60 min ; 0,5 h = 30 min.",
+    generer() {
+      const type = choisir(["hmin-min", "min-hmin", "dec-hmin"]);
+      if (type === "hmin-min") {
+        const h = alea(1, 5), m = alea(1, 59);
+        return { consigne: `Convertis <strong>${h} h ${m} min</strong> en minutes.`, ligne: "[n] min",
+          verifier: v => verifierNombre(v[0], 60 * h + m), indice: "1 h = 60 min : multiplie les heures par 60, puis ajoute les minutes.",
+          correction: `${h} × 60 + ${m} = ${60 * h + m} min` };
+      }
+      if (type === "min-hmin") {
+        const n = alea(61, 400), h = Math.floor(n / 60), m = n % 60;
+        return { consigne: `Convertis <strong>${n} min</strong> en heures et minutes.`, ligne: "[n] h [n] min",
+          verifier: v => { const a = verifierNombre(v[0], h), b = verifierNombre(v[1], m); return a.etat === "incomplet" || b.etat === "incomplet" ? { etat: "incomplet", message: "Remplis les deux cases." } : a.etat === "juste" && b.etat === "juste" ? { etat: "juste" } : { etat: "faux" }; },
+          indice: "Cherche combien de fois 60 min il y a dans ce nombre : c'est la division euclidienne par 60.",
+          correction: `${n} = 60 × ${h} + ${m} : ${n} min = ${h} h ${m} min` };
+      }
+      const [d, m] = choisir([[0.5, 30], [0.25, 15], [0.75, 45], [0.1, 6], [0.2, 12]]), h = alea(0, 4);
+      return { consigne: `Convertis <strong>${nb(h + d)} h</strong> en heures et minutes.`, ligne: "[n] h [n] min",
+        verifier: v => { const a = verifierNombre(v[0], h), b = verifierNombre(v[1], m); return a.etat === "incomplet" || b.etat === "incomplet" ? { etat: "incomplet", message: "Remplis les deux cases." } : a.etat === "juste" && b.etat === "juste" ? { etat: "juste" } : (lireNombre(v[1]) === Math.round(d * 100) ? { etat: "faux", message: "Attention : une heure n'a que 60 minutes. Calcule " + nb(d) + " × 60." } : { etat: "faux" }); },
+        indice: `${nb(d)} h, c'est ${nb(d)} × 60 min.`, correction: `${nb(h + d)} h = ${h} h + ${nb(d)} × 60 min = ${h} h ${m} min` };
+    }
+  },
+
+  {
+    groupe: F7,
+    id: "calculer-duree",
+    titre: "Calculer une durée",
+    description: "Entre deux horaires.",
+    generer() {
+      const dep = alea(6 * 60, 18 * 60) , du = alea(20, 300), arr = dep + du;
+      const f = x => `${Math.floor(x / 60)} h ${String(x % 60).padStart(2, "0")}`;
+      return {
+        consigne: `Un car part à <strong>${f(dep)}</strong> et arrive à <strong>${f(arr)}</strong>. Combien de temps a duré le trajet ?`,
+        ligne: "[n] h [n] min",
+        verifier: v => { const a = verifierNombre(v[0], Math.floor(du / 60)), b = verifierNombre(v[1], du % 60); return a.etat === "incomplet" || b.etat === "incomplet" ? { etat: "incomplet", message: "Remplis les deux cases (0 si besoin)." } : a.etat === "juste" && b.etat === "juste" ? { etat: "juste" } : { etat: "faux" }; },
+        indice: "Avance jusqu'à l'heure ronde suivante, puis d'heure en heure, puis jusqu'à l'arrivée, et additionne les bonds.",
+        correction: `Durée : ${fdur(du)}.`
+      };
+    }
+  },
+
+  {
+    groupe: F7,
+    id: "horaire-arrivee",
+    titre: "Trouver un horaire",
+    description: "Départ + durée = arrivée.",
+    generer() {
+      const dep = alea(7 * 60, 22 * 60), du = alea(25, 240), arr = (dep + du) % 1440;
+      const f = x => `${Math.floor(x / 60)} h ${String(x % 60).padStart(2, "0")}`;
+      return {
+        consigne: `Un film commence à <strong>${f(dep)}</strong> et dure <strong>${fdur(du)}</strong>. À quelle heure se termine-t-il ?`,
+        ligne: "[n] h [n]",
+        verifier: v => { const a = verifierNombre(v[0], Math.floor(arr / 60)), b = verifierNombre(v[1], arr % 60); return a.etat === "incomplet" || b.etat === "incomplet" ? { etat: "incomplet", message: "Remplis les deux cases." } : a.etat === "juste" && b.etat === "juste" ? { etat: "juste" } : { etat: "faux" }; },
+        indice: "Ajoute les heures, puis les minutes. Si tu dépasses 60 min, convertis 60 min en 1 h (et après 24 h, on recommence à 0 h).",
+        correction: `Il se termine à ${f(arr)}.`
+      };
+    }
   }
 ];
 
@@ -602,7 +667,7 @@ const ACTIVITES = [
 const PARCOURS = {
   id: "je-me-teste",
   titre: "Je me teste",
-  description: "12 questions sur tout le chapitre, un seul essai, puis un bilan de ce qui est à revoir.",
+  description: "13 questions sur tout le chapitre, un seul essai, puis un bilan de ce qui est à revoir.",
   etapes: [
     { competence: "Le vocabulaire des opérations", activites: ["vocabulaire", "termes-facteurs"] },
     { competence: "Choisir l'opération", activites: ["choisir-operation"] },
@@ -615,6 +680,7 @@ const PARCOURS = {
     { competence: "Traduire par une expression", activites: ["phrase-expression", "programme-calcul"] },
     { competence: "Développer avec la distributivité", activites: ["developper", "distrib-vrai-faux"] },
     { competence: "Calculer astucieusement", activites: ["astucieux", "factoriser"] },
-    { competence: "Résoudre un problème", activites: ["probleme-expression", "probleme-etapes"] }
+    { competence: "Résoudre un problème", activites: ["probleme-expression", "probleme-etapes"] },
+    { competence: "Durées et horaires", activites: ["convertir-durees", "calculer-duree", "horaire-arrivee"] }
   ]
 };

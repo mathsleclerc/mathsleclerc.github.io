@@ -252,15 +252,16 @@ const NIVEAUX = {
       {
         titre: "Chapitre 1 — Enchaînements d'opérations",
         ressources: [
-          { type: "cours",     titre: "Cours — Enchaînements d'opérations",                     fichier: "pdf/5e/ch1-cours.pdf" },
+          { type: "cours",     titre: "Cours — Enchaînements d'opérations", fichier: "pdf/5e/ch1-cours.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire et sens des opérations", fichier: "pdf/5e/ch1-exercices-1.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°2 : Priorités opératoires",        fichier: "pdf/5e/ch1-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Priorités opératoires", fichier: "pdf/5e/ch1-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Parenthèses et nature d'une expression", fichier: "pdf/5e/ch1-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Traduire par une seule expression", fichier: "pdf/5e/ch1-exercices-4.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°5 : Distributivité et calcul astucieux", fichier: "pdf/5e/ch1-exercices-5.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°6 : Résoudre des problèmes",       fichier: "pdf/5e/ch1-exercices-6.pdf" },
-          { type: "test", titre: "Je me teste — Enchaînements d'opérations", lien: "exerciseurs/enchainements-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
-          { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les enchaînements d'opérations", lien: "exerciseurs/enchainements-5e/" }
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Résoudre des problèmes", fichier: "pdf/5e/ch1-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Durées et horaires", fichier: "pdf/5e/ch1-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Enchaînements d'opérations", lien: "exerciseurs/enchainements-5e/#je-me-teste", detail: "13 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : enchaînements d'opérations", lien: "exerciseurs/enchainements-5e/" }
         ]
       },
       {
