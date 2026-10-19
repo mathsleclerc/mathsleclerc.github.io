@@ -610,6 +610,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Transformations du plan", lien: "exerciseurs/transformations-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : transformations du plan", lien: "exerciseurs/transformations-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 12 — Pyramides, cônes et repérage dans l'espace",
+        ressources: [
+          { type: "cours",     titre: "Cours — Pyramides, cônes et repérage dans l'espace", fichier: "pdf/4e/ch12-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Reconnaître les solides", fichier: "pdf/4e/ch12-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Patrons de pyramides et de cônes", fichier: "pdf/4e/ch12-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Volume d'une pyramide", fichier: "pdf/4e/ch12-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Volume d'un cône", fichier: "pdf/4e/ch12-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Se repérer dans l'espace", fichier: "pdf/4e/ch12-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Résoudre des problèmes", fichier: "pdf/4e/ch12-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Pyramides, cônes et repérage dans l'espace", lien: "exerciseurs/solides-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : pyramides, cônes et repérage dans l'espace", lien: "exerciseurs/solides-4e/" }
+        ]
       }
     ]
   },
