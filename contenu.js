@@ -496,6 +496,21 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Racine carrée et théorème de Pythagore", lien: "exerciseurs/pythagore-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : racine carrée et théorème de Pythagore", lien: "exerciseurs/pythagore-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 4 — Fractions et nombres rationnels",
+        ressources: [
+          { type: "cours",     titre: "Cours — Fractions et nombres rationnels", fichier: "pdf/4e/ch4-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Nombres premiers et décomposition", fichier: "pdf/4e/ch4-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Simplifier, fractions égales", fichier: "pdf/4e/ch4-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Comparer, additionner, soustraire", fichier: "pdf/4e/ch4-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Multiplier des fractions", fichier: "pdf/4e/ch4-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Inverse et division", fichier: "pdf/4e/ch4-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Enchaîner les opérations", fichier: "pdf/4e/ch4-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Résoudre des problèmes", fichier: "pdf/4e/ch4-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Fractions et nombres rationnels", lien: "exerciseurs/fractions-4e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : fractions et nombres rationnels", lien: "exerciseurs/fractions-4e/" }
+        ]
       }
     ]
   },
