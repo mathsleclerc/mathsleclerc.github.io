@@ -35,7 +35,11 @@ const SITE = {
   sousTitre: "Cours, fiches d'exercices et vidéos pour le collège",
   message: "Choisis ton niveau pour retrouver les cours, les exercices et les vidéos de chaque chapitre.",
   // Ligne affichée au-dessus du titre, sur la page d'accueil
-  presentation: "Le site des élèves de M. Leclerc, professeur de mathématiques"
+  presentation: "Le site des élèves de M. Leclerc, professeur de mathématiques",
+  // Nom du collège, affiché dans le pied de page (laisser "" pour ne rien afficher)
+  college: "",
+  // Phrase de contact du pied de page (laisser "" pour la phrase par défaut)
+  contact: ""
 };
 
 const NIVEAUX = {

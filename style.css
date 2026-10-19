@@ -51,14 +51,44 @@ a { color: inherit; }
   background: var(--bleu);
   color: #fff;
   padding: 28px 16px 30px;
+  /* quadrillage de cahier, très discret */
+  background-image:
+    linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 .bandeau .interieur, main, footer { max-width: 960px; margin: 0 auto; }
 .bandeau h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; }
 .bandeau h1 a { text-decoration: none; }
 .bandeau p { margin: 6px 0 0; opacity: .88; }
-.fil { font-size: .95rem; margin-bottom: 8px; opacity: .9; }
-.fil a { text-decoration: none; }
+.fil { font-size: .95rem; margin-bottom: 6px; opacity: .9; }
+.fil a { display: inline-block; padding: 4px 0; text-decoration: none; font-weight: 500; }
 .fil a:hover { text-decoration: underline; }
+
+/* ----- Focus clavier : bien visible partout, sans gêner les clics à la souris ----- */
+:focus-visible { outline: 3px solid var(--cours); outline-offset: 2px; }
+.bandeau :focus-visible { outline-color: #fff; }
+
+/* ----- Lien « Aller au contenu » (apparaît avec la touche Tab) ----- */
+.lien-evitement {
+  position: absolute; left: 16px; top: -100px; z-index: 100;
+  padding: 10px 16px; border-radius: 8px; background: var(--carte); color: var(--texte);
+  font-weight: 500; text-decoration: none; box-shadow: var(--ombre);
+}
+.lien-evitement:focus { top: 8px; }
+
+/* ----- Boutons communs ----- */
+.bouton {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 18px; border-radius: 8px;
+  font: inherit; font-weight: 500; text-decoration: none; cursor: pointer;
+  border: 1px solid var(--bord); background: var(--carte); color: var(--texte);
+  transition: background-color .15s, border-color .15s;
+}
+.bouton:hover { border-color: var(--texte-doux); }
+.bouton.principal { background: var(--bleu); border-color: var(--bleu); color: #fff; }
+.bouton.principal:hover { background: var(--bleu-fonce); border-color: var(--bleu-fonce); }
+.bouton-icone { width: 44px; padding: 0; }
 
 nav.niveaux {
   display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px;
@@ -105,13 +135,7 @@ main { padding: 24px 16px 40px; }
 }
 
 /* ----- Accueil ----- */
-.accueil .bandeau {
-  padding: 44px 16px 48px;
-  background-image:
-    linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
+.accueil .bandeau { padding: 44px 16px 48px; }
 .accueil .bandeau h1 { font-size: clamp(2rem, 5.5vw, 3rem); line-height: 1.1; letter-spacing: -.01em; }
 .bandeau .surtitre { margin: 0 0 10px; font-weight: 500; font-size: .95rem; opacity: .9; }
 .accueil .bandeau #sous-titre { margin-top: 10px; font-size: 1.1rem; }
@@ -261,7 +285,13 @@ a.ressource:hover { border-color: currentColor; }
   border: 2px dashed var(--bord); border-radius: 14px;
 }
 
-footer { padding: 0 16px 30px; color: var(--texte-doux); font-size: .85rem; text-align: center; }
+footer { padding: 0 16px 32px; color: var(--texte-doux); font-size: .9rem; text-align: center; }
+.pied-interieur { border-top: 1px solid var(--bord); padding-top: 22px; }
+footer p { margin: 0 0 6px; }
+.pied-qui strong { color: var(--texte); font-weight: 500; }
+.pied-liens { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 20px; margin: 10px 0; }
+.pied-liens a { display: inline-block; padding: 6px 0; color: var(--texte); text-underline-offset: 3px; }
+.pied-annee { font-size: .85rem; }
 @media (max-width: 520px) {
   .chapitre > summary { flex-wrap: wrap; }
   .chapitre > summary h2 { flex-basis: calc(100% - 24px); }
@@ -292,7 +322,7 @@ footer { padding: 0 16px 30px; color: var(--texte-doux); font-size: .85rem; text
 .lecteur-tete { display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
 .lecteur-tete strong { flex: 1; font-weight: 500; }
 .lecteur-fermer {
-  font: inherit; font-size: 1.1rem; cursor: pointer; width: 36px; height: 36px;
+  font: inherit; font-size: 1.1rem; cursor: pointer; width: 44px; height: 44px;
   border-radius: 8px; border: 1px solid var(--bord); background: transparent; color: var(--texte);
 }
 .lecteur-cadre { position: relative; aspect-ratio: 16 / 9; background: #000; }
@@ -308,18 +338,18 @@ footer { padding: 0 16px 30px; color: var(--texte-doux); font-size: .85rem; text
   margin: -8px -16px 16px; padding: 10px 16px;
   background: var(--fond); border-bottom: 1px solid var(--bord);
 }
-.pastille {
+.pastilles .pastille {
   flex: none; display: grid; place-items: center; min-width: 36px; height: 36px; padding: 0 8px;
   border-radius: 999px; border: 1px solid var(--bord); background: var(--carte);
   text-decoration: none; font-weight: 700; font-size: .92rem; color: var(--texte);
   font-variant-numeric: tabular-nums;
 }
-.pastille:hover { border-color: var(--bleu); }
-.pastille.actif { background: var(--bleu); border-color: var(--bleu); color: #fff; }
-.pastille.activites { color: var(--activite); }
-.pastille.activites.actif { background: var(--activite); border-color: var(--activite); color: #fff; }
-.pastille.vide { color: var(--texte-doux); font-weight: 500; opacity: .7; }
-.pastille.masquee { opacity: .3; }
+.pastilles .pastille:hover { border-color: var(--bleu); }
+.pastilles .pastille.actif { background: var(--bleu); border-color: var(--bleu); color: #fff; }
+.pastilles .pastille.activites { color: var(--activite); }
+.pastilles .pastille.activites.actif { background: var(--activite); border-color: var(--activite); color: #fff; }
+.pastilles .pastille.vide { color: var(--texte-doux); font-weight: 500; opacity: .7; }
+.pastilles .pastille.masquee { opacity: .3; }
 .chapitre { scroll-margin-top: 70px; }
 
 /* ----- Sous-parties d'un chapitre ----- */
@@ -380,3 +410,17 @@ footer { padding: 0 16px 30px; color: var(--texte-doux); font-size: .85rem; text
 .groupe-fiches[open] > summary .fleche { transform: rotate(90deg); }
 .groupe-fiches > .ressources { padding: 0 10px 10px; }
 .groupe-fiches .ressource { background: var(--carte); }
+
+/* ----- Pages de texte (À propos) ----- */
+.page-texte main { max-width: 720px; }
+.page-texte section + section { margin-top: 36px; }
+.page-texte main p, .page-texte main li { max-width: 65ch; }
+.page-texte main ul { padding-left: 1.2em; }
+.page-texte main li + li { margin-top: 6px; }
+
+/* ----- Animations réduites si l'élève l'a demandé dans son système ----- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+}

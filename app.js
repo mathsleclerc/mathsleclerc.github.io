@@ -22,10 +22,82 @@ function el(tag, attrs = {}, ...enfants) {
   return e;
 }
 
+/* Dossier racine du site (là où se trouve app.js), pour construire les liens depuis n'importe quelle page */
+const RACINE = new URL(".", document.currentScript ? document.currentScript.src : location.href);
+
+/* Défilement doux, sauf si l'élève a demandé de réduire les animations */
+const DEFILEMENT = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+
 function piedDePage() {
   const p = document.getElementById("pied");
-  if (p) p.textContent = SITE.titre + " · " + new Date().getFullYear();
+  if (!p || p.dataset.fait) return;
+  p.dataset.fait = "1";
+  const qui = [SITE.presentation, SITE.college].filter(Boolean).join(", ");
+  p.replaceChildren(el("div", { class: "pied-interieur" },
+    el("p", { class: "pied-qui" }, el("strong", {}, SITE.titre), qui ? " · " + qui : ""),
+    el("p", {}, SITE.contact || "Une question ? Pose-la en classe ou par la messagerie du collège."),
+    el("nav", { class: "pied-liens", "aria-label": "Liens du pied de page" },
+      el("a", { href: new URL("index.html", RACINE).href }, "Accueil"),
+      el("a", { href: new URL("apropos.html", RACINE).href }, "À propos et mentions")),
+    el("p", { class: "pied-annee" }, SITE.titre + " · " + new Date().getFullYear())
+  ));
 }
+
+/* ---------- Page « À propos et mentions » ---------- */
+function pageAPropos() {
+  if (SITE.college) document.getElementById("ap-qui").textContent = "M. Leclerc, professeur de mathématiques au " + SITE.college + ".";
+  if (SITE.contact) document.getElementById("ap-contact").textContent = SITE.contact;
+  piedDePage();
+}
+
+/* ---------- Améliorations communes à toutes les pages ---------- */
+
+/* Lien « Aller au contenu » pour le clavier, visible seulement quand il reçoit le focus */
+function lienEvitement() {
+  const main = document.querySelector("main");
+  if (!main || document.querySelector(".lien-evitement")) return;
+  if (!main.id) main.id = "contenu";
+  document.body.prepend(el("a", { class: "lien-evitement", href: "#" + main.id }, "Aller au contenu"));
+}
+
+/* Icône d'onglet, pour les pages qui n'en déclarent pas */
+function iconeOnglet() {
+  if (document.querySelector('link[rel="icon"]')) return;
+  document.head.append(el("link", { rel: "icon", type: "image/svg+xml", href: new URL("favicon.svg", RACINE).href }));
+}
+
+/* Le lien « ← Sixième » d'un exerciseur ou d'une activité ramène au chapitre d'où l'on vient */
+function lienRetourChapitre() {
+  const a = document.querySelector(".bandeau .fil a");
+  if (!a || typeof NIVEAUX === "undefined") return;
+  const cible = new URL(a.getAttribute("href"), location.href);
+  if (!/niveau\.html$/.test(cible.pathname) || cible.hash) return;
+  const code = cible.searchParams.get("n");
+  const niv = NIVEAUX[code];
+  if (!niv) return;
+  // chemin de cette page depuis la racine du site, sans index.html
+  const ici = decodeURI(location.pathname).replace(/index\.html$/, "");
+  const memePage = lien => lien && decodeURI(new URL(lien.split("#")[0], RACINE).pathname).replace(/index\.html$/, "") === ici;
+  const i = niv.chapitres.findIndex(ch => (ch.ressources || []).some(r => memePage(r.lien)));
+  if (i < 0) {
+    if (!(niv.activites || []).some(r => memePage(r.lien))) return;
+    cible.hash = "activites";
+    a.href = cible.href;
+    a.textContent = "← " + niv.nom + " · Activités";
+    return;
+  }
+  cible.hash = "ch" + (i + 1);
+  a.href = cible.href;
+  // « Chapitre 3 — Fractions et partage » devient « Ch. 3 · Fractions et partage »
+  const titre = niv.chapitres[i].titre.replace(/^Chapitre\s+(\d+)\s*[—–-]\s*/, "Ch. $1 · ");
+  a.textContent = "← " + niv.nom + " · " + titre;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  lienEvitement();
+  iconeOnglet();
+  lienRetourChapitre();
+});
 
 function idYoutube(lien) {
   if (!lien) return null;
@@ -182,7 +254,8 @@ function pageNiveau() {
 
   const nav = document.getElementById("nav");
   for (const c of Object.keys(NIVEAUX)) {
-    nav.append(el("a", { href: "niveau.html?n=" + encodeURIComponent(c), class: c === code ? "actif" : "" }, c));
+    nav.append(el("a", { href: "niveau.html?n=" + encodeURIComponent(c), class: c === code ? "actif" : "",
+      "aria-label": NIVEAUX[c].nom, ...(c === code ? { "aria-current": "page" } : {}) }, c));
   }
 
   const zone = document.getElementById("chapitres");
@@ -286,7 +359,7 @@ function pageNiveau() {
   function allerA(b) {
     if (b.hidden) { recherche.value = ""; filtrer(); }
     b.open = true;
-    b.scrollIntoView({ behavior: "smooth", block: "start" });
+    b.scrollIntoView({ behavior: DEFILEMENT, block: "start" });
   }
 
   // Pastille du chapitre visible à l'écran
@@ -294,7 +367,10 @@ function pageNiveau() {
     const haut = pastilles.getBoundingClientRect().bottom + 8;
     let courant = blocs.find(b => !b.hidden);
     for (const b of blocs) if (!b.hidden && b.getBoundingClientRect().top <= haut + 40) courant = b;
-    for (const b of blocs) b._pastille.classList.toggle("actif", b === courant);
+    for (const b of blocs) {
+      b._pastille.classList.toggle("actif", b === courant);
+      if (b === courant) b._pastille.setAttribute("aria-current", "true"); else b._pastille.removeAttribute("aria-current");
+    }
   };
   addEventListener("scroll", marquer, { passive: true });
 
@@ -340,7 +416,7 @@ function pageNiveau() {
   // ----- Bouton « Haut de page » -----
   const haut = el("button", { class: "haut-de-page", type: "button", "aria-label": "Revenir en haut de la page", hidden: "" },
     "↑", el("span", {}, " Haut de page"));
-  haut.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
+  haut.addEventListener("click", () => scrollTo({ top: 0, behavior: DEFILEMENT }));
   addEventListener("scroll", () => { haut.hidden = scrollY < 500; }, { passive: true });
   document.body.append(haut);
 
