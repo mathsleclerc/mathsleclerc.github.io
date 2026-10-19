@@ -275,6 +275,12 @@ function lancerExerciseur({ intro, activites, parcours }) {
   if (window.self !== window.top) document.body.classList.add("integre"); // affiché dans une iframe
   const app = document.getElementById("app");
   const scores = {};
+  // Progression enregistrée dans le navigateur de l'élève, sur cet appareil seulement (rien n'est envoyé)
+  const CLE = "maths-leclerc:" + location.pathname;
+  const suivi = (() => { try { return JSON.parse(localStorage.getItem(CLE)) || {}; } catch { return {}; } })();
+  suivi.activites ||= {};
+  const enregistrer = () => { try { localStorage.setItem(CLE, JSON.stringify(suivi)); } catch { /* stockage bloqué : tant pis */ } };
+  const dateCourte = iso => new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
   const melange = {
     id: "melange", titre: "Tout mélanger", description: "Des questions de toutes les activités, au hasard.",
     generer(stats) { const a = choisir(activites); return Object.assign(a.generer(stats), { etiquette: a.titre }); }
@@ -288,9 +294,13 @@ function lancerExerciseur({ intro, activites, parcours }) {
   }
 
   function carte(a, badge, classe = "") {
+    const s = suivi.activites[a.id];
+    let info = null;
+    if (a === parcours && suivi.test) info = "Dernier test : " + suivi.test.score + " / " + suivi.test.total + " (" + dateCourte(suivi.test.date) + ")";
+    else if (s && s.t) info = s.r + (s.r > 1 ? " réussies" : " réussie") + " du premier coup sur " + s.t;
     return el("a", { class: "carte-activite " + classe, href: "#" + a.id },
       el("span", { class: "badge" }, badge),
-      el("div", {}, el("h2", {}, a.titre), el("p", {}, a.description)));
+      el("div", {}, el("h2", {}, a.titre), el("p", {}, a.description), info ? el("span", { class: "suivi" }, info) : null));
   }
 
   function pageMenu() {
@@ -313,6 +323,14 @@ function lancerExerciseur({ intro, activites, parcours }) {
     }
     grille.append(carte(melange, "Mix", "melange"));
     if (parcours) grille.append(carte(parcours, "Test", "test"));
+    if (Object.keys(suivi.activites).length || suivi.test) {
+      app.append(el("div", { class: "effacer-suivi" },
+        el("p", { class: "intro" }, "Ta progression est enregistrée sur cet appareil."),
+        el("button", { class: "btn discret", type: "button", onclick: () => {
+          if (!confirm("Effacer ta progression sur cet exerciseur ? Tes réussites et ton dernier test seront oubliés sur cet appareil.")) return;
+          suivi.activites = {}; delete suivi.test; enregistrer(); afficher();
+        } }, "Effacer ma progression")));
+    }
   }
 
   /* ----- Parcours « Je me teste » : un seul essai par question, puis un bilan ----- */
@@ -405,6 +423,10 @@ function lancerExerciseur({ intro, activites, parcours }) {
     function bilan() {
       const total = resultats.filter(r => r.juste).length;
       numero.textContent = "Bilan";
+      const date = new Date();
+      suivi.test = { score: total, total: etapes.length, date: date.toISOString(),
+        details: etapes.map((e, k) => ({ competence: e.competence, juste: resultats[k].juste })) };
+      enregistrer();
       const avis = total === etapes.length ? "Parfait : tout est acquis !"
         : total >= etapes.length * 0.7 ? "Très bien ! Revois les points en rouge pour être prêt(e)."
         : total >= etapes.length * 0.4 ? "C'est un bon début. Entraîne-toi sur les points en rouge, puis refais le test."
@@ -417,11 +439,14 @@ function lancerExerciseur({ intro, activites, parcours }) {
           juste ? "" : el("a", { class: "btn", href: "#" + act.id }, "S'entraîner"));
       }));
       corps.replaceChildren(
+        el("p", { class: "seulement-impression" }, "Prénom et nom : ……………………………………………"),
         el("p", { class: "score-test" }, el("strong", {}, `${total} / ${etapes.length}`), " réponses justes"),
+        el("p", { class: "date-test" }, "Test fait le " + date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })),
         el("p", { class: "consigne" }, avis),
         liste,
         el("div", { class: "actions" },
           el("button", { class: "btn principal", type: "button", onclick: () => { app.replaceChildren(); pageParcours(); } }, "Refaire le test"),
+          el("button", { class: "btn", type: "button", onclick: () => print() }, "Imprimer mon bilan"),
           el("a", { class: "btn", href: "#" }, "Toutes les activités")));
     }
   }
@@ -527,6 +552,12 @@ function lancerExerciseur({ intro, activites, parcours }) {
         if (r.etat === "incomplet") { message("incomplet", "", r.message); return; }
         essais++;
         if (essais === 1) s.tentees++;
+        if (essais === 1) {
+          const m = (suivi.activites[act.id] ||= { t: 0, r: 0 });
+          m.t++;
+          if (r.etat === "juste") m.r++;
+          enregistrer();
+        }
         if (r.etat === "juste") {
           if (essais === 1) { s.reussies++; s.serie++; }
           message("juste", choisir(BRAVO), r.message);

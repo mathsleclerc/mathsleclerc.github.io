@@ -6,19 +6,23 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 .carte-activite {
+  --c: var(--exercices);
   display: flex; gap: 14px; align-items: flex-start; text-decoration: none;
-  background: var(--carte); border: 1px solid var(--bord); border-radius: 14px;
-  padding: 16px 18px; box-shadow: var(--ombre);
-  transition: transform .15s, border-color .15s;
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 12px;
+  padding: 16px 18px; transition: border-color .15s;
 }
-.carte-activite:hover { transform: translateY(-2px); border-color: var(--exercices); }
+.carte-activite:hover { border-color: var(--c); }
 .carte-activite .badge {
-  flex: none; display: grid; place-items: center; width: 44px; height: 44px;
-  border-radius: 10px; background: var(--exercices); color: #fff;
-  font-size: 1.15rem; font-weight: 700;
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px;
+  background: color-mix(in srgb, var(--c) 16%, var(--carte));
+  color: color-mix(in srgb, var(--c) 75%, var(--texte));
+  font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums;
 }
-.carte-activite.melange .badge { background: var(--bleu); font-size: .95rem; }
-.carte-activite.melange:hover { border-color: var(--bleu); }
+.carte-activite.melange { --c: var(--cours); }
+.carte-activite.melange .badge { font-size: .95rem; }
+.carte-activite .suivi { display: block; margin-top: 6px; color: var(--texte); font-size: .88rem; font-weight: 500; }
+.carte-activite .suivi::before { content: "✓ "; color: var(--corrige); font-weight: 700; }
+.effacer-suivi { margin-top: 28px; text-align: center; }
 .carte-activite h2 { margin: 2px 0 2px; font-size: 1.05rem; }
 .carte-activite p { margin: 0; color: var(--texte-doux); font-size: .9rem; }
 
@@ -50,7 +54,7 @@
 .exercice-corps { padding: 4px 20px 22px; }
 .etiquette {
   display: inline-block; margin: 10px 0 0; padding: 2px 10px; border-radius: 999px;
-  background: var(--bleu-clair); color: var(--texte-doux); font-size: .82rem; font-weight: 500;
+  background: var(--bleu-clair); color: var(--texte-doux); font-size: .9rem; font-weight: 500;
 }
 .consigne { font-size: 1.08rem; margin: 12px 0 14px; }
 .figure { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 4px 0 16px; }
@@ -78,7 +82,7 @@
   background: var(--fond); color: var(--texte);
 }
 .case.large { width: 5em; }
-.case:focus { outline: none; border-color: var(--cours); }
+.case:focus { outline: 3px solid var(--cours); outline-offset: 1px; border-color: var(--cours); }
 .case:disabled { opacity: .75; }
 .case-choix {
   display: inline-grid; place-items: center; width: 1.8em; height: 1.8em;
@@ -96,7 +100,7 @@
 .btn.principal:hover { background: var(--bleu-fonce); }
 .btn.discret { border-color: transparent; color: var(--texte-doux); }
 .btn-choix { min-width: 60px; font-size: 1.4rem; font-weight: 700; padding: 6px 16px; }
-.btn:focus-visible, .droite-clic:focus-visible { outline: 2px solid var(--cours); outline-offset: 2px; }
+.btn:focus-visible, .droite-clic:focus-visible { outline: 3px solid var(--cours); outline-offset: 2px; }
 
 /* ----- Retour à l'élève ----- */
 .message {
@@ -439,7 +443,7 @@ body.integre main { padding-top: 16px; }
 .atelier-message.bien { border-color: var(--corrige); }
 .atelier-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; font-size: 1.1rem; }
 .etapes-construction { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-.etapes-construction span { font-size: .8rem; padding: 3px 10px; border-radius: 999px; background: var(--fond); color: var(--texte-doux); border: 1px solid var(--bord); }
+.etapes-construction span { font-size: .88rem; padding: 3px 10px; border-radius: 999px; background: var(--fond); color: var(--texte-doux); border: 1px solid var(--bord); }
 .etapes-construction span.faite { background: var(--corrige); color: #fff; border-color: var(--corrige); }
 .etapes-construction span.en-cours { border-color: var(--cours); color: var(--texte); font-weight: 500; }
 
@@ -511,16 +515,16 @@ body.integre main { padding-top: 16px; }
 .calc-touche.op, .calc-touche.fonction { color: var(--cours); font-weight: 700; }
 .calc-touche.pi { color: var(--exercices); font-weight: 700; }
 .calc-touche.egal { grid-column: 1 / -1; background: var(--bleu); border-color: var(--bleu); color: #fff; font-weight: 700; }
-.calc-aide { margin: 8px 0 0; font-size: .78rem; color: var(--texte-doux); text-align: center; }
+.calc-aide { margin: 8px 0 0; font-size: .88rem; color: var(--texte-doux); text-align: center; }
 @media (max-width: 520px) { .calc-ouvrir { padding: 10px 12px; } }
 body:has(.calculatrice) main { padding-bottom: 90px; }
 .geo .carte-nom { fill: #1c2430; font-size: 13px; font-weight: 500; }
 .geo .carte-echelle { fill: #1c2430; font-size: 13px; font-weight: 500; }
-.aide-compas { width: 100%; text-align: center; font-size: .85rem; color: var(--texte-doux); }
+.aide-compas { width: 100%; text-align: center; font-size: .9rem; color: var(--texte-doux); }
 
 /* ----- Parcours « Je me teste » ----- */
-.carte-activite.test .badge { background: var(--exerciseur); }
-.carte-activite.test:hover { border-color: var(--exerciseur); }
+.carte-activite.test { --c: var(--corrige); }
+.carte-activite.test .badge { font-size: .95rem; }
 .progression { display: flex; gap: 4px; padding: 0 20px; margin-top: 4px; }
 .progression span { flex: 1; height: 6px; border-radius: 3px; background: var(--bord); }
 .progression span.juste { background: var(--corrige); }
@@ -536,7 +540,14 @@ body:has(.calculatrice) main { padding-bottom: 90px; }
 .bilan .marque { font-weight: 700; font-size: 1.2rem; width: 1.2em; text-align: center; color: var(--corrige); }
 .bilan li.faux .marque { color: var(--video); }
 .bilan .comp { flex: 1; display: flex; flex-direction: column; }
-.bilan .comp small { color: var(--texte-doux); font-size: .82rem; }
+.bilan .comp small { color: var(--texte-doux); font-size: .9rem; }
+.date-test { margin: 4px 0 14px; color: var(--texte-doux); }
+@media (max-width: 520px) {
+  .bilan li { flex-wrap: wrap; }
+  .bilan .comp { flex: 1 1 60%; }
+  .bilan .btn { margin-left: calc(1.2em + 12px); }
+}
+.seulement-impression { display: none; }
 .bilan .btn { padding: 6px 12px; text-decoration: none; }
 
 /* ----- Fractions : figures à colorier, bandes à deux couleurs ----- */
@@ -634,3 +645,17 @@ input.virgule + * { margin-left: 0; }
 .barres-stat .barres-axe { stroke: var(--texte); stroke-width: 2; }
 .barres-stat .barres-axe-txt { font: 13px "Fira Sans", sans-serif; fill: var(--texte); }
 .tab-effectifs .case { width: 3.6em; }
+
+/* ----- Impression du bilan « Je me teste » ----- */
+@media print {
+  :root {
+    --fond: #fff; --carte: #fff; --texte: #1c2430; --texte-doux: #5a6778; --bord: #dde3ec;
+    --bleu-clair: #e8f0fa; --cours: #1f5fa8; --corrige: #2e8b57; --video: #c4302b;
+  }
+  body { background: #fff; }
+  .lien-evitement, .bandeau .fil, .barre, .actions, .haut-de-page, footer, .calculatrice, .bilan .btn { display: none !important; }
+  .bandeau { background: none !important; color: var(--texte); padding: 0 0 10px; border-bottom: 2px solid var(--cours); }
+  .exercice { border: 0; box-shadow: none; }
+  .seulement-impression { display: block; margin: 0 0 16px; font-size: 1.05rem; }
+  .bilan li { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
