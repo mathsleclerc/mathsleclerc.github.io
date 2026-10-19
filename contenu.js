@@ -348,6 +348,21 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Calcul littéral et puissances", lien: "exerciseurs/calcul-litteral-5e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral et puissances", lien: "exerciseurs/calcul-litteral-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 8 — Parallélogrammes",
+        ressources: [
+          { type: "cours",     titre: "Cours — Parallélogrammes", fichier: "pdf/5e/ch8-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Définition et vocabulaire", fichier: "pdf/5e/ch8-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Propriétés du parallélogramme", fichier: "pdf/5e/ch8-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Construire des parallélogrammes", fichier: "pdf/5e/ch8-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Reconnaître un parallélogramme", fichier: "pdf/5e/ch8-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Rectangle, losange, carré", fichier: "pdf/5e/ch8-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Aires et figures complexes", fichier: "pdf/5e/ch8-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Conversions et problèmes", fichier: "pdf/5e/ch8-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Parallélogrammes", lien: "exerciseurs/parallelogrammes-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : parallélogrammes", lien: "exerciseurs/parallelogrammes-5e/" }
+        ]
       }
     ]
   },
