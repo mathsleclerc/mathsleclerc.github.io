@@ -262,6 +262,19 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Enchaînements d'opérations", lien: "exerciseurs/enchainements-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les enchaînements d'opérations", lien: "exerciseurs/enchainements-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 2 — La symétrie centrale",
+        ressources: [
+          { type: "cours",     titre: "Cours — La symétrie centrale", fichier: "pdf/5e/ch2-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Reconnaître une symétrie centrale", fichier: "pdf/5e/ch2-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Construire sur quadrillage", fichier: "pdf/5e/ch2-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Construire sur papier blanc", fichier: "pdf/5e/ch2-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Utiliser les propriétés", fichier: "pdf/5e/ch2-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Centres de symétrie, frises et rosaces", fichier: "pdf/5e/ch2-exercices-5.pdf" },
+          { type: "test", titre: "Je me teste — La symétrie centrale", lien: "exerciseurs/symetrie-centrale-5e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : la symétrie centrale", lien: "exerciseurs/symetrie-centrale-5e/" }
+        ]
       }
     ]
   },
