@@ -24,7 +24,13 @@
 
    Vidéo de correction d'une fiche : ajoutez à la fin de sa ligne
      correction: "https://youtu.be/..."
-   → un bouton « Correction en vidéo » apparaît sous la fiche.
+   → un bouton « Correction en vidéo » apparaît à côté de la fiche.
+
+   Chapitre étudié en ce moment en classe : ajoutez sous son titre
+     enCours: true,
+   → il s'ouvre tout seul sur la page du niveau, avec l'étiquette
+     « En ce moment en classe ». Un seul chapitre par niveau ; pensez à
+     déplacer la ligne quand vous changez de chapitre.
 
    Attention : chaque ligne se termine par une virgule, et les textes
    sont entre guillemets "comme ceci".

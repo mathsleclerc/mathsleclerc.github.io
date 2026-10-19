@@ -120,7 +120,8 @@ const ICONES = {
   exerciseur: '<path d="M4 20l1-5L15.5 4.5l4 4L9 19z"/><path d="M13 7l4 4"/>',
   activite:   '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>',
   test:       '<path d="M9 4h6v3H9z"/><path d="M8 5.5H6V21h12V5.5h-2"/><path d="M9 14l2 2 4-4"/>',
-  chapitre:   '<path d="M4 5h16M4 12h16M4 19h10"/>'
+  chapitre:   '<path d="M4 5h16M4 12h16M4 19h10"/>',
+  telecharger:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>'
 };
 function icone(nom, classe = "picto") {
   const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -239,13 +240,30 @@ function normaliserRecherche(t) {
   return (t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-/* Sous-parties d'un chapitre : le cours, l'entraînement (exerciseur en premier), les vidéos */
+/* Sous-parties d'un chapitre : le cours, l'entraînement et le test, les vidéos */
 const SOUS_PARTIES = [
   { titre: "Le cours", types: ["cours", "corrige"] },
-  { titre: "Se tester", types: ["test"] },
-  { titre: "S'entraîner", types: ["exerciseur", "exercices", "activite", "lien"] },
+  { titre: "S'entraîner et se tester", types: ["exerciseur", "test", "exercices", "activite", "lien"] },
   { titre: "Vidéos", types: ["video"] }
 ];
+
+/* Titre affiché, plus court que celui de contenu.js (qui reste complet pour la recherche) :
+   « Feuille d'exercices n°1 : Lire… » → « Fiche 1 · Lire… », « Vidéo — X » → « X », etc. */
+function titreAffiche(r) {
+  const t = r.titre || (TYPES[r.type] || TYPES.lien).libelle;
+  let m;
+  if (r.type === "exercices" && (m = t.match(/^Feuille d'exercices n°\s*(\d+)\s*:\s*(.+)$/))) return "Fiche " + m[1] + " · " + m[2];
+  if (r.type === "cours" && /^Cours\s+—\s+/.test(t)) return "Cours";
+  if (r.type === "test" && /^Je me teste\s+—\s+/.test(t)) return "Je me teste";
+  if (r.type === "video" || r.type === "exerciseur") return t.replace(/^(Vidéo|Exerciseur)\s+—\s+/, "");
+  return t;
+}
+
+/* « Chapitre 3 — Fractions et partage » → { num: "3", nom: "Fractions et partage" } */
+function decouperChapitre(titre, repli) {
+  const m = (titre || "").match(/^Chapitre\s+(\d+)\s*[—–-]\s*(.+)$/);
+  return m ? { num: m[1], nom: m[2] } : { num: repli, nom: titre };
+}
 
 function pageNiveau() {
   const code = new URLSearchParams(location.search).get("n") || Object.keys(NIVEAUX)[0];
@@ -254,7 +272,7 @@ function pageNiveau() {
 
   document.title = niv.nom + " — " + SITE.titre;
   document.getElementById("lien-accueil").textContent = "← " + SITE.titre;
-  document.getElementById("titre-niveau").textContent = "Mathématiques — " + niv.nom;
+  document.getElementById("titre-niveau").textContent = niv.nom;
 
   const nav = document.getElementById("nav");
   for (const c of Object.keys(NIVEAUX)) {
@@ -272,8 +290,11 @@ function pageNiveau() {
     return;
   }
 
-  // Section « Activités » (hors chapitres), affichée en premier si le niveau en a une
-  const sections = niv.chapitres.map((ch, i) => ({ ch, id: "ch" + (i + 1), pastille: String(i + 1), ouvert: i === 0 }));
+  // Chapitre ouvert au départ : celui marqué « enCours: true » dans contenu.js, sinon le premier
+  const iEnCours = niv.chapitres.findIndex(ch => ch.enCours);
+  const iOuvert = iEnCours >= 0 ? iEnCours : 0;
+  const sections = niv.chapitres.map((ch, i) => ({ ch, id: "ch" + (i + 1), pastille: String(i + 1), ouvert: i === iOuvert, enCours: i === iEnCours }));
+  // Section « Activités » (hors chapitres) : sa pastille ★ vient en premier, son bloc après les chapitres
   if (Array.isArray(niv.activites)) {
     sections.unshift({
       ch: { titre: "Activités", description: "Des activités interactives qui mélangent les notions de plusieurs chapitres.", ressources: niv.activites },
@@ -281,15 +302,17 @@ function pageNiveau() {
     });
   }
 
-  const blocs = sections.map(({ ch, id, ouvert, classe, vide }) => {
+  const blocs = sections.map(({ ch, id, ouvert, enCours, classe, vide, pastille }) => {
     const res = ch.ressources || [];
     const docs = res.filter(r => r.type !== "video");
     const vids = res.filter(r => r.type === "video");
     const elements = []; // chaque ressource affichée, pour la recherche
 
     const carte = r => {
-      const e = r.type === "video" ? carteVideo(r) : carteRessource(r);
-      e.dataset.texte = normaliserRecherche(r.titre + " " + (TYPES[r.type] || TYPES.lien).libelle);
+      const e = r.type === "video" ? carteVideo(r)
+        : r.type === "exerciseur" || r.type === "test" ? carteAction(r)
+        : carteRessource(r);
+      e.dataset.texte = normaliserRecherche(r.titre + " " + titreAffiche(r) + " " + (TYPES[r.type] || TYPES.lien).libelle);
       elements.push(e);
       return e;
     };
@@ -302,20 +325,25 @@ function pageNiveau() {
       if (docs.length) corps.append(el("div", { class: "ressources" }, ...docs.map(carte)));
     } else {
       for (const sp of SOUS_PARTIES) {
-        const liste = res.filter(r => sp.types.includes(r.type))
-          .sort((a, b) => (b.type === "exerciseur") - (a.type === "exerciseur")); // l'exerciseur en premier
+        const liste = res.filter(r => sp.types.includes(r.type));
         if (!liste.length) continue;
+        // l'exerciseur (bouton principal) puis « Je me teste » (bouton secondaire)
+        const actions = liste.filter(r => r.type === "exerciseur").concat(liste.filter(r => r.type === "test"));
         const fiches = liste.filter(r => r.type === "exercices");
-        const autres = liste.filter(r => r.type !== "exercices");
-        const section = el("section", { class: "sous-partie" }, el("h3", {}, sp.titre));
+        const autres = liste.filter(r => !actions.includes(r) && r.type !== "exercices");
+        const section = el("section", { class: "sous-partie" }, el("h3", { class: "onglet onglet-leger" }, el("span", {}, sp.titre)));
+        if (actions.length) section.append(el("div", { class: "actions-chapitre" }, ...actions.map(carte)));
         if (autres.length) section.append(el("div", { class: sp.types.includes("video") ? "videos" : "ressources" }, ...autres.map(carte)));
         if (fiches.length) {
           // Les feuilles d'exercices sont regroupées dans un bloc qu'on déplie
-          const groupe = el("details", { class: "groupe-fiches" },
+          const nbCorr = fiches.filter(r => idYoutube(r.correction)).length;
+          const groupe = el("details", { class: "groupe-fiches t-exercices" },
             el("summary", {},
-              el("span", { class: "groupe-icone", "aria-hidden": "true" }, "EX"),
-              el("span", { class: "groupe-titre" }, "Feuilles d'exercices"),
-              el("span", { class: "groupe-compte" }, fiches.length + (fiches.length > 1 ? " fiches" : " fiche")),
+              el("span", { class: "tuile" }, icone("exercices")),
+              el("span", { class: "groupe-texte" },
+                el("span", { class: "groupe-titre" }, "Feuilles d'exercices"),
+                el("span", { class: "groupe-compte" }, fiches.length + (fiches.length > 1 ? " fiches" : " fiche") +
+                  (nbCorr ? " · " + nbCorr + (nbCorr > 1 ? " corrections vidéo" : " correction vidéo") : ""))),
               el("span", { class: "fleche", "aria-hidden": "true" }, "›")),
             el("div", { class: "ressources" }, ...fiches.map(carte)));
           section.append(groupe);
@@ -332,33 +360,57 @@ function pageNiveau() {
       vids.length ? vids.length + " vidéo" + (vids.length > 1 ? "s" : "") : null
     ].filter(Boolean).join(" · ") || "Bientôt";
 
-    const details = el("details", { class: "chapitre" + (classe ? " " + classe : ""), id },
+    const { num, nom } = decouperChapitre(ch.titre, pastille);
+    const details = el("details", { class: "chapitre" + (classe ? " " + classe : "") + (enCours ? " en-cours" : ""), id },
       el("summary", {},
-        el("h2", {}, ch.titre),
-        el("span", { class: "compte" }, compte),
+        el("span", { class: "num", "aria-hidden": "true" }, num),
+        el("span", { class: "entete" },
+          el("h2", {}, nom !== ch.titre ? el("span", { class: "invisible" }, "Chapitre " + num + " — ") : null, nom),
+          el("span", { class: "compte" },
+            enCours ? el("span", { class: "etiquette-en-cours" }, "En ce moment en classe") : null, compte)),
         el("span", { class: "fleche", "aria-hidden": "true" }, "›")
       ),
       corps
     );
-    if (ouvert) details.open = true; // premier chapitre ouvert
+    if (ouvert) details.open = true;
     details._ouvertAuDepart = !!ouvert;
     details._titre = normaliserRecherche(ch.titre + " " + (ch.description || ""));
     details._elements = elements;
     details._vide = !res.length;
-    zone.append(details);
     return details;
   });
+  // les chapitres dans l'ordre, puis les activités
+  for (const b of blocs) if (!b.classList.contains("activites")) zone.append(b);
+  for (const b of blocs) if (b.classList.contains("activites")) zone.append(b);
+  const blocsDansLOrdre = [...zone.querySelectorAll(":scope > .chapitre")];
 
   // ----- Pastilles de navigation : une par chapitre, toujours visibles -----
-  const pastilles = el("nav", { class: "pastilles", "aria-label": "Aller au chapitre" });
+  const listePastilles = el("div", { class: "pastilles-liste" });
+  const titrePastilles = el("p", { class: "pastilles-titre", "aria-hidden": "true" });
+  const pastilles = el("nav", { class: "pastilles", "aria-label": "Aller au chapitre" }, listePastilles, titrePastilles);
   sections.forEach((s, i) => {
     const b = blocs[i];
-    const p = el("a", { href: "#" + s.id, class: "pastille" + (b._vide ? " vide" : "") + (s.classe ? " " + s.classe : ""), title: s.ch.titre, "aria-label": s.ch.titre }, s.pastille);
+    const { num, nom } = decouperChapitre(s.ch.titre, s.pastille);
+    const p = el("a", { href: "#" + s.id, class: "pastille" + (b._vide ? " vide" : "") + (s.classe ? " " + s.classe : "") + (s.enCours ? " en-cours" : ""),
+      "aria-label": s.ch.titre + (s.enCours ? " (en ce moment en classe)" : "") }, s.pastille);
+    p._libelle = (s.classe ? "" : num + " · ") + nom;
     p.addEventListener("click", e => { e.preventDefault(); allerA(b); history.replaceState(null, "", "#" + s.id); });
+    // au survol ou au focus, le titre du chapitre s'affiche sous les pastilles
+    p.addEventListener("mouseenter", () => { titrePastilles.textContent = p._libelle; });
+    p.addEventListener("focus", () => { titrePastilles.textContent = p._libelle; });
+    p.addEventListener("mouseleave", () => marquer());
+    p.addEventListener("blur", () => marquer());
     b._pastille = p;
-    pastilles.append(p);
+    listePastilles.append(p);
   });
   recherche.after(pastilles);
+  // fondu sur le bord quand la rangée de pastilles dépasse de l'écran
+  const bordPastilles = () => {
+    const l = listePastilles;
+    l.classList.toggle("deborde-droite", l.scrollLeft + l.clientWidth < l.scrollWidth - 4);
+  };
+  listePastilles.addEventListener("scroll", bordPastilles, { passive: true });
+  addEventListener("resize", bordPastilles);
 
   function allerA(b) {
     if (b.hidden) { recherche.value = ""; filtrer(); }
@@ -367,14 +419,29 @@ function pageNiveau() {
   }
 
   // Pastille du chapitre visible à l'écran
+  let dernier = null;
   const marquer = () => {
     const haut = pastilles.getBoundingClientRect().bottom + 8;
-    let courant = blocs.find(b => !b.hidden);
-    for (const b of blocs) if (!b.hidden && b.getBoundingClientRect().top <= haut + 40) courant = b;
+    let courant = blocsDansLOrdre.find(b => !b.hidden);
+    for (const b of blocsDansLOrdre) if (!b.hidden && b.getBoundingClientRect().top <= haut + 40) courant = b;
+    // tout en bas de la page, les derniers blocs ne peuvent pas remonter jusqu'en haut : on prend le dernier visible
+    if (scrollY > 0 && scrollY + innerHeight >= document.documentElement.scrollHeight - 2)
+      for (const b of blocsDansLOrdre) if (!b.hidden && b.getBoundingClientRect().top < innerHeight - 80) courant = b;
     for (const b of blocs) {
       b._pastille.classList.toggle("actif", b === courant);
       if (b === courant) b._pastille.setAttribute("aria-current", "true"); else b._pastille.removeAttribute("aria-current");
     }
+    if (courant) {
+      titrePastilles.textContent = courant._pastille._libelle;
+      if (courant !== dernier) {
+        // la pastille active reste visible dans la rangée
+        const p = courant._pastille, l = listePastilles;
+        if (p.offsetLeft < l.scrollLeft || p.offsetLeft + p.offsetWidth > l.scrollLeft + l.clientWidth)
+          l.scrollTo({ left: p.offsetLeft - l.clientWidth / 2 + p.offsetWidth / 2, behavior: DEFILEMENT });
+        dernier = courant;
+      }
+    }
+    bordPastilles();
   };
   addEventListener("scroll", marquer, { passive: true });
 
@@ -428,40 +495,58 @@ function pageNiveau() {
   piedDePage();
 }
 
+/* Une ressource : une ligne entièrement cliquable, avec « Télécharger » et « Correction » à part */
 function carteRessource(r) {
   const t = TYPES[r.type] || TYPES.lien;
   const href = r.fichier || r.lien || "#";
   const estPdf = !!r.fichier;
-  const estExerciseur = r.type === "exerciseur" || r.type === "activite" || r.type === "test";
+  const interne = r.type === "activite";
+  const nouvelOnglet = !interne;
+  const sousTitre = r.detail || (estPdf ? "PDF · nouvel onglet"
+    : interne ? "Lancer l'activité" : "Ouvrir le lien · nouvel onglet");
   const carte = el("div", { class: "ressource t-" + (TYPES[r.type] ? r.type : "lien") },
-    el("span", { class: "icone", "aria-hidden": "true" }, t.icone),
-    el("a", { class: "texte", href, target: estExerciseur ? "_self" : "_blank", rel: "noopener", style: "text-decoration:none" },
-      el("strong", {}, r.titre || t.libelle),
-      el("span", {}, r.detail || (estPdf ? "Ouvrir le PDF" : r.type === "activite" ? "Lancer l'activité" : r.type === "test" ? "Faire le test en ligne" : estExerciseur ? "S'entraîner en ligne" : "Ouvrir le lien"))
-    ),
-    estPdf ? el("a", { class: "telecharger", href, download: "" }, "Télécharger") : null
+    el("span", { class: "tuile" }, icone(TYPES[r.type] ? r.type : "lien")),
+    el("a", { class: "texte", href, ...(nouvelOnglet ? { target: "_blank", rel: "noopener" } : {}),
+      title: r.titre || t.libelle },
+      el("strong", {}, titreAffiche(r)),
+      el("span", {}, sousTitre),
+      nouvelOnglet ? el("span", { class: "invisible" }, " (s'ouvre dans un nouvel onglet)") : null)
   );
   const idCorr = idYoutube(r.correction);
   if (idCorr) {
     const libelle = r.correctionTitre || "Correction en vidéo";
     carte.append(el("button", {
-      class: "btn-video", type: "button",
+      class: "btn-correction", type: "button",
       onclick: () => ouvrirVideo(idCorr, (r.titre || t.libelle) + " — " + libelle)
-    }, el("span", { class: "btn-video-icone", "aria-hidden": "true" }), libelle));
+    }, icone("video"), libelle));
   }
+  if (estPdf) carte.append(el("a", { class: "telecharger bouton-icone", href, download: "",
+    "aria-label": "Télécharger : " + (r.titre || t.libelle) + " (PDF)", title: "Télécharger le PDF" }, icone("telecharger")));
   return carte;
+}
+
+/* L'exerciseur (bouton principal) et « Je me teste » (bouton secondaire) */
+function carteAction(r) {
+  const test = r.type === "test";
+  return el("a", { class: "action-chapitre " + (test ? "secondaire t-test" : "principale t-exerciseur"), href: r.lien || "#" },
+    el("span", { class: "tuile" }, icone(r.type)),
+    el("span", { class: "texte" },
+      el("strong", {}, titreAffiche(r)),
+      el("span", {}, r.detail || (test ? "Un test sur tout le chapitre, puis ton bilan" : "Exerciseur en ligne, corrigé tout de suite"))),
+    el("span", { class: "fleche", "aria-hidden": "true" }, "→"));
 }
 
 function carteVideo(v) {
   const id = idYoutube(v.lien);
-  const legende = el("figcaption", {}, v.titre || "Vidéo");
+  const titre = titreAffiche(v);
+  const legende = el("figcaption", {}, titre);
   if (!id) {
     return el("div", { class: "video" }, el("figure", {},
       el("div", { class: "vide" }, "Collez le lien YouTube de la vidéo dans contenu.js"), legende));
   }
-  const cadre = el("div", { class: "cadre", role: "button", tabindex: "0", "aria-label": "Lire la vidéo : " + (v.titre || "") },
+  const cadre = el("div", { class: "cadre", role: "button", tabindex: "0", "aria-label": "Lire la vidéo : " + titre },
     el("img", { src: "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg", alt: "", loading: "lazy" }),
-    el("span", { class: "play" })
+    el("span", { class: "play" }, icone("video"))
   );
   let lancee = false;
   const lancer = () => {

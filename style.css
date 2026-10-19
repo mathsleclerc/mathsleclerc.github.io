@@ -208,72 +208,122 @@ main { padding: 24px 16px 40px; }
 
 /* ----- Chapitres ----- */
 .chapitre {
-  background: var(--carte); border: 1px solid var(--bord); border-radius: 14px;
-  box-shadow: var(--ombre); margin-bottom: 16px; overflow: hidden;
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 12px;
+  margin-bottom: 12px; overflow: hidden;
 }
 .chapitre > summary {
-  list-style: none; cursor: pointer; padding: 16px 20px;
-  display: flex; align-items: center; gap: 12px;
-  border-left: 5px solid var(--bleu);
+  list-style: none; cursor: pointer; padding: 14px 18px;
+  display: flex; align-items: center; gap: 14px;
 }
 .chapitre > summary::-webkit-details-marker { display: none; }
-.chapitre > summary h2 { margin: 0; font-size: 1.12rem; flex: 1; }
-.chapitre > summary .compte { color: var(--texte-doux); font-size: .88rem; white-space: nowrap; }
-.chapitre > summary .fleche { transition: transform .2s; color: var(--texte-doux); }
+.chapitre > summary:hover h2 { color: var(--cours); }
+.chapitre[open] > summary { border-bottom: 1px solid var(--bord); }
+.chapitre .num {
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9px;
+  background: var(--bleu-clair); color: var(--cours);
+  font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums;
+  transition: background-color .15s, color .15s;
+}
+.chapitre[open] .num { background: var(--bleu); color: #fff; }
+.chapitre > summary .entete { flex: 1; min-width: 0; }
+.chapitre > summary h2 { margin: 0; font-size: 1.15rem; line-height: 1.3; transition: color .15s; }
+.chapitre > summary .compte { display: block; margin-top: 2px; color: var(--texte-doux); font-size: .9rem; }
+.chapitre > summary .fleche { font-size: 1.4rem; line-height: 1; transition: transform .2s; color: var(--texte-doux); }
 .chapitre[open] > summary .fleche { transform: rotate(90deg); }
-.chapitre .corps { padding: 4px 20px 20px; }
-.chapitre .description { margin: 0 0 14px; color: var(--texte-doux); }
+.chapitre .corps { padding: 18px 18px 22px; }
+.chapitre .description { margin: 0 0 16px; color: var(--texte-doux); }
+.etiquette-en-cours {
+  display: inline-block; margin-right: 8px; padding: 1px 8px; border-radius: 999px;
+  background: var(--bleu-clair); color: var(--cours); font-size: .82rem; font-weight: 700;
+}
+.chapitre.en-cours { border-color: var(--cours); }
 
-.ressources { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran */
+.invisible {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Intertitres des sous-parties : onglet clair */
+.onglet-leger { margin-bottom: 0; border-bottom-width: 1px; border-bottom-color: var(--bord); font-size: .75rem; }
+.onglet-leger > span { background: var(--bleu-clair); color: var(--cours); padding: 6px 10px 5px; }
+
+/* Ressources : une liste de lignes séparées par un filet */
+.ressources {
+  border: 1px solid var(--bord); border-radius: 10px; overflow: hidden;
+  background: var(--carte); margin-top: 12px;
+}
 .ressource {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 14px; border: 1px solid var(--bord); border-radius: 10px;
-  text-decoration: none; background: var(--fond);
+  position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  padding: 10px 12px 10px 14px; min-height: 64px;
 }
-a.ressource:hover { border-color: currentColor; }
-.ressource .icone {
-  flex: none; width: 38px; height: 38px; border-radius: 9px;
-  display: grid; place-items: center; color: #fff; font-size: .72rem; font-weight: 700;
-}
-.ressource .texte { flex: 1; min-width: 0; }
+.ressource + .ressource { border-top: 1px solid var(--bord); }
+.ressource:hover { background: color-mix(in srgb, var(--bleu-clair) 60%, var(--carte)); }
+.ressource .texte { flex: 1; min-width: 0; text-decoration: none; }
+.ressource .texte::after { content: ""; position: absolute; inset: 0; } /* toute la ligne est cliquable */
 .ressource .texte strong { display: block; font-weight: 500; overflow-wrap: anywhere; }
-.ressource .texte span { font-size: .82rem; color: var(--texte-doux); }
+.ressource .texte > span:not(.invisible) { font-size: .9rem; color: var(--texte-doux); }
+.ressource .telecharger, .ressource .btn-correction { position: relative; z-index: 1; }
 .ressource .telecharger {
-  flex: none; font-size: .8rem; padding: 4px 8px; border-radius: 6px;
-  border: 1px solid var(--bord); text-decoration: none; color: var(--texte-doux);
+  flex: none; display: grid; place-items: center; height: 44px; border-radius: 8px;
+  color: var(--texte-doux); border: 1px solid transparent;
 }
-.ressource .telecharger:hover { color: var(--texte); border-color: var(--texte-doux); }
+.ressource .telecharger:hover { color: var(--texte); border-color: var(--bord); background: var(--carte); }
+.ressource .texte:focus-visible { outline: none; }
+.ressource:has(.texte:focus-visible) { outline: 3px solid var(--cours); outline-offset: -3px; }
 
-.t-cours .icone { background: var(--cours); }
-.t-exercices .icone { background: var(--exercices); }
-.t-corrige .icone { background: var(--corrige); }
-.t-video .icone { background: var(--video); }
-.t-lien .icone { background: var(--lien); }
-.t-exerciseur .icone { background: var(--exerciseur); font-size: 1.1rem; }
-.t-activite .icone { background: var(--activite); font-size: 1.1rem; }
-.t-test .icone { background: var(--corrige); font-size: 1.2rem; }
+/* Correction en vidéo d'une fiche */
+.btn-correction {
+  flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px;
+  font: inherit; font-size: .9rem; font-weight: 500; cursor: pointer;
+  padding: 6px 12px; border-radius: 999px; border: 1px solid var(--video);
+  background: var(--carte); color: var(--video);
+}
+.btn-correction .picto { width: 16px; height: 16px; }
+.btn-correction:hover { background: var(--video); color: #fff; }
+
+/* Les deux actions du chapitre : s'entraîner (principal) et se tester (secondaire) */
+.actions-chapitre {
+  display: grid; gap: 10px; margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+.action-chapitre {
+  display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px;
+  border-radius: 10px; text-decoration: none; border: 1px solid var(--bord); background: var(--carte);
+  transition: background-color .15s, border-color .15s;
+}
+.action-chapitre .texte { flex: 1; min-width: 0; }
+.action-chapitre .texte strong { display: block; font-weight: 700; }
+.action-chapitre .texte span { font-size: .9rem; color: var(--texte-doux); }
+.action-chapitre .fleche { font-size: 1.2rem; transition: transform .15s; }
+.action-chapitre:hover .fleche { transform: translateX(3px); }
+.action-chapitre.principale { background: var(--bleu); border-color: var(--bleu); color: #fff; }
+.action-chapitre.principale:hover { background: var(--bleu-fonce); border-color: var(--bleu-fonce); }
+.action-chapitre.principale .texte span { color: #fff; opacity: .9; }
+.action-chapitre.principale .tuile { background: rgba(255,255,255,.16); color: #fff; }
+.action-chapitre.secondaire:hover { border-color: var(--corrige); }
 
 /* ----- Section « Activités » (hors chapitres) ----- */
-.chapitre.activites > summary { border-left-color: var(--activite); }
-.chapitre.activites > summary h2::before { content: "★ "; color: var(--activite); }
+.chapitre.activites .num { background: color-mix(in srgb, var(--activite) 14%, var(--carte)); color: var(--activite); }
+.chapitre.activites[open] .num { background: var(--activite); color: #fff; }
+.chapitre.activites .ressources { margin-top: 0; }
 
 /* ----- Vidéos ----- */
-.videos { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 14px; }
+.videos { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); margin-top: 12px; }
 .video figure { margin: 0; }
-.video figcaption { font-size: .92rem; margin-top: 6px; font-weight: 500; }
+.video figcaption { font-size: .95rem; margin-top: 8px; font-weight: 500; line-height: 1.35; }
 .video .cadre {
   position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden;
   background: #000; cursor: pointer; border: 0; padding: 0; width: 100%; display: block;
 }
-.video .cadre img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .9; }
+.video .cadre img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .video .cadre .play {
-  position: absolute; inset: 0; margin: auto; width: 64px; height: 44px;
-  background: #e62117; border-radius: 12px; display: grid; place-items: center;
+  position: absolute; left: 10px; bottom: 10px; width: 44px; height: 32px;
+  background: #e62117; border-radius: 8px; display: grid; place-items: center; color: #fff;
+  transition: transform .15s;
 }
-.video .cadre .play::after {
-  content: ""; border-style: solid; border-width: 10px 0 10px 17px;
-  border-color: transparent transparent transparent #fff; margin-left: 4px;
-}
+.video .cadre .play .picto { width: 18px; height: 18px; fill: currentColor; }
+.video .cadre:hover .play { transform: scale(1.08); }
 .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .video .vide {
   aspect-ratio: 16 / 9; border-radius: 10px; border: 2px dashed var(--bord);
@@ -293,24 +343,11 @@ footer p { margin: 0 0 6px; }
 .pied-liens a { display: inline-block; padding: 6px 0; color: var(--texte); text-underline-offset: 3px; }
 .pied-annee { font-size: .85rem; }
 @media (max-width: 520px) {
-  .chapitre > summary { flex-wrap: wrap; }
-  .chapitre > summary h2 { flex-basis: calc(100% - 24px); }
-  .chapitre > summary .compte { order: 3; width: 100%; }
-  .ressources { grid-template-columns: 1fr; }
-}
-
-/* ----- Bouton « Correction en vidéo » ----- */
-.ressource { flex-wrap: wrap; }
-.btn-video {
-  flex-basis: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
-  font: inherit; font-size: .9rem; font-weight: 500; cursor: pointer;
-  padding: 8px 12px; border-radius: 8px; border: 1px solid var(--video);
-  background: transparent; color: var(--video);
-}
-.btn-video:hover { background: var(--video); color: #fff; }
-.btn-video-icone {
-  width: 0; height: 0; border-style: solid;
-  border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor;
+  .chapitre > summary { padding: 12px 14px; gap: 12px; }
+  .chapitre .num { width: 36px; height: 36px; font-size: 1.05rem; }
+  .chapitre .corps { padding: 16px 12px 18px; }
+  .ressource { padding-left: 12px; }
+  .ressource .btn-correction { order: 3; margin-left: 52px; }
 }
 
 /* ----- Lecteur en surimpression ----- */
@@ -334,10 +371,19 @@ footer p { margin: 0 0 6px; }
 /* ----- Pastilles de navigation entre chapitres (toujours visibles) ----- */
 .pastilles {
   position: sticky; top: 0; z-index: 5;
-  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin;
-  margin: -8px -16px 16px; padding: 10px 16px;
+  margin: -8px -16px 16px; padding: 10px 16px 6px;
   background: var(--fond); border-bottom: 1px solid var(--bord);
 }
+.pastilles-liste {
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 3px 3px 4px;
+}
+.pastilles-liste::-webkit-scrollbar { display: none; }
+.pastilles-liste.deborde-droite { mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); }
+.pastilles-titre {
+  margin: 2px 0 0; font-size: .9rem; font-weight: 500; color: var(--texte-doux);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pastilles .pastille.en-cours { box-shadow: inset 0 -3px 0 var(--cours); }
 .pastilles .pastille {
   flex: none; display: grid; place-items: center; min-width: 36px; height: 36px; padding: 0 8px;
   border-radius: 999px; border: 1px solid var(--bord); background: var(--carte);
@@ -350,33 +396,11 @@ footer p { margin: 0 0 6px; }
 .pastilles .pastille.activites.actif { background: var(--activite); border-color: var(--activite); color: #fff; }
 .pastilles .pastille.vide { color: var(--texte-doux); font-weight: 500; opacity: .7; }
 .pastilles .pastille.masquee { opacity: .3; }
-.chapitre { scroll-margin-top: 70px; }
+.chapitre { scroll-margin-top: 96px; }
 
 /* ----- Sous-parties d'un chapitre ----- */
-.sous-partie + .sous-partie { margin-top: 18px; }
-.sous-partie h3 {
-  margin: 4px 0 10px; font-size: .82rem; font-weight: 700; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--texte-doux);
-}
-.sous-partie .videos { margin-top: 0; }
-
-/* L'exerciseur, mis en avant en tête de « S'entraîner » */
-.ressources .ressource.t-exerciseur {
-  grid-column: 1 / -1; border: 2px solid var(--exerciseur);
-  background: color-mix(in srgb, var(--exerciseur) 8%, var(--carte));
-}
-.ressource.t-exerciseur .icone { width: 44px; height: 44px; }
-.ressource.t-exerciseur .texte strong { font-weight: 700; }
-.ressource.t-exerciseur .texte span { color: var(--exerciseur); font-weight: 500; }
-
-/* Le test « Je me teste », mis en avant dans « Se tester » */
-.ressources .ressource.t-test {
-  grid-column: 1 / -1; border: 2px solid var(--corrige);
-  background: color-mix(in srgb, var(--corrige) 8%, var(--carte));
-}
-.ressource.t-test .icone { width: 44px; height: 44px; }
-.ressource.t-test .texte strong { font-weight: 700; }
-.ressource.t-test .texte span { color: var(--corrige); font-weight: 500; }
+.sous-partie + .sous-partie { margin-top: 28px; }
+.sous-partie .videos { margin-top: 12px; }
 
 /* ----- Bouton « Haut de page » ----- */
 .haut-de-page {
@@ -392,24 +416,29 @@ footer p { margin: 0 0 6px; }
 }
 
 /* ----- Feuilles d'exercices regroupées (bloc à déplier) ----- */
-.groupe-fiches {
-  margin-top: 10px; border: 1px solid var(--bord); border-radius: 10px; background: var(--fond);
-}
+.groupe-fiches { border: 1px solid var(--bord); border-radius: 10px; background: var(--carte); overflow: hidden; }
+.groupe-fiches { margin-top: 12px; }
 .groupe-fiches > summary {
-  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 10px 14px; min-height: 64px;
 }
 .groupe-fiches > summary::-webkit-details-marker { display: none; }
-.groupe-fiches > summary:hover .groupe-titre { text-decoration: underline; }
-.groupe-icone {
-  flex: none; width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center;
-  background: var(--exercices); color: #fff; font-size: .72rem; font-weight: 700;
-}
-.groupe-titre { flex: 1; font-weight: 500; }
-.groupe-compte { color: var(--texte-doux); font-size: .88rem; white-space: nowrap; }
-.groupe-fiches .fleche { color: var(--texte-doux); transition: transform .2s; }
+.groupe-fiches > summary:hover { background: color-mix(in srgb, var(--bleu-clair) 60%, var(--carte)); }
+.groupe-texte { flex: 1; min-width: 0; }
+.groupe-titre { display: block; font-weight: 500; }
+.groupe-compte { display: block; color: var(--texte-doux); font-size: .9rem; }
+.groupe-fiches .fleche { font-size: 1.3rem; line-height: 1; color: var(--texte-doux); transition: transform .2s; }
+.groupe-fiches[open] > summary { border-bottom: 1px solid var(--bord); }
 .groupe-fiches[open] > summary .fleche { transform: rotate(90deg); }
-.groupe-fiches > .ressources { padding: 0 10px 10px; }
-.groupe-fiches .ressource { background: var(--carte); }
+.groupe-fiches > .ressources { border: 0; border-radius: 0; margin-top: 0; }
+
+/* ----- Page niveau : en-tête compact sur mobile ----- */
+.page-niveau main { padding-bottom: 88px; }
+@media (max-width: 520px) {
+  .page-niveau .bandeau { padding: 16px 16px 18px; }
+  .page-niveau .bandeau .fil { margin-bottom: 2px; }
+  .page-niveau nav.niveaux { margin-top: 10px; }
+  .page-niveau main { padding-top: 16px; }
+}
 
 /* ----- Pages de texte (À propos) ----- */
 .page-texte main { max-width: 720px; }
