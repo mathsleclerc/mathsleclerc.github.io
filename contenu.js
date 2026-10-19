@@ -319,6 +319,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Nombres relatifs et repérage", lien: "exerciseurs/relatifs-5e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : nombres relatifs et repérage", lien: "exerciseurs/relatifs-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 6 — Triangles : droites remarquables et aire",
+        ressources: [
+          { type: "cours",     titre: "Cours — Triangles : droites remarquables et aire", fichier: "pdf/5e/ch6-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Médiatrices et cercle circonscrit", fichier: "pdf/5e/ch6-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Les hauteurs", fichier: "pdf/5e/ch6-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Les médianes", fichier: "pdf/5e/ch6-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Aire d'un triangle", fichier: "pdf/5e/ch6-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Aires : figures composées et médiane", fichier: "pdf/5e/ch6-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Triangles particuliers et synthèse", fichier: "pdf/5e/ch6-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Triangles : droites remarquables et aire", lien: "exerciseurs/triangles-5e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : triangles : droites remarquables et aire", lien: "exerciseurs/triangles-5e/" }
+        ]
       }
     ]
   },
