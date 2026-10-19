@@ -290,6 +290,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Fractions et divisibilité", lien: "exerciseurs/fractions-5e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : fractions et divisibilité", lien: "exerciseurs/fractions-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 4 — Angles et parallélisme",
+        ressources: [
+          { type: "cours",     titre: "Cours — Angles et parallélisme", fichier: "pdf/5e/ch4-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Angles particuliers", fichier: "pdf/5e/ch4-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Alternes-internes et correspondants", fichier: "pdf/5e/ch4-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Angles et droites parallèles", fichier: "pdf/5e/ch4-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : La somme des angles d'un triangle", fichier: "pdf/5e/ch4-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Construire des triangles", fichier: "pdf/5e/ch4-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Démontrer avec les angles", fichier: "pdf/5e/ch4-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Angles et parallélisme", lien: "exerciseurs/angles-paralleles-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : angles et parallélisme", lien: "exerciseurs/angles-paralleles-5e/" }
+        ]
       }
     ]
   },
