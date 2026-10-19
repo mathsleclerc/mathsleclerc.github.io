@@ -38,7 +38,7 @@ const SITE = {
   presentation: "Le site des élèves de M. Leclerc, professeur de mathématiques",
   // Nom du collège, affiché dans le pied de page (laisser "" pour ne rien afficher)
   college: "",
-  // Phrase de contact du pied de page (laisser "" pour la phrase par défaut)
+  // Phrase de contact du pied de page (laisser "" pour ne rien afficher)
   contact: ""
 };
 

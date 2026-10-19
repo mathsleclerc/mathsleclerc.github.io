@@ -35,7 +35,7 @@ function piedDePage() {
   const qui = [SITE.presentation, SITE.college].filter(Boolean).join(", ");
   p.replaceChildren(el("div", { class: "pied-interieur" },
     el("p", { class: "pied-qui" }, el("strong", {}, SITE.titre), qui ? " · " + qui : ""),
-    el("p", {}, SITE.contact || "Une question ? Pose-la en classe ou par la messagerie du collège."),
+    SITE.contact ? el("p", {}, SITE.contact) : null,
     el("nav", { class: "pied-liens", "aria-label": "Liens du pied de page" },
       el("a", { href: new URL("index.html", RACINE).href }, "Accueil"),
       el("a", { href: new URL("apropos.html", RACINE).href }, "À propos et mentions")),
