@@ -468,6 +468,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-4e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : proportionnalité", lien: "exerciseurs/proportionnalite-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 2 — Nombres relatifs",
+        ressources: [
+          { type: "cours",     titre: "Cours — Nombres relatifs", fichier: "pdf/4e/ch2-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Additionner et soustraire (rappels)", fichier: "pdf/4e/ch2-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Multiplier deux relatifs", fichier: "pdf/4e/ch2-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Produits de plusieurs facteurs", fichier: "pdf/4e/ch2-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Diviser des relatifs", fichier: "pdf/4e/ch2-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Enchaîner les opérations", fichier: "pdf/4e/ch2-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Programmes de calcul et problèmes", fichier: "pdf/4e/ch2-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Nombres relatifs", lien: "exerciseurs/relatifs-4e/#je-me-teste", detail: "14 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : nombres relatifs", lien: "exerciseurs/relatifs-4e/" }
+        ]
       }
     ]
   },
