@@ -46,7 +46,11 @@ function piedDePage() {
 /* ---------- Page « À propos et mentions » ---------- */
 function pageAPropos() {
   if (SITE.college) document.getElementById("ap-qui").textContent = "M. Leclerc, professeur de mathématiques au " + SITE.college + ".";
-  if (SITE.contact) document.getElementById("ap-contact").textContent = SITE.contact;
+  if (SITE.contact) {
+    const c = document.getElementById("ap-contact");
+    c.textContent = SITE.contact;
+    c.hidden = false;
+  }
   piedDePage();
 }
 
