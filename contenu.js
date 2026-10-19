@@ -553,6 +553,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Probabilités", lien: "exerciseurs/probabilites-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : probabilités", lien: "exerciseurs/probabilites-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 8 — Trigonométrie : le cosinus",
+        ressources: [
+          { type: "cours",     titre: "Cours — Trigonométrie : le cosinus", fichier: "pdf/4e/ch8-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire et cosinus", fichier: "pdf/4e/ch8-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Utiliser la calculatrice", fichier: "pdf/4e/ch8-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer le côté adjacent", fichier: "pdf/4e/ch8-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Calculer l'hypoténuse", fichier: "pdf/4e/ch8-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Calculer un angle", fichier: "pdf/4e/ch8-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes et pour aller plus loin", fichier: "pdf/4e/ch8-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Trigonométrie : le cosinus", lien: "exerciseurs/trigonometrie-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : trigonométrie : le cosinus", lien: "exerciseurs/trigonometrie-4e/" }
+        ]
       }
     ]
   },
