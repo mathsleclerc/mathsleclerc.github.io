@@ -525,6 +525,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Calcul littéral", lien: "exerciseurs/calcul-litteral-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral", lien: "exerciseurs/calcul-litteral-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 6 — Droite des milieux et théorème de Thalès",
+        ressources: [
+          { type: "cours",     titre: "Cours — Droite des milieux et théorème de Thalès", fichier: "pdf/4e/ch6-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : La droite des milieux", fichier: "pdf/4e/ch6-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Écrire les rapports de Thalès", fichier: "pdf/4e/ch6-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer des longueurs", fichier: "pdf/4e/ch6-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Parallèles ou non ?", fichier: "pdf/4e/ch6-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Résoudre des problèmes", fichier: "pdf/4e/ch6-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Bilan : Thalès et Pythagore", fichier: "pdf/4e/ch6-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Droite des milieux et théorème de Thalès", lien: "exerciseurs/thales-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : droite des milieux et théorème de Thalès", lien: "exerciseurs/thales-4e/" }
+        ]
       }
     ]
   },
