@@ -433,6 +433,19 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Probabilités", lien: "exerciseurs/probabilites-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : probabilités", lien: "exerciseurs/probabilites-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 14 — Grandeurs en fonction l'une de l'autre",
+        ressources: [
+          { type: "cours",     titre: "Cours — Grandeurs en fonction l'une de l'autre", fichier: "pdf/5e/ch14-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : En fonction de…", fichier: "pdf/5e/ch14-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Tableaux de valeurs", fichier: "pdf/5e/ch14-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Construire un graphique", fichier: "pdf/5e/ch14-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Lire un graphique", fichier: "pdf/5e/ch14-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Graphique et proportionnalité", fichier: "pdf/5e/ch14-exercices-5.pdf" },
+          { type: "test", titre: "Je me teste — Grandeurs en fonction l'une de l'autre", lien: "exerciseurs/fonctions-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : grandeurs en fonction l'une de l'autre", lien: "exerciseurs/fonctions-5e/" }
+        ]
       }
     ]
   },
