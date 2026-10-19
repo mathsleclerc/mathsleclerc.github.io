@@ -420,6 +420,19 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Solides et volumes", lien: "exerciseurs/solides-volumes-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : solides et volumes", lien: "exerciseurs/solides-volumes-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 13 — Probabilités",
+        ressources: [
+          { type: "cours",     titre: "Cours — Probabilités", fichier: "pdf/5e/ch13-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire des probabilités", fichier: "pdf/5e/ch13-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : L'échelle des probabilités", fichier: "pdf/5e/ch13-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer une probabilité", fichier: "pdf/5e/ch13-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Roues, urnes et jeux", fichier: "pdf/5e/ch13-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Fréquences et probabilités", fichier: "pdf/5e/ch13-exercices-5.pdf" },
+          { type: "test", titre: "Je me teste — Probabilités", lien: "exerciseurs/probabilites-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : probabilités", lien: "exerciseurs/probabilites-5e/" }
+        ]
       }
     ]
   },
