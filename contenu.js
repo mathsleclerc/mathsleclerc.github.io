@@ -624,6 +624,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Pyramides, cônes et repérage dans l'espace", lien: "exerciseurs/solides-4e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : pyramides, cônes et repérage dans l'espace", lien: "exerciseurs/solides-4e/" }
         ]
+      },
+      {
+        titre: "Chapitre 13 — Équations",
+        ressources: [
+          { type: "cours",     titre: "Cours — Équations", fichier: "pdf/4e/ch13-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Équation et solution", fichier: "pdf/4e/ch13-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Équations simples", fichier: "pdf/4e/ch13-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Résoudre ax + b = cx + d", fichier: "pdf/4e/ch13-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Développer avant de résoudre", fichier: "pdf/4e/ch13-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Mettre en équation", fichier: "pdf/4e/ch13-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Résoudre des problèmes", fichier: "pdf/4e/ch13-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Équations", lien: "exerciseurs/equations-4e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : équations", lien: "exerciseurs/equations-4e/" }
+        ]
       }
     ]
   },
