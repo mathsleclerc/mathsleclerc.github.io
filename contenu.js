@@ -363,6 +363,21 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Parallélogrammes", lien: "exerciseurs/parallelogrammes-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : parallélogrammes", lien: "exerciseurs/parallelogrammes-5e/" }
         ]
+      },
+      {
+        titre: "Chapitre 9 — Proportionnalité",
+        ressources: [
+          { type: "cours",     titre: "Cours — Proportionnalité", fichier: "pdf/5e/ch9-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Reconnaître la proportionnalité", fichier: "pdf/5e/ch9-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer une quatrième proportionnelle", fichier: "pdf/5e/ch9-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Pourcentages", fichier: "pdf/5e/ch9-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Vitesses et échelles", fichier: "pdf/5e/ch9-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Représentation graphique", fichier: "pdf/5e/ch9-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Partager selon un ratio", fichier: "pdf/5e/ch9-exercices-6.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°7 : Résoudre des problèmes", fichier: "pdf/5e/ch9-exercices-7.pdf" },
+          { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-5e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : proportionnalité", lien: "exerciseurs/proportionnalite-5e/" }
+        ]
       }
     ]
   },
