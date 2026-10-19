@@ -33,7 +33,9 @@
 const SITE = {
   titre: "Maths avec M. Leclerc",
   sousTitre: "Cours, fiches d'exercices et vidéos pour le collège",
-  message: "Choisissez votre niveau pour retrouver les cours, les exercices et les vidéos de chaque chapitre."
+  message: "Choisis ton niveau pour retrouver les cours, les exercices et les vidéos de chaque chapitre.",
+  // Ligne affichée au-dessus du titre, sur la page d'accueil
+  presentation: "Le site des élèves de M. Leclerc, professeur de mathématiques"
 };
 
 const NIVEAUX = {

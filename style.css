@@ -73,25 +73,106 @@ nav.niveaux a.actif { background: #fff; color: var(--bleu-fonce); }
 main { padding: 24px 16px 40px; }
 .intro { color: var(--texte-doux); margin: 0 0 20px; }
 
-/* ----- Accueil : cartes de niveau ----- */
+/* ----- Intertitre en onglet (comme les encadrés des fiches PDF) ----- */
+.onglet {
+  margin: 0 0 16px; border-bottom: 2px solid var(--bleu);
+  font-size: .8rem; line-height: 1;
+}
+.onglet > span {
+  display: inline-block; padding: 7px 12px 6px; border-radius: 6px 6px 0 0;
+  background: var(--bleu); color: #fff;
+  font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* ----- Pictogrammes et tuiles colorées par type ----- */
+.picto {
+  width: 22px; height: 22px; fill: none; stroke: currentColor;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.t-cours { --c: var(--cours); }
+.t-exercices { --c: var(--exercices); }
+.t-corrige, .t-test { --c: var(--corrige); }
+.t-video { --c: var(--video); }
+.t-lien { --c: var(--lien); }
+.t-exerciseur { --c: var(--exerciseur); }
+.t-activite { --c: var(--activite); }
+.t-chapitre { --c: var(--cours); }
+.tuile {
+  flex: none; width: 40px; height: 40px; border-radius: 9px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--c, var(--cours)) 14%, var(--carte));
+  color: color-mix(in srgb, var(--c, var(--cours)) 75%, var(--texte));
+}
+
+/* ----- Accueil ----- */
+.accueil .bandeau {
+  padding: 44px 16px 48px;
+  background-image:
+    linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.accueil .bandeau h1 { font-size: clamp(2rem, 5.5vw, 3rem); line-height: 1.1; letter-spacing: -.01em; }
+.bandeau .surtitre { margin: 0 0 10px; font-weight: 500; font-size: .95rem; opacity: .9; }
+.accueil .bandeau #sous-titre { margin-top: 10px; font-size: 1.1rem; }
+.accueil main { padding-top: 36px; }
+.section-accueil + .section-accueil { margin-top: 48px; }
+.accueil .intro { margin-bottom: 16px; }
+
+/* Les niveaux, comme un sommaire */
 .grille-niveaux {
-  display: grid; gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
 }
 .carte-niveau {
-  display: block; text-decoration: none;
-  background: var(--carte); border: 1px solid var(--bord); border-radius: 14px;
-  padding: 22px 20px; box-shadow: var(--ombre);
-  transition: transform .15s, border-color .15s;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+  text-decoration: none; padding: 16px 18px;
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 10px;
+  transition: border-color .15s;
 }
-.carte-niveau:hover { transform: translateY(-2px); border-color: var(--bleu); }
+.carte-niveau:hover { border-color: var(--cours); }
 .carte-niveau .badge {
-  display: inline-grid; place-items: center; width: 56px; height: 56px;
-  border-radius: 12px; background: var(--bleu); color: #fff;
-  font-size: 1.4rem; font-weight: 700;
+  display: grid; place-items: center; width: 56px; height: 56px;
+  border-radius: 10px; background: var(--bleu); color: #fff;
+  font-size: 1.35rem; font-weight: 700;
 }
-.carte-niveau h2 { margin: 14px 0 2px; font-size: 1.2rem; }
-.carte-niveau p { margin: 0; color: var(--texte-doux); font-size: .92rem; }
+.carte-niveau h3 { margin: 0; font-size: 1.2rem; font-weight: 700; }
+.carte-niveau-texte > span { display: block; color: var(--texte-doux); font-size: .95rem; }
+.carte-niveau .fleche { font-size: 1.6rem; line-height: 1; color: var(--texte-doux); transition: transform .15s, color .15s; }
+.carte-niveau:hover .fleche { transform: translateX(3px); color: var(--cours); }
+.carte-niveau.a-venir .badge { background: var(--bord); color: var(--texte-doux); }
+
+/* Recherche dans tout le site */
+.accueil .recherche { margin-bottom: 12px; }
+.resultats-info { margin: 0 0 10px; color: var(--texte-doux); font-size: .95rem; }
+.resultats {
+  list-style: none; margin: 0; padding: 0; overflow: hidden;
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 10px;
+}
+.resultats li + li { border-top: 1px solid var(--bord); }
+.resultat { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; text-decoration: none; }
+.resultat:hover { background: var(--bleu-clair); }
+.resultat .texte { min-width: 0; }
+.resultat .texte strong { display: block; font-weight: 500; overflow-wrap: anywhere; }
+.resultat .texte span { font-size: .9rem; color: var(--texte-doux); }
+
+/* Mode d'emploi */
+.mode-emploi {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 24px 32px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+}
+.mode-emploi li { display: flex; align-items: flex-start; gap: 14px; }
+.mode-emploi strong { display: block; font-weight: 700; margin-bottom: 2px; }
+.mode-emploi .texte > span { color: var(--texte-doux); }
+
+@media (max-width: 520px) {
+  .accueil .bandeau { padding: 32px 16px 34px; }
+  .accueil main { padding-top: 28px; }
+  .section-accueil + .section-accueil { margin-top: 40px; }
+  .carte-niveau { gap: 14px; padding: 12px 14px; }
+  .carte-niveau .badge { width: 48px; height: 48px; font-size: 1.15rem; }
+}
 
 /* ----- Recherche ----- */
 .recherche {

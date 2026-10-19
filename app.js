@@ -34,21 +34,127 @@ function idYoutube(lien) {
   return m ? m[1] : null;
 }
 
+/* Pictogrammes (traits, couleur héritée du texte) */
+const ICONES = {
+  cours:      '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  exercices:  '<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  corrige:    '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  video:      '<path d="M8 5.5v13l10.5-6.5z"/>',
+  lien:       '<path d="M9 6h9v9M18 6L6 18"/>',
+  exerciseur: '<path d="M4 20l1-5L15.5 4.5l4 4L9 19z"/><path d="M13 7l4 4"/>',
+  activite:   '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>',
+  test:       '<path d="M9 4h6v3H9z"/><path d="M8 5.5H6V21h12V5.5h-2"/><path d="M9 14l2 2 4-4"/>',
+  chapitre:   '<path d="M4 5h16M4 12h16M4 19h10"/>'
+};
+function icone(nom, classe = "picto") {
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  s.setAttribute("viewBox", "0 0 24 24");
+  s.setAttribute("class", classe);
+  s.setAttribute("aria-hidden", "true");
+  s.innerHTML = ICONES[nom] || ICONES.lien;
+  return s;
+}
+
 /* ---------- Accueil ---------- */
 function pageAccueil() {
   document.getElementById("titre").textContent = SITE.titre;
   document.getElementById("sous-titre").textContent = SITE.sousTitre;
   document.getElementById("message").textContent = SITE.message;
+  const presentation = document.getElementById("presentation");
+  if (presentation) {
+    if (SITE.presentation) presentation.textContent = SITE.presentation; else presentation.hidden = true;
+  }
+
+  // Les niveaux : une ligne par niveau, comme un sommaire
   const grille = document.getElementById("grille");
   for (const [code, niv] of Object.entries(NIVEAUX)) {
     const n = niv.chapitres.length;
-    grille.append(el("a", { class: "carte-niveau", href: "niveau.html?n=" + encodeURIComponent(code) },
+    const res = niv.chapitres.flatMap(ch => ch.ressources || []);
+    const nbEx = res.filter(r => r.type === "exerciseur").length;
+    const nbVid = res.filter(r => r.type === "video").length;
+    const detail = n === 0 ? "Bientôt disponible" : [
+      n + (n > 1 ? " chapitres" : " chapitre"),
+      nbEx ? nbEx + (nbEx > 1 ? " exerciseurs" : " exerciseur") : null,
+      nbVid ? nbVid + (nbVid > 1 ? " vidéos" : " vidéo") : null
+    ].filter(Boolean).join(" · ");
+    grille.append(el("a", { class: "carte-niveau" + (n === 0 ? " a-venir" : ""), href: "niveau.html?n=" + encodeURIComponent(code) },
       el("span", { class: "badge" }, code),
-      el("h2", {}, niv.nom),
-      el("p", {}, n === 0 ? "Bientôt disponible" : n + (n > 1 ? " chapitres" : " chapitre"))
+      el("span", { class: "carte-niveau-texte" },
+        el("h3", {}, niv.nom),
+        el("span", {}, detail)),
+      el("span", { class: "fleche", "aria-hidden": "true" }, "›")
     ));
   }
+
+  // Mode d'emploi (absent des anciennes versions de la page)
+  const mode = document.getElementById("mode-emploi");
+  if (mode) {
+    const etapes = [
+      ["cours", "Le cours et les fiches", "Retrouve le cours et les feuilles d'exercices vus en classe, à lire en ligne ou à télécharger."],
+      ["exerciseur", "S'entraîner en ligne", "Des questions tirées au hasard et corrigées tout de suite : réessaie autant que tu veux."],
+      ["test", "Se tester", "« Je me teste » fait le point sur tout un chapitre, avec un bilan à la fin."],
+      ["video", "Vidéos et corrections", "Des vidéos pour revoir une notion, et la correction filmée de certaines fiches."]
+    ];
+    mode.append(...etapes.map(([type, titre, texte]) =>
+      el("li", { class: "t-" + type },
+        el("span", { class: "tuile" }, icone(type)),
+        el("span", { class: "texte" }, el("strong", {}, titre), el("span", {}, texte)))));
+  }
+
+  rechercheGlobale();
   piedDePage();
+}
+
+/* Recherche dans tous les niveaux, depuis l'accueil */
+function rechercheGlobale() {
+  const champ = document.getElementById("recherche-globale");
+  const zone = document.getElementById("resultats");
+  if (!champ || !zone) return;
+
+  // Index : chaque chapitre et chaque ressource de chaque niveau
+  const index = [];
+  for (const [code, niv] of Object.entries(NIVEAUX)) {
+    const page = "niveau.html?n=" + encodeURIComponent(code);
+    for (const r of niv.activites || []) {
+      index.push({ type: r.type, titre: r.titre, ou: code + " · Activités", href: r.lien || page + "#activites",
+        texte: normaliserRecherche(r.titre + " activite") });
+    }
+    niv.chapitres.forEach((ch, i) => {
+      const ancre = page + "#ch" + (i + 1);
+      index.push({ type: "chapitre", titre: ch.titre, ou: niv.nom, href: ancre,
+        texte: normaliserRecherche(ch.titre + " " + (ch.description || "")) });
+      for (const r of ch.ressources || []) {
+        const t = TYPES[r.type] || TYPES.lien;
+        // les vidéos se regardent dans la page du chapitre ; les autres ressources s'ouvrent directement
+        const href = r.type === "video" ? ancre : (r.fichier || r.lien || ancre);
+        index.push({ type: r.type, titre: r.titre || t.libelle, ou: code + " · " + ch.titre, href, pdf: !!r.fichier,
+          texte: normaliserRecherche((r.titre || "") + " " + t.libelle + " " + ch.titre) });
+      }
+    });
+  }
+
+  const MAX = 20;
+  const afficher = () => {
+    const mots = normaliserRecherche(champ.value).split(/\s+/).filter(Boolean);
+    zone.replaceChildren();
+    if (mots.join("").length < 2) return;
+    const trouves = index.filter(e => mots.every(m => e.texte.includes(m)))
+      .sort((a, b) => (b.type === "chapitre") - (a.type === "chapitre")); // les chapitres d'abord
+    if (!trouves.length) {
+      zone.append(el("p", { class: "resultats-info" }, "Aucun résultat. Essaie un autre mot (par exemple « fraction », « symétrie », « vidéo »)."));
+      return;
+    }
+    zone.append(el("p", { class: "resultats-info" },
+      trouves.length + (trouves.length > 1 ? " résultats" : " résultat") +
+      (trouves.length > MAX ? " : voici les " + MAX + " premiers. Ajoute un mot pour préciser ta recherche." : "")));
+    zone.append(el("ul", { class: "resultats" }, ...trouves.slice(0, MAX).map(e =>
+      el("li", {}, el("a", { class: "resultat t-" + (ICONES[e.type] ? e.type : "lien"), href: e.href, ...(e.pdf ? { target: "_blank", rel: "noopener" } : {}) },
+        el("span", { class: "tuile" }, icone(e.type)),
+        el("span", { class: "texte" },
+          el("strong", {}, e.titre),
+          el("span", {}, e.ou + (e.pdf ? " · PDF (nouvel onglet)" : ""))))))));
+  };
+  champ.addEventListener("input", afficher);
 }
 
 /* ---------- Page d'un niveau ---------- */
