@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Probabilités (3e) — Exerciseur</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="../exerciseurs.css">
+</head>
+<body>
+  <header class="bandeau">
+    <div class="interieur">
+      <div class="fil"><a href="../../niveau.html?n=3e">← Troisième</a></div>
+      <h1>Probabilités — Exerciseur</h1>
+      <p>Chapitre 6 — Probabilités · Mode entraînement</p>
+    </div>
+  </header>
+
+  <main id="app"></main>
+
+  <footer id="pied"></footer>
+
+  <script src="../../contenu.js"></script>
+  <script src="../../app.js"></script>
+  <script src="../moteur.js"></script>
+  
+  <script src="activites.js"></script>
+  <script>
+    lancerExerciseur({
+      intro: "Choisis une activité : elles sont rangées comme les feuilles d'exercices. Les questions sont tirées au hasard : entraîne-toi autant que tu veux ! En cas d'erreur, tu peux réessayer ou afficher la correction.",
+      activites: ACTIVITES,
+      parcours: PARCOURS
+    });
+  </script>
+</body>
+</html>

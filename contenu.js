@@ -727,6 +727,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Équations du premier degré", lien: "exerciseurs/equations-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : équations du premier degré", lien: "exerciseurs/equations-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 6 — Probabilités",
+        ressources: [
+          { type: "cours",     titre: "Cours — Probabilités", fichier: "pdf/3e/ch6-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire des probabilités", fichier: "pdf/3e/ch6-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer des probabilités", fichier: "pdf/3e/ch6-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Contraire, « et », « ou »", fichier: "pdf/3e/ch6-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Situations sans équiprobabilité", fichier: "pdf/3e/ch6-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Fréquences et simulation", fichier: "pdf/3e/ch6-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch6-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Probabilités", lien: "exerciseurs/probabilites-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : probabilités", lien: "exerciseurs/probabilites-3e/" }
+        ]
       }
     ]
   }
