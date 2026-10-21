@@ -825,6 +825,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Statistiques", lien: "exerciseurs/statistiques-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : statistiques", lien: "exerciseurs/statistiques-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 13 — Fonctions linéaires et affines",
+        ressources: [
+          { type: "cours",     titre: "Cours — Fonctions linéaires et affines", fichier: "pdf/3e/ch13-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Fonctions linéaires", fichier: "pdf/3e/ch13-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Pourcentages et fonctions linéaires", fichier: "pdf/3e/ch13-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Fonctions affines", fichier: "pdf/3e/ch13-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Représentations graphiques", fichier: "pdf/3e/ch13-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Déterminer une fonction affine", fichier: "pdf/3e/ch13-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch13-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Fonctions linéaires et affines", lien: "exerciseurs/fonctions-affines-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : fonctions linéaires et affines", lien: "exerciseurs/fonctions-affines-3e/" }
+        ]
       }
     ]
   }
