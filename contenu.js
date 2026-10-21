@@ -685,6 +685,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Calcul littéral : développer", lien: "exerciseurs/calcul-litteral-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral : développer", lien: "exerciseurs/calcul-litteral-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 3 — Théorème de Pythagore et réciproque",
+        ressources: [
+          { type: "cours",     titre: "Cours — Théorème de Pythagore et réciproque", fichier: "pdf/3e/ch3-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Calculer l'hypoténuse", fichier: "pdf/3e/ch3-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer un côté de l'angle droit", fichier: "pdf/3e/ch3-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Le triangle est-il rectangle ?", fichier: "pdf/3e/ch3-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Valeurs exactes, aires et périmètres", fichier: "pdf/3e/ch3-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Pythagore dans l'espace", fichier: "pdf/3e/ch3-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch3-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Théorème de Pythagore et réciproque", lien: "exerciseurs/pythagore-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : théorème de Pythagore et réciproque", lien: "exerciseurs/pythagore-3e/" }
+        ]
       }
     ]
   }
