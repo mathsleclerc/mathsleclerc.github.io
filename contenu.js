@@ -769,6 +769,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Équations produit nul et x² = a", lien: "exerciseurs/equations-produit-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : équations produit nul et x² = a", lien: "exerciseurs/equations-produit-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 9 — Théorème de Thalès et triangles semblables",
+        ressources: [
+          { type: "cours",     titre: "Cours — Théorème de Thalès et triangles semblables", fichier: "pdf/3e/ch9-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Triangles semblables", fichier: "pdf/3e/ch9-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Thalès : configuration emboîtée", fichier: "pdf/3e/ch9-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Thalès : configuration papillon", fichier: "pdf/3e/ch9-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Les droites sont-elles parallèles ?", fichier: "pdf/3e/ch9-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Agrandissement et réduction", fichier: "pdf/3e/ch9-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch9-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Théorème de Thalès et triangles semblables", lien: "exerciseurs/thales-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : théorème de Thalès et triangles semblables", lien: "exerciseurs/thales-3e/" }
+        ]
       }
     ]
   }
