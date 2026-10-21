@@ -713,6 +713,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Notion de fonction", lien: "exerciseurs/fonctions-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : notion de fonction", lien: "exerciseurs/fonctions-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 5 — Équations du premier degré",
+        ressources: [
+          { type: "cours",     titre: "Cours — Équations du premier degré", fichier: "pdf/3e/ch5-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Tester, résoudre des équations simples", fichier: "pdf/3e/ch5-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Résoudre ax + b = cx + d", fichier: "pdf/3e/ch5-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Parenthèses et quotients", fichier: "pdf/3e/ch5-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Mettre en équation", fichier: "pdf/3e/ch5-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Problèmes type brevet", fichier: "pdf/3e/ch5-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Équations et fonctions", fichier: "pdf/3e/ch5-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Équations du premier degré", lien: "exerciseurs/equations-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : équations du premier degré", lien: "exerciseurs/equations-3e/" }
+        ]
       }
     ]
   }
