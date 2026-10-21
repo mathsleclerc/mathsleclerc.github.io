@@ -657,7 +657,22 @@ const NIVEAUX = {
 
   "3e": {
     nom: "Troisième",
-    chapitres: []
+    chapitres: [
+      {
+        titre: "Chapitre 1 — Arithmétique",
+        ressources: [
+          { type: "cours",     titre: "Cours — Arithmétique", fichier: "pdf/3e/ch1-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : La division euclidienne", fichier: "pdf/3e/ch1-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Multiples et diviseurs", fichier: "pdf/3e/ch1-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Nombres premiers", fichier: "pdf/3e/ch1-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Décomposer en facteurs premiers", fichier: "pdf/3e/ch1-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Fractions irréductibles", fichier: "pdf/3e/ch1-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes : diviseurs et multiples communs", fichier: "pdf/3e/ch1-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Arithmétique", lien: "exerciseurs/arithmetique-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : arithmétique", lien: "exerciseurs/arithmetique-3e/" }
+        ]
+      }
+    ]
   }
 
 };
