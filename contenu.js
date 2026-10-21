@@ -755,6 +755,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Calcul littéral : factoriser", lien: "exerciseurs/factoriser-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral : factoriser", lien: "exerciseurs/factoriser-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 8 — Équations produit nul et x² = a",
+        ressources: [
+          { type: "cours",     titre: "Cours — Équations produit nul et x² = a", fichier: "pdf/3e/ch8-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Équations produit nul", fichier: "pdf/3e/ch8-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Factoriser pour résoudre", fichier: "pdf/3e/ch8-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Les équations x² = a", fichier: "pdf/3e/ch8-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Choisir la bonne méthode", fichier: "pdf/3e/ch8-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Problèmes de géométrie", fichier: "pdf/3e/ch8-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch8-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Équations produit nul et x² = a", lien: "exerciseurs/equations-produit-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : équations produit nul et x² = a", lien: "exerciseurs/equations-produit-3e/" }
+        ]
       }
     ]
   }
