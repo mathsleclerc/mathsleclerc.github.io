@@ -699,6 +699,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Théorème de Pythagore et réciproque", lien: "exerciseurs/pythagore-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : théorème de Pythagore et réciproque", lien: "exerciseurs/pythagore-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 4 — Notion de fonction",
+        ressources: [
+          { type: "cours",     titre: "Cours — Notion de fonction", fichier: "pdf/3e/ch4-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire et notations", fichier: "pdf/3e/ch4-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer des images", fichier: "pdf/3e/ch4-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Chercher des antécédents", fichier: "pdf/3e/ch4-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Tableaux de valeurs et tableur", fichier: "pdf/3e/ch4-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Lire un graphique", fichier: "pdf/3e/ch4-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Tracer une courbe, résoudre un problème", fichier: "pdf/3e/ch4-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Notion de fonction", lien: "exerciseurs/fonctions-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : notion de fonction", lien: "exerciseurs/fonctions-3e/" }
+        ]
       }
     ]
   }
