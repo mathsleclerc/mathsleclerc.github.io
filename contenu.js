@@ -671,6 +671,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Arithmétique", lien: "exerciseurs/arithmetique-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : arithmétique", lien: "exerciseurs/arithmetique-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 2 — Calcul littéral : développer",
+        ressources: [
+          { type: "cours",     titre: "Cours — Calcul littéral : développer", fichier: "pdf/3e/ch2-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Expressions, valeurs et réductions", fichier: "pdf/3e/ch2-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Distributivité simple", fichier: "pdf/3e/ch2-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Double distributivité", fichier: "pdf/3e/ch2-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Identités remarquables", fichier: "pdf/3e/ch2-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Programmes de calcul", fichier: "pdf/3e/ch2-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Démontrer et utiliser un tableur", fichier: "pdf/3e/ch2-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Calcul littéral : développer", lien: "exerciseurs/calcul-litteral-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : calcul littéral : développer", lien: "exerciseurs/calcul-litteral-3e/" }
+        ]
       }
     ]
   }
