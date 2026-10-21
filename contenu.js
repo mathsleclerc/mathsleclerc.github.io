@@ -797,6 +797,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Puissances et notation scientifique", lien: "exerciseurs/puissances-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : puissances et notation scientifique", lien: "exerciseurs/puissances-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 11 — Solides, volumes et sections",
+        ressources: [
+          { type: "cours",     titre: "Cours — Solides, volumes et sections", fichier: "pdf/3e/ch11-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Volumes des solides usuels", fichier: "pdf/3e/ch11-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : La sphère et la boule", fichier: "pdf/3e/ch11-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Sections planes", fichier: "pdf/3e/ch11-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Calculer dans une section", fichier: "pdf/3e/ch11-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Agrandir et réduire un solide", fichier: "pdf/3e/ch11-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch11-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Solides, volumes et sections", lien: "exerciseurs/solides-3e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : solides, volumes et sections", lien: "exerciseurs/solides-3e/" }
+        ]
       }
     ]
   }
