@@ -811,6 +811,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Solides, volumes et sections", lien: "exerciseurs/solides-3e/#je-me-teste", detail: "10 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : solides, volumes et sections", lien: "exerciseurs/solides-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 12 — Statistiques",
+        ressources: [
+          { type: "cours",     titre: "Cours — Statistiques", fichier: "pdf/3e/ch12-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Effectifs, fréquences, diagrammes", fichier: "pdf/3e/ch12-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Calculer une moyenne", fichier: "pdf/3e/ch12-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Déterminer une médiane", fichier: "pdf/3e/ch12-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Étendue et comparaison de séries", fichier: "pdf/3e/ch12-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Classes et tableur", fichier: "pdf/3e/ch12-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch12-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Statistiques", lien: "exerciseurs/statistiques-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : statistiques", lien: "exerciseurs/statistiques-3e/" }
+        ]
       }
     ]
   }
