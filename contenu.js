@@ -783,6 +783,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Théorème de Thalès et triangles semblables", lien: "exerciseurs/thales-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : théorème de Thalès et triangles semblables", lien: "exerciseurs/thales-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 10 — Puissances et notation scientifique",
+        ressources: [
+          { type: "cours",     titre: "Cours — Puissances et notation scientifique", fichier: "pdf/3e/ch10-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Puissances et exposants négatifs", fichier: "pdf/3e/ch10-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Règles de calcul", fichier: "pdf/3e/ch10-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Puissances de 10", fichier: "pdf/3e/ch10-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Écrire en notation scientifique", fichier: "pdf/3e/ch10-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Calculer en notation scientifique", fichier: "pdf/3e/ch10-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch10-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Puissances et notation scientifique", lien: "exerciseurs/puissances-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : puissances et notation scientifique", lien: "exerciseurs/puissances-3e/" }
+        ]
       }
     ]
   }
