@@ -839,6 +839,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Fonctions linéaires et affines", lien: "exerciseurs/fonctions-affines-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : fonctions linéaires et affines", lien: "exerciseurs/fonctions-affines-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 14 — Trigonométrie dans le triangle rectangle",
+        ressources: [
+          { type: "cours",     titre: "Cours — Trigonométrie dans le triangle rectangle", fichier: "pdf/3e/ch14-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire et formules", fichier: "pdf/3e/ch14-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Utiliser la calculatrice", fichier: "pdf/3e/ch14-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Calculer une longueur", fichier: "pdf/3e/ch14-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Calculer un angle", fichier: "pdf/3e/ch14-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Choisir la bonne méthode", fichier: "pdf/3e/ch14-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch14-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Trigonométrie dans le triangle rectangle", lien: "exerciseurs/trigonometrie-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : trigonométrie dans le triangle rectangle", lien: "exerciseurs/trigonometrie-3e/" }
+        ]
       }
     ]
   }
