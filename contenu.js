@@ -881,6 +881,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Rotations et homothéties", lien: "exerciseurs/rotations-homotheties-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : rotations et homothéties", lien: "exerciseurs/rotations-homotheties-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 17 — Repérage dans l'espace et sur la sphère",
+        ressources: [
+          { type: "cours",     titre: "Cours — Repérage dans l'espace et sur la sphère", fichier: "pdf/3e/ch17-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Se repérer dans un pavé droit", fichier: "pdf/3e/ch17-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Repérage dans l'espace : problèmes", fichier: "pdf/3e/ch17-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : La sphère terrestre", fichier: "pdf/3e/ch17-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Latitude et longitude", fichier: "pdf/3e/ch17-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : Calculer sur la sphère terrestre", fichier: "pdf/3e/ch17-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch17-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Repérage dans l'espace et sur la sphère", lien: "exerciseurs/reperage-espace-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : repérage dans l'espace et sur la sphère", lien: "exerciseurs/reperage-espace-3e/" }
+        ]
       }
     ]
   }
