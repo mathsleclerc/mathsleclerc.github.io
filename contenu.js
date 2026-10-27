@@ -853,6 +853,20 @@ const NIVEAUX = {
           { type: "test", titre: "Je me teste — Trigonométrie dans le triangle rectangle", lien: "exerciseurs/trigonometrie-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner : trigonométrie dans le triangle rectangle", lien: "exerciseurs/trigonometrie-3e/" }
         ]
+      },
+      {
+        titre: "Chapitre 15 — Expériences aléatoires à deux épreuves",
+        ressources: [
+          { type: "cours",     titre: "Cours — Expériences aléatoires à deux épreuves", fichier: "pdf/3e/ch15-cours.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°1 : Lister les issues", fichier: "pdf/3e/ch15-exercices-1.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Tableaux à double entrée", fichier: "pdf/3e/ch15-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°3 : Arbres pondérés", fichier: "pdf/3e/ch15-exercices-3.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°4 : Avec ou sans remise", fichier: "pdf/3e/ch15-exercices-4.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°5 : « Au moins un » et contraire", fichier: "pdf/3e/ch15-exercices-5.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°6 : Problèmes type brevet", fichier: "pdf/3e/ch15-exercices-6.pdf" },
+          { type: "test", titre: "Je me teste — Expériences aléatoires à deux épreuves", lien: "exerciseurs/deux-epreuves-3e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "exerciseur", titre: "Exerciseur — S'entraîner : expériences aléatoires à deux épreuves", lien: "exerciseurs/deux-epreuves-3e/" }
+        ]
       }
     ]
   }
