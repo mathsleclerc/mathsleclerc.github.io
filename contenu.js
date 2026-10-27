@@ -114,6 +114,7 @@ const NIVEAUX = {
           { type: "exercices", titre: "Feuille d'exercices n°3 : Le retour à l'unité",            fichier: "pdf/6e/ch4-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Résoudre des problèmes",         fichier: "pdf/6e/ch4-exercices-4.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°5 : Les échelles",                   fichier: "pdf/6e/ch4-exercices-5.pdf" },
+          { type: "video",     titre: "Vidéo — Proportionnel ou pas ?",                              lien: "https://youtu.be/rlHaCAOmqCM" },
           { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-6e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur la proportionnalité", lien: "exerciseurs/proportionnalite-6e/" }
         ]
