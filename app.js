@@ -178,8 +178,21 @@ function pageAccueil() {
         el("span", { class: "texte" }, el("strong", {}, titre), el("span", {}, texte)))));
   }
 
+  videosRecentes();
   rechercheGlobale();
   piedDePage();
+}
+
+/* Chaîne YouTube sur l'accueil : bouton « S'abonner » et les 3 dernières vidéos (videos-recentes.js, mis à jour par GitHub) */
+function videosRecentes() {
+  const section = document.getElementById("youtube");
+  const abonner = document.getElementById("abonner");
+  if (!section || !abonner) return;
+  if (!SITE.youtube) { section.hidden = abonner.hidden = true; return; }
+  abonner.href = SITE.youtube + (SITE.youtube.includes("?") ? "&" : "?") + "sub_confirmation=1";
+  abonner.prepend(icone("video"));
+  const liste = typeof VIDEOS_RECENTES !== "undefined" ? VIDEOS_RECENTES.slice(0, 3) : [];
+  document.getElementById("videos-recentes").append(...liste.map(v => carteVideo({ type: "video", titre: v.titre, lien: v.lien })));
 }
 
 /* Recherche dans tous les niveaux, depuis l'accueil */

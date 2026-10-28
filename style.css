@@ -180,6 +180,16 @@ main { padding: 24px 16px 40px; }
 .carte-niveau:hover .fleche { transform: translateX(3px); color: var(--cours); }
 .carte-niveau.a-venir .badge { background: var(--bord); color: var(--texte-doux); }
 
+/* Chaîne YouTube */
+.bouton-abonner {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; margin-top: 20px;
+  background: #e62117; color: #fff; border-radius: 999px; font-weight: 700; text-decoration: none;
+  transition: background .15s;
+}
+.bouton-abonner:hover { background: #c41a12; }
+.bouton-abonner:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.bouton-abonner .picto { width: 18px; height: 18px; fill: currentColor; }
+
 /* Recherche dans tout le site */
 .accueil .recherche { margin-bottom: 12px; }
 .resultats-info { margin: 0 0 10px; color: var(--texte-doux); font-size: .95rem; }

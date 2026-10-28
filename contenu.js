@@ -45,7 +45,9 @@ const SITE = {
   // Nom du collège, affiché dans le pied de page (laisser "" pour ne rien afficher)
   college: "",
   // Phrase de contact du pied de page (laisser "" pour ne rien afficher)
-  contact: ""
+  contact: "",
+  // Chaîne YouTube : bouton « S'abonner » et dernières vidéos sur l'accueil (laisser "" pour masquer)
+  youtube: "https://www.youtube.com/@mathsavecm.leclerc"
 };
 
 const NIVEAUX = {

@@ -1,0 +1,23 @@
+name: Dernières vidéos YouTube
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"   # toutes les 3 heures
+  workflow_dispatch:          # bouton « Run workflow » dans l'onglet Actions
+
+permissions:
+  contents: write
+
+jobs:
+  maj:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 outils/videos-recentes.py
+      - name: Enregistrer si la liste a changé
+        run: |
+          git diff --quiet videos-recentes.js && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Dernières vidéos YouTube"
+          git push

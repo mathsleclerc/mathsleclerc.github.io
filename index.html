@@ -18,6 +18,7 @@
       <p class="surtitre" id="presentation"></p>
       <h1 id="titre"></h1>
       <p id="sous-titre"></p>
+      <a class="bouton-abonner" id="abonner" target="_blank" rel="noopener">S'abonner à la chaîne YouTube</a>
     </div>
   </header>
 
@@ -28,6 +29,12 @@
       <h2 class="onglet" id="t-niveaux"><span>Les niveaux</span></h2>
       <p class="intro" id="message"></p>
       <div class="grille-niveaux" id="grille"></div>
+    </section>
+
+    <section class="section-accueil" aria-labelledby="t-youtube" id="youtube">
+      <h2 class="onglet" id="t-youtube"><span>Les dernières vidéos</span></h2>
+      <p class="intro">Les trois dernières vidéos de la chaîne YouTube.</p>
+      <div class="videos" id="videos-recentes"></div>
     </section>
 
     <section class="section-accueil" aria-labelledby="t-recherche">
@@ -45,6 +52,7 @@
   <footer id="pied"></footer>
 
   <script src="contenu.js"></script>
+  <script src="videos-recentes.js"></script>
   <script src="app.js"></script>
   <script>pageAccueil();</script>
 </body>
