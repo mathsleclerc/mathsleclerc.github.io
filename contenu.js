@@ -104,7 +104,6 @@ const NIVEAUX = {
           { type: "video",     titre: "Vidéo — Pourcentages",                                        lien: "https://www.youtube.com/watch?v=2Oxn5MHV1Bo" },
           { type: "video",     titre: "Vidéo — Calculer un pourcentage d'une quantité",       lien: "https://youtu.be/ctqZCR4fgxM" },
           { type: "video",     titre: "Vidéo — Fractions sur une demi-droite graduée",               lien: "https://www.youtube.com/watch?v=1y_zYfl0uZg" },
-          { type: "video",     titre: "Vidéo — Additionner et soustraire des fractions",             lien: "https://www.youtube.com/watch?v=O6vJTgzxZX8" },
           { type: "video",     titre: "Vidéo — Additionner et soustraire des fractions sans erreur",  lien: "https://youtu.be/T8i1w_SIxQI" },
           { type: "test", titre: "Je me teste — Fractions", lien: "exerciseurs/fractions-6e/#je-me-teste", detail: "15 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur les fractions", lien: "exerciseurs/fractions-6e/" }
