@@ -1,18 +1,18 @@
 /* Fichier mis à jour automatiquement (outils/videos-recentes.py) : ne pas le modifier à la main. */
 const VIDEOS_RECENTES = [
   {
-    "titre": "Critères de divisibilité : Les comprendre et les utiliser !",
-    "lien": "https://www.youtube.com/watch?v=RYB7hW8vg0Y",
-    "date": "2026-10-28"
+    "titre": "Les mêmes numéros deux fois de suite à la loterie ! #shorts  #maths #education #apprends  #loto",
+    "lien": "https://www.youtube.com/watch?v=LtwnttiJicc",
+    "date": "2026-11-04"
   },
   {
-    "titre": "Résoudre un problème de proportionnalité",
-    "lien": "https://www.youtube.com/watch?v=VdI1Sx5m8fM",
-    "date": "2026-10-28"
+    "titre": "Survis à mon donjon de maths : équations ⚔️ #shorts  #maths #quiz #quizmaths",
+    "lien": "https://www.youtube.com/watch?v=hRo5DbMrp0o",
+    "date": "2026-11-04"
   },
   {
-    "titre": "Proportionnel ou pas ?",
-    "lien": "https://www.youtube.com/watch?v=rlHaCAOmqCM",
-    "date": "2026-10-27"
+    "titre": "Les trois quarts de 20 bonbons = ? ⏱️ #shorts",
+    "lien": "https://www.youtube.com/watch?v=F1G6b6sLxxU",
+    "date": "2026-11-04"
   }
 ];
