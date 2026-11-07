@@ -1,18 +1,18 @@
 /* Fichier mis à jour automatiquement (outils/videos-recentes.py) : ne pas le modifier à la main. */
 const VIDEOS_RECENTES = [
   {
-    "titre": "Les 7/8 de 56 en 2 étapes ✅ #shorts #maths",
-    "lien": "https://www.youtube.com/watch?v=Lkk9SdCndeY",
-    "date": "2026-11-06"
+    "titre": "Survis à mon donjon de maths : nombres relatifs ⚔️ #shorts  #maths #quiz #quizmaths",
+    "lien": "https://www.youtube.com/watch?v=SbumWK2rmo4",
+    "date": "2026-11-07"
   },
   {
-    "titre": "Survis à mon donjon de maths : dérivation ⚔️ #shorts  #maths #quiz #quizmaths",
-    "lien": "https://www.youtube.com/watch?v=zHWkj6zDb50",
-    "date": "2026-11-06"
+    "titre": "Survis à mon donjon de maths : fonctions ⚔️ #shorts  #maths #quiz #quizmaths  #fonction",
+    "lien": "https://www.youtube.com/watch?v=ehO4rJokk6Y",
+    "date": "2026-11-07"
   },
   {
-    "titre": "Il a gagné 14 fois à la loterie, sans tricher #shorts  #maths #education #apprends",
-    "lien": "https://www.youtube.com/watch?v=I6n6VwePg30",
-    "date": "2026-11-05"
+    "titre": "−30 % sur un sweat à 60 € : combien d'euros ? 🏷️ #shorts #maths  #education #apprends #mathématiques",
+    "lien": "https://www.youtube.com/watch?v=NDQZBftGEFw",
+    "date": "2026-11-07"
   }
 ];
