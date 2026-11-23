@@ -113,6 +113,7 @@ function idYoutube(lien) {
 /* Pictogrammes (traits, couleur héritée du texte) */
 const ICONES = {
   cours:      '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  diapo:      '<path d="M3 4h18v12H3z"/><path d="M12 16v4M8 20h8M10 8l4 2-4 2z"/>',
   exercices:  '<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
   corrige:    '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   video:      '<path d="M8 5.5v13l10.5-6.5z"/>',
@@ -266,7 +267,8 @@ function titreAffiche(r) {
   const t = r.titre || (TYPES[r.type] || TYPES.lien).libelle;
   let m;
   if (r.type === "exercices" && (m = t.match(/^Feuille d'exercices n°\s*(\d+)\s*:\s*(.+)$/))) return "Fiche " + m[1] + " · " + m[2];
-  if (r.type === "cours" && /^Cours\s+—\s+/.test(t)) return "Cours";
+  if (r.type === "cours" && /^Cours interactif\s+—\s+/.test(t)) return "Cours interactif";
+  if (r.type === "cours" && /^Cours\s+—\s+/.test(t)) return r.fichier && r.detail ? "Cours à imprimer" : "Cours";
   if (r.type === "test" && /^Je me teste\s+—\s+/.test(t)) return "Je me teste";
   if (r.type === "video" || r.type === "exerciseur") return t.replace(/^(Vidéo|Exerciseur)\s+—\s+/, "");
   return t;
@@ -513,12 +515,13 @@ function carteRessource(r) {
   const t = TYPES[r.type] || TYPES.lien;
   const href = r.fichier || r.lien || "#";
   const estPdf = !!r.fichier;
-  const interne = r.type === "activite";
+  const diapo = r.type === "cours" && !estPdf && !!r.lien; // cours interactif (diapo du site)
+  const interne = r.type === "activite" || diapo;
   const nouvelOnglet = !interne;
   const sousTitre = r.detail || (estPdf ? "PDF · nouvel onglet"
-    : interne ? "Lancer l'activité" : "Ouvrir le lien · nouvel onglet");
+    : diapo ? "Diapo interactive, étape par étape" : interne ? "Lancer l'activité" : "Ouvrir le lien · nouvel onglet");
   const carte = el("div", { class: "ressource t-" + (TYPES[r.type] ? r.type : "lien") },
-    el("span", { class: "tuile" }, icone(TYPES[r.type] ? r.type : "lien")),
+    el("span", { class: "tuile" }, icone(diapo ? "diapo" : TYPES[r.type] ? r.type : "lien")),
     el("a", { class: "texte", href, ...(nouvelOnglet ? { target: "_blank", rel: "noopener" } : {}),
       title: r.titre || t.libelle },
       el("strong", {}, titreAffiche(r)),

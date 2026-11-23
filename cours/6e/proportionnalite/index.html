@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proportionnalité — Cours interactif</title>
+<link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<link rel="stylesheet" href="../../cours.css">
+<style>
+  /* propre à ce cours */
+  .tri-carte { background: #fff; border-radius: 16px; box-shadow: 0 2px 10px rgba(20,40,80,.08); padding: 20px 24px; font-size: 25px; line-height: 1.4; min-height: 170px; display: flex; align-items: center; }
+  .tri-choix { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tri-choix .btn { font-size: 20px; padding: 16px 10px; }
+  .tri-choix .btn.bon { background: var(--vert); color: #fff; }
+  .tri-choix .btn.mauvais { background: var(--rouge); color: #fff; }
+  .tri-retour { font-size: 19px; line-height: 1.4; min-height: 84px; background: #fff; border-radius: 12px; padding: 12px 16px; border: 2px dashed #c9d3df; }
+  .tri-retour.ok { border: 2px solid var(--vert); background: var(--vert-clair); }
+  .tri-retour.ko { border: 2px solid var(--rouge); background: var(--rouge-clair); }
+  .bacs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; height: 100%; }
+  .bac { border-radius: 16px; padding: 14px; background: #fff; box-shadow: 0 2px 10px rgba(20,40,80,.08); border-top: 8px solid var(--vert); }
+  .bac.non { border-top-color: var(--rouge); }
+  .bac h3 { margin: 0 0 10px; font-size: 20px; }
+  .bac ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .bac li { font-size: 17px; background: var(--fond); border-radius: 9px; padding: 7px 10px; animation: fadeUp .4s ease both; }
+  .proc-choix { display: flex; gap: 10px; flex-wrap: wrap; }
+  .proc-res { background: #fff; border-radius: 16px; box-shadow: 0 2px 10px rgba(20,40,80,.08); padding: 18px 22px; font-size: 22px; line-height: 1.45; min-height: 220px; }
+  .verdict { display: inline-block; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; padding: 4px 11px; border-radius: 999px; margin-bottom: 10px; }
+  .verdict.top { background: var(--vert); } .verdict.ok { background: var(--bleu); } .verdict.non { background: var(--rouge); }
+  .prix { border-collapse: collapse; font-size: 22px; margin: 0 auto; }
+  .prix td, .prix th { border: 2px solid #8796aa; padding: 8px 16px; text-align: center; min-width: 86px; background: #fff; }
+  .prix th { background: var(--bleu-clair); font-weight: 700; text-align: left; }
+  .prix td.vide { color: #b4bfcc; }
+  .prix td.neuf { color: var(--vert); font-weight: 700; animation: fadeIn .5s ease both; }
+</style>
+</head>
+<body>
+<div id="tourne">Tourne ton téléphone pour voir le cours en grand.</div>
+<div id="viewport"><div id="stage">
+
+<!-- ============ 1. TITRE ============ -->
+<section class="slide titre" id="s-titre" data-titre="Une question pour commencer">
+  <div class="kicker">Chapitre 4</div>
+  <h1>Proportionnalité</h1>
+  <p class="sous">Reconnaître · Résoudre un problème · Les échelles</p>
+  <div class="question">Hugo mesure <b>1,40 m</b> à <b>10 ans</b>.<br>Mesurera-t-il <b>2,80 m</b> à <b>20 ans</b> ?</div>
+  <p data-step="1" style="font-size:22px;margin-top:22px;opacity:.9;max-width:600px">Oui ? Non ? Garde ta réponse en tête : on la vérifie un peu plus loin.</p>
+  <svg id="fig-titre" viewBox="0 0 480 420" style="position:absolute;right:40px;top:150px;width:480px;height:420px" aria-hidden="true"></svg>
+</section>
+
+<!-- ============ 2. DÉFINITION ============ -->
+<section class="slide" id="s-def" data-titre="Deux grandeurs proportionnelles">
+  <header><span class="chip">I · Reconnaître</span><h2>Deux grandeurs proportionnelles</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>Deux grandeurs sont <b>proportionnelles</b> si l’on obtient les valeurs de l’une en multipliant les valeurs de l’autre <b>toujours par le même nombre</b> (non nul).</p></div>
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p>Au marché, les tomates coûtent <b>3 € le kilo</b> (c’est le « prix au kilo »).</p>
+        <p class="ligne">1 kg → 3 € &nbsp;·&nbsp; 2 kg → <input class="trou" data-rep="6" data-rev="1"> € &nbsp;·&nbsp; 5 kg → <input class="trou" data-rep="15" data-rev="2"> €</p>
+        <p class="ligne">0,5 kg → <input class="trou" data-rep="1,50" data-rev="3"> €</p>
+        <p class="ligne">On multiplie toujours la masse par <input class="trou" data-rep="3" data-rev="4"> : le prix payé est proportionnel à la masse de tomates.</p>
+      </div>
+      <p class="note" data-step="5">Les expressions « prix au kilo », « pages par minute », « litres par heure »… indiquent une situation de proportionnalité.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:400px"><svg id="fig-tomates" viewBox="0 0 620 400" style="touch-action:none"></svg></div>
+      <div class="ctrl">Masse de tomates <input type="range" id="tom-m" min="0" max="5" step="0.5" value="2"></div>
+      <div class="lecture" id="tom-lec"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. PROPORTIONNEL OU PAS ============ -->
+<section class="slide" id="s-pas" data-titre="Proportionnel ou pas ?">
+  <header><span class="chip">I · Reconnaître</span><h2>Proportionnel ou pas ?</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box meth"><span class="onglet">Méthode</span>
+        <ol>
+          <li>Je calcule (ou je lis) les valeurs des deux grandeurs dans plusieurs cas.</li>
+          <li>Je regarde si l’on passe toujours de l’une à l’autre en multipliant par le même nombre.</li>
+          <li>Je conclus par une phrase. Pour répondre « non », <b>un seul contre-exemple suffit</b>.</li>
+        </ol></div>
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p>Une salle d’escalade fait payer une carte à <b>10 €</b> puis <b>4 € par séance</b>. Le prix payé est-il proportionnel au nombre de séances ?</p>
+        <p class="ligne">1 séance → 10 + 4 = <input class="trou" data-rep="14" data-rev="1"> € &nbsp;;&nbsp; 2 séances → 10 + 8 = <input class="trou" data-rep="18" data-rev="2"> €</p>
+        <p class="ligne" data-step="3">Il y a 2 fois plus de séances, mais le prix n’est pas 2 fois plus grand : <b class="c-rouge">2 × 14 = 28 ≠ 18</b>.</p>
+      </div>
+      <div class="concl rouge" data-step="4">Le prix n’est pas proportionnel au nombre de séances.</div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:430px"><svg id="fig-escalade" viewBox="0 0 620 430"></svg></div>
+      <p class="note" data-step="4">À cause de la carte à 10 €, le prix ne double pas quand le nombre de séances double.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. RETOUR SUR HUGO ============ -->
+<section class="slide" id="s-hugo" data-titre="Retour sur Hugo">
+  <header><span class="chip">I · Reconnaître</span><h2>Retour sur Hugo</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p>Hugo mesure 1,40 m à 10 ans. Mesurera-t-il 2,80 m à 20 ans ?</p></div>
+      <div class="box ask" data-step="1"><span class="onglet">À toi</span>
+        <p>Si c’était proportionnel, quelle taille aurait Hugo à 30 ans ?</p>
+        <p class="ligne">30 = 3 × 10, donc 3 × 1,40 = <input class="trou" data-rep="4,20" data-rev="2"> m… impossible !</p></div>
+      <div class="concl rouge" data-step="3">Non : la taille d’une personne n’est pas proportionnelle à son âge (on ne grandit pas toujours de la même façon).</div>
+      <div class="box att" data-step="4"><span class="onglet">Attention</span>
+        <p>Deux grandeurs qui augmentent en même temps ne sont pas forcément proportionnelles.</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-hugo" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. JEU DE TRI ============ -->
+<section class="slide" id="s-tri" data-titre="Jeu : trie les situations">
+  <header><span class="chip jaune">À toi</span><h2>Proportionnel ou pas ?</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="note" id="tri-num">Situation 1 sur 8</div>
+      <div class="tri-carte" id="tri-texte"></div>
+      <div class="tri-choix">
+        <button class="btn" data-r="oui">Proportionnel</button>
+        <button class="btn" data-r="non">Pas proportionnel</button>
+      </div>
+      <div class="tri-retour" id="tri-retour">Vote avec la classe (un doigt : proportionnel, deux doigts : pas proportionnel), puis clique.</div>
+      <div style="display:flex;gap:10px"><button class="btn pri" id="tri-suite" disabled>Situation suivante</button><button class="btn" id="tri-zero">Recommencer</button></div>
+    </div>
+    <div class="col">
+      <div class="bacs">
+        <div class="bac"><h3 class="c-vert">Proportionnel</h3><ul id="bac-oui"></ul></div>
+        <div class="bac non"><h3 class="c-rouge">Pas proportionnel</h3><ul id="bac-non"></ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. MULTIPLIER OU DIVISER ============ -->
+<section class="slide" id="s-mult" data-titre="Multiplier ou diviser">
+  <header><span class="chip vert">II · Résoudre un problème</span><h2>Multiplier ou diviser</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="bandeau-pb">Dans toute cette partie : 4 cahiers coûtent 6 €.</div>
+      <div class="box prop"><span class="onglet">Propriété</span>
+        <p>Si l’on multiplie (ou divise) une grandeur par un nombre, l’autre grandeur est multipliée (ou divisée) par <b>ce même nombre</b>.</p></div>
+      <div class="box ex"><span class="onglet">Exemples</span>
+        <p><b>Prix de 12 cahiers :</b></p>
+        <p>12 = <input class="trou" data-rep="3" data-rev="1"> × 4 : 3 fois plus de cahiers, donc 3 fois plus cher : 3 × 6 = <input class="trou" data-rep="18" data-rev="2"> €.</p>
+        <p class="ligne" data-step="3"><b>Prix de 2 cahiers :</b></p>
+        <p data-step="3">2 = 4 ÷ <input class="trou" data-rep="2" data-rev="4"> : 2 fois moins de cahiers, donc 2 fois moins cher : 6 ÷ 2 = <input class="trou" data-rep="3" data-rev="5"> €.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-mult" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. ADDITIONNER ============ -->
+<section class="slide" id="s-add" data-titre="Additionner">
+  <header><span class="chip vert">II · Résoudre un problème</span><h2>Additionner</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="bandeau-pb">4 cahiers coûtent 6 €. On sait déjà : 12 cahiers → 18 € et 2 cahiers → 3 €.</div>
+      <div class="box prop"><span class="onglet">Propriété</span>
+        <p>Si l’on additionne deux valeurs d’une grandeur, on additionne les deux valeurs correspondantes de l’autre grandeur.</p></div>
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p><b>Prix de 14 cahiers :</b></p>
+        <p>14 = 12 + <input class="trou" data-rep="2" data-rev="1">, donc le prix est 18 + <input class="trou" data-rep="3" data-rev="2"> = <input class="trou" data-rep="21" data-rev="3"> €.</p>
+      </div>
+      <div class="box att" data-step="4"><span class="onglet">Attention</span>
+        <p>On additionne deux colonnes connues, on n’ajoute pas le même nombre des deux côtés : 4 cahiers → 6 €, mais 5 cahiers ne coûtent pas 6 + 1 = 7 € (ils coûtent 7,50 €).</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-add" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. RETOUR À L'UNITÉ ============ -->
+<section class="slide" id="s-unite" data-titre="Passer par l’unité">
+  <header><span class="chip vert">II · Résoudre un problème</span><h2>Passer par l’unité</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box meth"><span class="onglet">Méthode : retour à l’unité</span>
+        <ol>
+          <li>Je calcule la valeur pour <b>une seule unité</b> (par une division).</li>
+          <li>Je multiplie cette valeur par le nombre d’unités voulu.</li>
+        </ol></div>
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p><b>Prix de 7 cahiers</b> (4 cahiers coûtent 6 €) :</p>
+        <p>1 cahier coûte 6 ÷ 4 = <input class="trou" data-rep="1,50" data-rev="1"> € (c’est le « prix par cahier »).</p>
+        <p class="ligne">7 cahiers coûtent 7 × 1,50 = <input class="trou" data-rep="10,50" data-rev="2"> €.</p>
+      </div>
+      <div class="box att" data-step="3"><span class="onglet">Attention</span>
+        <p>Si la division ne tombe pas juste, on peut écrire le résultat sous forme de fraction. Par exemple, si 3 kg coûtent 7 €, alors 1 kg coûte 7 ÷ 3 = <span class="frac"><span>7</span><span>3</span></span> €.</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-unite" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. TABLEAU ============ -->
+<section class="slide" id="s-tab" data-titre="Représenter dans un tableau">
+  <header><span class="chip violet">III · Représenter</span><h2>Tout ranger dans un tableau</h2></header>
+  <p class="texte">On peut noter les correspondances avec des flèches : <b>4 cahiers → 6 €</b>, ou les ranger dans un <b>tableau</b>. On écrit à côté du tableau les calculs utilisés.</p>
+  <div class="fig" style="height:420px;margin-top:16px"><svg id="fig-tab" viewBox="0 0 1180 420"></svg></div>
+  <p class="note" style="margin-top:10px" data-step="5">Le prix s’obtient toujours en multipliant le nombre de cahiers par 1,5 : c’est bien une situation de proportionnalité.</p>
+</section>
+
+<!-- ============ 10. CHOISIR SA PROCÉDURE ============ -->
+<section class="slide" id="s-proc" data-titre="Choisir sa procédure">
+  <header><span class="chip vert">II · Résoudre un problème</span><h2>Choisir sa procédure</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <p class="texte">On choisit la procédure qui donne les calculs <b>les plus simples</b>. On peut aussi les combiner.</p>
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p><b>6 stylos coûtent 4,20 €.</b> Calcule le prix de 3 stylos, de 9 stylos et de 5 stylos.</p></div>
+      <p class="texte hl">Combien de stylos ?</p>
+      <div class="proc-choix" id="proc-n">
+        <button class="btn sel" data-n="3">3 stylos</button><button class="btn" data-n="9">9 stylos</button><button class="btn" data-n="5">5 stylos</button>
+      </div>
+      <p class="texte hl">Quelle procédure choisis-tu ?</p>
+      <div class="proc-choix" id="proc-p">
+        <button class="btn" data-p="mult">Multiplier ou diviser</button><button class="btn" data-p="add">Additionner</button><button class="btn" data-p="unite">Passer par l’unité</button>
+      </div>
+    </div>
+    <div class="col">
+      <div class="proc-res" id="proc-res"><span class="note">Choisis un nombre de stylos, puis une procédure.</span></div>
+      <table class="prix" id="proc-tab">
+        <tr><th>Nombre de stylos</th><td>6</td><td>3</td><td>9</td><td>5</td></tr>
+        <tr><th>Prix (en €)</th><td>4,20</td><td class="vide" data-n="3">?</td><td class="vide" data-n="9">?</td><td class="vide" data-n="5">?</td></tr>
+      </table>
+      <p class="note" id="proc-note">Avec toutes les procédures qui marchent, on trouve le même prix.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11. ÉCHELLES ============ -->
+<section class="slide" id="s-ech" data-titre="Les échelles">
+  <header><span class="chip orange">IV · Les échelles</span><h2>Lire une échelle</h2></header>
+  <div class="box def" style="max-width:1100px"><span class="onglet">Définition</span>
+    <p>Sur un plan ou une carte, les longueurs sont <b>proportionnelles</b> aux longueurs réelles. L’échelle indique la correspondance, par exemple : « 1 cm sur le plan représente 50 m dans la réalité ».</p></div>
+  <p class="texte" style="margin-top:20px">Une échelle peut être donnée par une <b>phrase</b> ou par un <b>dessin</b> (échelle graphique) :</p>
+  <div class="fig" style="height:190px;margin-top:12px;max-width:820px"><svg id="fig-ech" viewBox="0 0 820 190"></svg></div>
+  <div class="box ask" data-step="1" style="max-width:820px"><span class="onglet">À toi</span>
+    <p>Sur ce plan, que représentent 2 cm dans la réalité ?</p>
+    <p class="ligne">2 × 50 = <input class="trou" data-rep="100" data-rev="2"> : 2 cm représentent <input class="trou" data-rep="100" data-rev="2"> m.</p></div>
+</section>
+
+<!-- ============ 12. CARTE ============ -->
+<section class="slide" id="s-carte" data-titre="Utiliser une échelle">
+  <header><span class="chip orange">IV · Les échelles</span><h2>Utiliser une échelle</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="bandeau-pb">Sur une carte, 1 cm représente 2 km.</div>
+      <div class="box ex"><span class="onglet">Exemple a</span>
+        <p>Deux villes sont à 7,5 cm l’une de l’autre sur la carte. Quelle est la distance réelle ?</p>
+        <p class="ligne">7,5 × 2 = <input class="trou" data-rep="15" data-rev="1"> : la distance réelle est <input class="trou" data-rep="15" data-rev="1"> km.</p></div>
+      <div class="box ex" data-step="2"><span class="onglet">Exemple b</span>
+        <p>Deux villages sont à 9 km l’un de l’autre. À quelle distance sont-ils sur la carte ?</p>
+        <p class="ligne">9 ÷ 2 = <input class="trou" data-rep="4,5" data-rev="3"> : ils sont à <input class="trou" data-rep="4,5" data-rev="3"> cm l’un de l’autre sur la carte.</p></div>
+      <div class="box att" data-step="4"><span class="onglet">Attention</span>
+        <p>Les longueurs sur le plan et dans la réalité ne sont pas dans la même unité : <b>toujours écrire les unités</b>.</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:470px"><svg id="fig-carte" viewBox="0 0 620 470" style="touch-action:none"></svg></div>
+      <div class="ctrl" style="justify-content:center;font-size:20px" id="carte-lec"></div>
+      <p class="note" style="text-align:center">Déplace les villes. Un carreau représente 1 cm sur la carte.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13. BILAN ============ -->
+<section class="slide" id="s-bilan" data-titre="Ce qu’il faut retenir">
+  <header><span class="chip">Bilan</span><h2>Ce qu’il faut retenir</h2></header>
+  <div class="cartes">
+    <div class="carte" data-step="1"><h3 class="c-bleu">Reconnaître</h3>On passe d’une grandeur à l’autre en multipliant <b>toujours par le même nombre</b>.<div class="calc">1 kg → 3 € ; 2 kg → 6 €</div></div>
+    <div class="carte" data-step="2" style="border-top-color:var(--vert)"><h3 class="c-vert">Multiplier ou diviser</h3>3 fois plus de cahiers, 3 fois plus cher.<div class="calc">12 = 3 × 4 donc 3 × 6 = 18 €</div></div>
+    <div class="carte" data-step="3" style="border-top-color:var(--vert)"><h3 class="c-vert">Additionner</h3>On additionne les deux grandeurs en même temps.<div class="calc">14 = 12 + 2 donc 18 + 3 = 21 €</div></div>
+    <div class="carte" data-step="4" style="border-top-color:var(--violet)"><h3 class="c-violet">Passer par l’unité</h3>On divise pour trouver la valeur pour 1, puis on multiplie.<div class="calc">6 ÷ 4 = 1,50 € puis 7 × 1,50 = 10,50 €</div></div>
+    <div class="carte" data-step="5" style="border-top-color:var(--orange)"><h3 class="c-orange">Les échelles</h3>Les longueurs sur la carte sont proportionnelles aux longueurs réelles.<div class="calc">1 cm → 2 km donc 7,5 cm → 15 km</div></div>
+  </div>
+  <div class="box att" data-step="6" style="margin-top:34px;max-width:900px"><span class="onglet">Pour répondre « non »</span>
+    <p>Un seul contre-exemple suffit : 2 fois plus de séances, mais un prix qui n’est pas 2 fois plus grand.</p></div>
+  <div class="liens">
+    <a class="btn pri" href="../../../exerciseurs/proportionnalite-6e/">S’entraîner avec l’exerciseur →</a>
+    <a class="btn" href="../../../pdf/6e/ch4-cours.pdf" target="_blank" rel="noopener">Le cours à imprimer (PDF)</a>
+  </div>
+</section>
+
+<canvas id="pen" width="1280" height="720"></canvas>
+<div id="bar">
+  <a class="tb" href="../../../niveau.html?n=6e" title="Revenir à la page Sixième">← Sixième</a>
+  <button class="tb" id="b-som" title="Sommaire (S)">☰</button>
+  <button class="tb" id="b-prev" title="Précédent (←)" aria-label="Précédent">◀</button>
+  <button class="tb" id="b-next" title="Suivant (→ ou espace)" aria-label="Suivant">▶</button>
+  <div id="dots"></div>
+  <span id="count"></span>
+  <button class="tb" id="b-pen" title="Stylo (P)" aria-label="Stylo">✎</button>
+  <button class="tb" id="b-clear" title="Effacer le dessin (X)" aria-label="Effacer le dessin">⌫</button>
+  <button class="tb" id="b-fs" title="Plein écran (F)" aria-label="Plein écran">⛶</button>
+  <button class="tb" id="b-help" title="Aide (H)" aria-label="Aide">?</button>
+</div>
+<div class="panneau" id="sommaire"><b>Sommaire</b><ol></ol></div>
+<div class="panneau" id="aide">
+  <kbd>→</kbd> ou <kbd>Espace</kbd> : étape suivante · <kbd>←</kbd> : étape précédente<br>
+  Tu peux aussi cliquer sur la diapo pour avancer.<br>
+  Cases en pointillés : tape ta réponse puis <kbd>Entrée</kbd> pour vérifier.<br>
+  <kbd>P</kbd> stylo · <kbd>X</kbd> effacer le dessin · <kbd>S</kbd> sommaire<br>
+  <kbd>F</kbd> plein écran · <kbd>B</kbd> écran noir
+</div>
+</div></div>
+<div id="black"></div>
+
+<script src="../../moteur-cours.js"></script>
+<script src="proportionnalite.js"></script>
+</body>
+</html>

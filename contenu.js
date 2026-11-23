@@ -8,6 +8,7 @@
 
    Types possibles :
      "cours"      → un PDF de cours
+                    (ou un cours interactif du site : mettre  lien: "cours/6e/..."  à la place de fichier)
      "exercices"  → une fiche d'exercices (PDF)
      "corrige"    → un corrigé (PDF)
      "video"      → une vidéo YouTube : mettre  lien: "https://www.youtube.com/watch?v=..."
@@ -112,7 +113,8 @@ const NIVEAUX = {
         titre: "Chapitre 4 — Proportionnalité",
         enCours: true,
         ressources: [
-          { type: "cours",     titre: "Cours — Proportionnalité",                                 fichier: "pdf/6e/ch4-cours.pdf" },
+          { type: "cours",     titre: "Cours interactif — Proportionnalité",                      lien: "cours/6e/proportionnalite/" },
+          { type: "cours",     titre: "Cours — Proportionnalité",                                 fichier: "pdf/6e/ch4-cours.pdf", detail: "Le même cours en PDF, à imprimer" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Proportionnel ou pas ?",         fichier: "pdf/6e/ch4-exercices-1.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°2 : Résoudre des problèmes de proportionnalité avec la linéarité", fichier: "pdf/6e/ch4-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Le retour à l'unité",            fichier: "pdf/6e/ch4-exercices-3.pdf" },
