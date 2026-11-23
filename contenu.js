@@ -125,7 +125,7 @@ const NIVEAUX = {
           { type: "video",     titre: "Vidéo — Résoudre un problème de proportionnalité",             lien: "https://youtu.be/VdI1Sx5m8fM" },
           { type: "video",     titre: "Vidéo — Choisir sa procédure",                                 lien: "https://youtu.be/3J4Z9HrUjNk" },
           { type: "video",     titre: "Vidéo — Les échelles",                                         lien: "https://youtu.be/On6RqfcMy5E" },
-          { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-6e/#je-me-teste", detail: "12 questions sur tout le chapitre, puis ton bilan" },
+          { type: "test", titre: "Je me teste — Proportionnalité", lien: "exerciseurs/proportionnalite-6e/#je-me-teste", detail: "19 questions sur tout le chapitre, puis ton bilan" },
           { type: "exerciseur", titre: "Exerciseur — S'entraîner sur la proportionnalité", lien: "exerciseurs/proportionnalite-6e/" }
         ]
       },

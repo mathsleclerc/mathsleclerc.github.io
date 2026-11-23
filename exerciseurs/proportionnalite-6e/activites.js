@@ -6,7 +6,7 @@
    dépend des nombres (linéarité multiplicative ou additive, retour à
    l'unité) ; pas de produit en croix.
 
-   PARCOURS (en bas du fichier) : le test « Je me teste » en 12 questions.
+   PARCOURS (en bas du fichier) : le test « Je me teste » en 19 questions.
    ===================================================================== */
 
 const P1 = "Feuille 1 — Proportionnel ou pas ?";
@@ -1351,19 +1351,27 @@ const ACTIVITES = [
 const PARCOURS = {
   id: "je-me-teste",
   titre: "Je me teste",
-  description: "12 questions sur tout le chapitre, un seul essai, puis un bilan de ce qui est à revoir.",
+  description: "19 questions sur tout le chapitre, un seul essai, puis un bilan de ce qui est à revoir.",
+  // Auto-évaluation choisie par M. Leclerc (numéros des activités : 2, 3, 4, 5, 8, 9, 10, 11, 13, 14, 16, 18, 19, 20, 22 ×2, 25, 26, 28)
   etapes: [
-    { competence: "Automatismes", activites: ["double-moitie"] },
-    { competence: "Reconnaître une situation de proportionnalité", activites: ["proportionnel-ou-pas", "deux-grandeurs", "langage-courant"] },
-    { competence: "Un tableau est-il proportionnel ?", activites: ["tableau-proportionnel", "contre-exemple", "intrus"] },
+    { competence: "Repérer les deux grandeurs", activites: ["deux-grandeurs"] },
+    { competence: "Reconnaître une situation de proportionnalité", activites: ["proportionnel-ou-pas"] },
+    { competence: "Comprendre « prix au kilo », « par minute »…", activites: ["langage-courant"] },
+    { competence: "Un tableau est-il proportionnel ?", activites: ["tableau-proportionnel"] },
     { competence: "Multiplier ou diviser", activites: ["fois-plus"] },
-    { competence: "Additionner des colonnes", activites: ["en-additionnant", "combiner-colonnes", "recette"] },
-    { competence: "Repérer une erreur", activites: ["trouver-erreur"] },
-    { competence: "Le retour à l'unité", activites: ["retour-unite", "coefficient"] },
-    { competence: "Utiliser la valeur pour 1", activites: ["combien-au-maximum", "meilleur-achat", "unite-duree"] },
-    { competence: "Choisir sa procédure", activites: ["choisis-ta-methode", "indiquer-procedure", "deux-facons"] },
-    { competence: "Résoudre un problème", activites: ["problemes", "piege", "fois-plus-fois-moins"] },
-    { competence: "Utiliser une échelle", activites: ["lire-echelle", "echelle-graphique"] },
-    { competence: "Mesurer sur une carte", activites: ["mesurer-carte", "mesurer-regle"] }
+    { competence: "Additionner des colonnes", activites: ["en-additionnant"] },
+    { competence: "Combiner des colonnes sans le prix d'un seul", activites: ["combiner-colonnes"] },
+    { competence: "Adapter une recette", activites: ["recette"] },
+    { competence: "Le retour à l'unité", activites: ["retour-unite"] },
+    { competence: "Le coefficient", activites: ["coefficient"] },
+    { competence: "Trouver le meilleur achat", activites: ["meilleur-achat"] },
+    { competence: "Choisir sa méthode", activites: ["choisis-ta-methode"] },
+    { competence: "Indiquer la procédure", activites: ["indiquer-procedure"] },
+    { competence: "Calculer de deux façons", activites: ["deux-facons"] },
+    { competence: "Résoudre un problème (1)", activites: ["problemes"] },
+    { competence: "Résoudre un problème (2)", activites: ["problemes"] },
+    { competence: "Utiliser une échelle", activites: ["lire-echelle"] },
+    { competence: "Lire une échelle graphique", activites: ["echelle-graphique"] },
+    { competence: "Mesurer avec la règle", activites: ["mesurer-regle"] }
   ]
 };
