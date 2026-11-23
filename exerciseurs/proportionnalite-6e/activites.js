@@ -1030,7 +1030,10 @@ const ACTIVITES = [
     titre: "Problèmes de proportionnalité",
     description: "Recettes, prix au kilo, carburant… avec un tableau et une phrase réponse.",
     generer() {
-      const modele = alea(0, 4);
+      // jamais deux fois de suite le même modèle (le test pose deux problèmes à la suite : ils sont donc différents)
+      let modele;
+      do { modele = alea(0, 4); } while (modele === this.dernierModele);
+      this.dernierModele = modele;
       let S, cols, texte, phrase, faux, calcul;
       if (modele === 0) {
         const p = choisir([2, 4]), q = p === 2 ? choisir([6, 8, 10]) : choisir([6, 10, 12]), f = choisir([60, 80, 100, 120]);
@@ -1040,8 +1043,8 @@ const ACTIVITES = [
         phrase = r => `Il faut ${nb(r)} g de farine pour ${q} personnes.`; faux = r => [`Il faut ${nb(r)} personnes.`, `Il faut ${nb(r)} g de farine pour ${p} personnes.`];
         calcul = q % p === 0 ? `${q} personnes, c'est ${q / p} fois ${p} personnes : ${q / p} × ${f} g = ${nb(f / p * q)} g.` : `Pour 1 personne : ${f} g ÷ ${p} = ${f / p} g ; pour ${q} : ${q} × ${f / p} g = ${nb(f / p * q)} g.`;
       } else if (modele === 1) {
-        const t = choisir([2, 3, 4, 2.5, 1.8, 3.2]), a = alea(2, 5), c = alea(2, 9);
-        if (a === c) return this.generer();
+        const t = choisir([2, 3, 4, 2.5, 1.8, 3.2]), a = alea(2, 5);
+        let c; do { c = alea(2, 9); } while (c === a);
         S = { g1: "Masse de tomates", u1: "kg", g2: "Prix", u2: "€" };
         cols = [col(a, r2(a * t)), col(c, r2(c * t), false, true)];
         texte = `${a} kg de tomates coûtent ${euros(a * t)}. Combien coûtent ${c} kg de tomates ?`;
