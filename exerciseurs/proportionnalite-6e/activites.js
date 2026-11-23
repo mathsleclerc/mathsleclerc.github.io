@@ -10,7 +10,7 @@
    ===================================================================== */
 
 const P1 = "Feuille 1 — Proportionnel ou pas ?";
-const P2 = "Feuille 2 — Multiplier, diviser, additionner";
+const P2 = "Feuille 2 — Résoudre des problèmes avec la linéarité";
 const P3 = "Feuille 3 — Le retour à l'unité";
 const P4 = "Feuille 4 — Résoudre des problèmes";
 const P5 = "Feuille 5 — Les échelles";
@@ -55,12 +55,12 @@ const situationAchat = ([pluriel]) => ({ g1: "Nombre de " + pluriel, u1: "", g2:
    Dans un texte de flèche, « [n] » est un facteur à trouver (valeur : trou).
    Renvoie le HTML (avec les cases [d]) et les valeurs attendues, dans l'ordre des cases. */
 function tableau(S, cols, { fleches = [], coef = null, cliquable = false } = {}) {
-  const attendus = [];
+  const attendus = [], ecrits = [];
   const n = cols.length;
   let h = `<div class="tprop" style="--n:${n}">`;
   for (const f of fleches) {
     h += `<div class="tp-fleche" style="grid-column:${f.de + 2} / ${f.a + 3}; --span:${f.a - f.de + 1}"><span>${f.texte.replace("[n]", "[d]")}</span></div>`;
-    if (f.texte.includes("[n]")) attendus.push(f.trou);
+    if (f.texte.includes("[n]")) { attendus.push(f.trou); ecrits.push(f.trou); }
   }
   for (const [ligne, g, unite] of [["a", S.g1, S.u1], ["b", S.g2, S.u2]]) {
     const r = ligne === "a" ? 2 : 3;
@@ -68,17 +68,20 @@ function tableau(S, cols, { fleches = [], coef = null, cliquable = false } = {})
     cols.forEach((c, i) => {
       const v = c[ligne];
       const style = `style="grid-row:${r}; grid-column:${i + 2}"`;
-      if (v == null) { h += `<div class="tp-case" ${style}>[d]</div>`; attendus.push(c["v" + ligne]); }
-      else if (cliquable && ligne === "b") h += `<button type="button" class="tp-case tp-clic" data-i="${i}" ${style}>${nb(v)}</button>`;
-      else h += `<div class="tp-case" ${style}>${nb(v)}</div>`;
+      if (v == null) { h += `<div class="tp-case" ${style}>[d]</div>`; attendus.push(c["v" + ligne]); ecrits.push({ v: c["v" + ligne], texte: montant(c["v" + ligne], unite) }); }
+      else if (cliquable && ligne === "b") h += `<button type="button" class="tp-case tp-clic" data-i="${i}" ${style}>${montant(v, unite)}</button>`;
+      else h += `<div class="tp-case" ${style}>${montant(v, unite)}</div>`;
     });
   }
   if (coef) {
     h += `<div class="tp-coef" style="grid-column:${n + 2}"><span>${coef.texte.replace("[n]", "[d]")}</span></div>`;
-    if (coef.texte.includes("[n]")) attendus.push(coef.trou);
+    if (coef.texte.includes("[n]")) { attendus.push(coef.trou); ecrits.push(coef.trou); }
   }
-  return { html: h + "</div>", attendus };
+  return { html: h + "</div>", attendus, solutions: ecrits };
 }
+/* Dans un tableau, un prix s'écrit avec ses centimes : 7,50 et non 7,5 */
+const montant = (v, unite) => unite === "€" && !Number.isInteger(r2(v)) ? r2(v).toFixed(2).replace(".", ",") : nb(v);
+const prixSol = x => ({ v: x, texte: montant(x, "€") }); // une solution affichée comme un prix
 /* Colonne : { a, b } ; pour une case à trouver, on garde la valeur attendue dans va / vb */
 const col = (a, b, cacheA = false, cacheB = false) => ({ a: cacheA ? null : a, b: cacheB ? null : b, va: a, vb: b });
 
@@ -176,6 +179,7 @@ const ACTIVITES = [
         return {
           consigne: "Calcule.",
           ligne: `${k} fois ${plus ? "plus" : "moins"} que ${nb(r2(n))} = [d]`,
+          solutions: [r],
           verifier(v) {
             const res = verifierNombre(v[0], r), x = lireNombre(v[0]);
             if (res.etat === "faux" && Math.abs(x - (plus ? n + k : n - k)) < 1e-9) res.message = `« ${k} fois ${plus ? "plus" : "moins"} », ce n'est pas ${plus ? "+" : "−"} ${k} : on ${plus ? "multiplie" : "divise"} par ${k}.`;
@@ -193,6 +197,7 @@ const ACTIVITES = [
         return {
           consigne: "Calcule.",
           ligne: `${article} ${mot} de ${nb(r2(n))} = [d]`,
+          solutions: [r],
           verifier: v => verifierNombre(v[0], r),
           indice: `${article} ${mot}, c'est ${op === "×" ? "multiplier" : "diviser"} par ${k}.`,
           correction: `${article} ${mot} de ${nb(r2(n))} : ${nb(r2(n))} ${op} ${k} = ${nb(r)}.`
@@ -205,6 +210,7 @@ const ACTIVITES = [
       return {
         consigne: `Complète : ${nb(r)} est … de ${nb(n)}.`,
         choix: options,
+        solutionChoix: avecArticle(mot),
         verifier: (v, c) => ({ etat: c === avecArticle(mot) ? "juste" : "faux" }),
         indice: `Calcule ${nb(r)} ÷ ${nb(n)} ou ${nb(n)} ÷ ${nb(r)}.`,
         correction: `${nb(n)} ${op} ${k} = ${nb(r)} : ${nb(r)} est ${avecArticle(mot)} de ${nb(n)}.`
@@ -254,7 +260,11 @@ const ACTIVITES = [
         [`Un robinet laisse couler ${t + 5} L d'eau par minute. On s'intéresse au volume d'eau selon la durée.`, true, "Le nombre de litres par minute est toujours le même."],
         [`Une recette de crêpes demande ${10 * (t + 3)} g de farine par personne. On s'intéresse à la masse de farine selon le nombre de personnes.`, true, "La masse de farine par personne est toujours la même."],
         ["On s'intéresse au périmètre d'un carré selon la longueur de son côté.", true, "Le périmètre est toujours 4 fois la longueur du côté."],
+        [`Une imprimante imprime ${10 * (t + 1)} pages par minute. On s'intéresse au nombre de pages imprimées selon la durée d'impression.`, true, "Le nombre de pages par minute est toujours le même."],
+        [`Au cinéma, une place coûte ${t + 5} €. On s'intéresse au prix payé selon le nombre de places.`, true, "Le prix d'une place est toujours le même : si le nombre de places double, le prix double aussi."],
         ["On s'intéresse à la taille d'un enfant selon son âge.", false, "Quand l'âge double, la taille ne double pas."],
+        ["On s'intéresse à la pointure d'une personne selon son âge.", false, "Quand l'âge double, la pointure ne double pas : on finit par s'arrêter de grandir."],
+        [`Au parking, on paie ${t + 1} € la première heure, puis 2 € par heure supplémentaire. On s'intéresse au prix payé selon la durée de stationnement.`, false, "La première heure ne coûte pas le même prix que les suivantes : si la durée double, le prix ne double pas."],
         [`Un taxi fait payer ${t} € de prise en charge, puis 2 € par kilomètre. On s'intéresse au prix de la course selon la distance.`, false, "Il y a une somme fixe à payer en plus : si la distance double, le prix ne double pas."],
         [`Un club de sport demande ${10 * t} € d'inscription, puis 5 € par séance. On s'intéresse au prix payé selon le nombre de séances.`, false, "Il y a une somme fixe à payer en plus : si le nombre de séances double, le prix ne double pas."],
         ["On s'intéresse à la température extérieure selon l'heure de la journée.", false, "La température monte puis redescend : elle n'est pas obtenue en multipliant l'heure par un même nombre."],
@@ -269,6 +279,7 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: `<div class="etape-pb"><p>Est-ce une situation de proportionnalité ?</p>[s]</div><div class="etape-pb"><p>Pourquoi ?</p>[s]</div>`,
         listes: [["Oui", "Non"], raisons],
+        solutions: [prop ? 0 : 1, raisons.indexOf(bonne)],
         verifier(v) {
           if (v.some(x => x == null)) return { etat: "incomplet", message: "Réponds aux deux questions." };
           if ((v[0] === 0) !== prop) return { etat: "faux", message: "Pour vérifier, demande-toi : si la première grandeur double, est-ce que la seconde double aussi ?" };
@@ -320,6 +331,7 @@ const ACTIVITES = [
       return {
         consigne,
         ligne: `[d] ${unite}`,
+        solutions: [r],
         verifier: v => verifierNombre(v[0], r),
         indice: "« Par minute », « au kilo » : c'est la valeur pour 1 unité.",
         correction: calcul + "."
@@ -367,6 +379,7 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: `<div class="etape-pb"><p>1. Est-ce un tableau de proportionnalité ?</p>[s]</div><div class="etape-pb"><p>2. Pourquoi ?</p>[s]</div>`,
         listes: [["Oui", "Non"], raisons],
+        solutions: [prop ? 0 : 1, raisons.indexOf(bonne)],
         verifier(v) {
           if (v.some(x => x == null)) return { etat: "incomplet", message: "Réponds aux deux questions." };
           if ((v[0] === 0) !== prop) return { etat: "faux", message: `Compare deux colonnes : ${nb(as[j])}, c'est ${k} fois ${nb(as[i])}. Que devient la 2e ligne ?` };
@@ -488,6 +501,7 @@ const ACTIVITES = [
       return {
         consigne: facteurCache ? "Complète la flèche, puis le tableau de proportionnalité." : "Complète le tableau de proportionnalité en utilisant la flèche.",
         ligne: tb.html,
+        solutions: tb.solutions,
         verifier: v => verifierTableau(v, tb.attendus, [piege]),
         indice: `${u(a2, S.u1) || nb(a2)}, c'est ${k} fois ${diviser ? "moins" : "plus"} que ${u(a1, S.u1) || nb(a1)}.`,
         correction: `${u(a2, S.u1) || nb(a2)}, c'est ${k} fois ${diviser ? "moins" : "plus"} que ${u(a1, S.u1) || nb(a1)}, donc on ${diviser ? "divise" : "multiplie"} aussi par ${k} : ${diviser ? `${u(a1 * t, S.u2)} ÷ ${k}` : `${k} × ${u(a1 * t, S.u2)}`} = ${u(a2 * t, S.u2)}.`
@@ -511,9 +525,50 @@ const ACTIVITES = [
       return {
         consigne: `Complète le tableau de proportionnalité en utilisant les deux premières colonnes (${nb(a3)} = ${somme ? `${a1} + ${a2}` : `${a2} − ${a1}`}).`,
         ligne: tb.html,
+        solutions: tb.solutions,
         verifier: v => verifierTableau(v, tb.attendus, [piegeAdditif(0, a2, a2 * t, a3, S)]),
         indice: `${u(a3, S.u1) || nb(a3)}, c'est ${somme ? `${u(a1, S.u1) || nb(a1)} + ${u(a2, S.u1) || nb(a2)}` : `${u(a2, S.u1) || nb(a2)} − ${u(a1, S.u1) || nb(a1)}`}. Fais la même chose sur la deuxième ligne.`,
         correction: `${nb(a3)} = ${somme ? `${a1} + ${a2}` : `${a2} − ${a1}`}, donc ${somme ? `${u(a1 * t, S.u2)} + ${u(a2 * t, S.u2)}` : `${u(a2 * t, S.u2)} − ${u(a1 * t, S.u2)}`} = ${u(a3 * t, S.u2)}.`
+      };
+    }
+  },
+
+  {
+    groupe: P2,
+    id: "combiner-colonnes",
+    titre: "Sans le prix d'un seul",
+    description: "3 cahiers → 4,50 € et 5 cahiers → 7,50 € : trouver 8, 2, 10 et 13 cahiers en combinant les colonnes.",
+    generer() {
+      const [a1, a2] = choisir([[3, 5], [2, 5], [3, 7], [2, 7], [4, 7]]); // a2 − a1 ≠ 1 : on ne passe pas par l'unité
+      const art = choisir(ARTICLES), S = situationAchat(art);
+      const t = choisir([1.5, 0.9, 1.2, 2.5, 0.6, 1.8, 3.5, 0.75]);
+      const b1 = r2(a1 * t), b2 = r2(a2 * t);
+      const somme = a1 + a2, diff = a2 - a1, double = 2 * a2, fin = double + a1;
+      const cibles = [somme, diff, double, fin];
+      const ops = [`${a1} + ${a2}`, `${a2} − ${a1}`, `2 × ${a2}`, `${double} + ${a1}`];
+      const prixCible = [r2(b1 + b2), r2(b2 - b1), r2(2 * b2), r2(2 * b2 + b1)];
+      const tb = tableau(S, [col(a1, b1), col(a2, b2), ...cibles.map((c, i) => col(c, prixCible[i], false, true))]);
+      const options = melanger([...ops.keys()]).map(i => ops[i]);
+      return {
+        consigne: `Le prix est proportionnel au nombre de ${art[0]}. <strong>Sans calculer le prix d'un${art[2] ? "e" : ""} ${art[1]}</strong>, complète le tableau en additionnant, en soustrayant ou en multipliant les colonnes, puis indique le calcul fait sur la 1re ligne.`,
+        classeLigne: "etapes",
+        ligne: `<div class="etape-pb">${tb.html}</div>` + cibles.map(c => `<div class="etape-pb enonce-ligne"><span>Pour ${c} :</span>[s]</div>`).join(""),
+        listes: cibles.map(() => options),
+        solutions: [...tb.solutions, ...ops.map(o => options.indexOf(o))],
+        verifier(v) {
+          const prix = v.slice(0, 4), calculs = v.slice(4);
+          if (calculs.some(x => x == null)) return { etat: "incomplet", message: "Indique le calcul pour chaque colonne." };
+          const r = verifierTableau(prix, prixCible, [piegeAdditif(0, a2, b2, somme, S)]);
+          if (r.etat !== "juste") return r;
+          const fausses = calculs.map((x, i) => options[x] === ops[i] ? 0 : cibles[i]).filter(Boolean);
+          if (fausses.length) return { etat: "faux", message: `Les prix sont justes, mais revois le calcul indiqué pour ${fausses.join(" et ")}.` };
+          return { etat: "juste" };
+        },
+        indice: `${somme} = ${a1} + ${a2} : additionne les prix de ces deux colonnes. ${diff} = ${a2} − ${a1} : soustrais-les. Puis utilise les colonnes que tu viens de trouver.`,
+        correction: cibles.map((c, i) => {
+          const calc = [`${euros(b1)} + ${euros(b2)}`, `${euros(b2)} − ${euros(b1)}`, `2 × ${euros(b2)}`, `${euros(2 * b2)} + ${euros(b1)}`][i];
+          return `${c} = ${ops[i]}, donc ${c} ${art[0]} coûtent ${calc} = ${euros(prixCible[i])}.`;
+        }).join("<br>")
       };
     }
   },
@@ -538,6 +593,7 @@ const ACTIVITES = [
       return {
         consigne: `Voici une recette de ${plat} pour ${p} personnes. Les quantités sont proportionnelles au nombre de personnes : complète le tableau.`,
         ligne: tb.html,
+        solutions: tb.solutions,
         verifier(v) {
           const r = verifierCases(v, tb.attendus);
           if (r.etat !== "faux") return r;
@@ -581,6 +637,7 @@ const ACTIVITES = [
           classeLigne: "etapes",
           ligne: `<div class="etape-pb"><p>1. Quelle est son erreur ?</p>[s]</div>` + etape(`2. Quel est le bon résultat pour ${u(a2, S.u1) || a2 + " personnes"} ?`, S.u2),
           listes: [options],
+          solutions: [options.indexOf(bonne), juste],
           verifier(v) {
             if (v[0] == null || isNaN(lireNombre(v[1]))) return { etat: "incomplet", message: "Réponds aux deux questions." };
             if (options[v[0]] !== bonne) return { etat: "faux", message: "Relis l'explication : la proportionnalité ne se traduit pas par une addition de la différence." };
@@ -602,6 +659,7 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: `<div class="etape-pb"><p>1. Quelle est son erreur ?</p>[s]</div>` + etape(`2. Quel est le bon résultat pour ${u(a2, S.u1) || a2 + " personnes"} ?`, S.u2),
         listes: [options],
+        solutions: [options.indexOf(bonne), juste],
         verifier(v) {
           if (v[0] == null || isNaN(lireNombre(v[1]))) return { etat: "incomplet", message: "Réponds aux deux questions." };
           if (options[v[0]] !== bonne) return { etat: "faux", message: "« Fois moins » : est-ce une multiplication ou une division ?" };
@@ -632,6 +690,7 @@ const ACTIVITES = [
           classeLigne: "etapes",
           ligne: etape("1. Calcule le prix d'un kilo. La division ne tombe pas juste : écris-le sous forme de fraction.", "€", "[f]")
             + etape(`2. Calcule le prix de ${a * m} kg de ${fruit}.`, "€"),
+          solutions: [{ num: T, den: a }, T * m],
           verifier(v) {
             const f = verifierFraction(v[0], T, a);
             if (f.etat === "incomplet" || isNaN(lireNombre(v[1]))) return { etat: "incomplet", message: "Réponds aux deux questions." };
@@ -659,6 +718,7 @@ const ACTIVITES = [
         return {
           consigne: "Complète le tableau en passant par l'unité.",
           ligne: tb.html,
+          solutions: tb.solutions,
           verifier: v => verifierTableau(v, tb.attendus, [piegeAdditif(1, a, b, c, S)]),
           indice: `Commence par la valeur pour 1 : divise par ${a}.`,
           correction: `${pour1}. Pour ${c} : ${c} × ${u(t, S.u2)} = ${u(bc, S.u2)}.`
@@ -668,6 +728,7 @@ const ACTIVITES = [
       return {
         consigne: `Complète le tableau. Astuce : ${c} n'est ni un multiple ni un diviseur de ${a}… passe par la valeur pour 1.`,
         ligne: tb.html,
+        solutions: tb.solutions,
         verifier: v => verifierTableau(v, tb.attendus, [piegeAdditif(0, a, b, c, S)]),
         indice: "Calcule d'abord la valeur pour 1 (une division), puis multiplie.",
         correction: `${pour1}. Pour ${c} : ${c} × ${u(t, S.u2)} = ${u(bc, S.u2)}.`
@@ -691,6 +752,7 @@ const ACTIVITES = [
       return {
         consigne: "Trouve le nombre par lequel on multiplie la 1re ligne pour obtenir la 2e, puis complète le tableau.",
         ligne: tb.html,
+        solutions: tb.solutions,
         verifier: v => verifierCases(v, tb.attendus),
         indice: `Utilise la colonne complète : ${u(as[0], S.u1) || nb(as[0])} → ${u(as[0] * t, S.u2)}. Par combien multiplie-t-on ?`,
         correction: `${nb(as[0])} × ${nb(t)} = ${nb(as[0] * t)} : on multiplie par ${nb(t)} (c'est le ${S.expr}). Pour aller de la 2e ligne à la 1re, on divise par ${nb(t)}.`
@@ -714,6 +776,7 @@ const ACTIVITES = [
         consigne: `${cap(objet)} ${lieu} : ${a} ${objet} coûtent ${euros(T)}. Mathis a ${B} €.`,
         classeLigne: "etapes",
         ligne: etape(`1. Combien coûte ${sing} ?`, "€") + etape(`2. Combien de ${objet} peut-il acheter au maximum ?`, objet, "[n]"),
+        solutions: [prixSol(p), max],
         verifier(v) {
           const x = v.map(lireNombre);
           if (x.some(isNaN)) return { etat: "incomplet", message: "Réponds aux deux questions." };
@@ -724,6 +787,44 @@ const ACTIVITES = [
         },
         indice: "Calcule le prix d'une seule, puis essaie : combien en faut-il pour arriver le plus près possible de la somme, sans la dépasser ?",
         correction: `1 coûte ${euros(T)} ÷ ${a} = ${euros(p)}. ${max} × ${euros(p)} = ${euros(max * p)} et ${max + 1} × ${euros(p)} = ${euros((max + 1) * p)} (trop cher) : Mathis peut acheter ${max} ${objet} au maximum.`
+      };
+    }
+  },
+
+  {
+    groupe: P3,
+    id: "meilleur-achat",
+    titre: "Le meilleur achat",
+    description: "Comparer deux offres en calculant le prix d'un kilo ou d'un litre.",
+    generer() {
+      const [vendu, contenant, unite, mot] = choisir([["les oranges sont vendues", "sachet", "kg", "kilo"], ["les pommes de terre sont vendues", "sac", "kg", "kilo"],
+        ["le jus de pomme est vendu", "bouteille", "L", "litre"], ["la lessive est vendue", "bidon", "L", "litre"], ["le riz est vendu", "paquet", "kg", "kilo"]]);
+      const fem = contenant === "bouteille";
+      let q1, q2, p1, p2;
+      do {
+        [q1, q2] = melanger([2, 3, 4, 5, 6]).slice(0, 2).sort((x, y) => x - y);
+        [p1, p2] = melanger([1.2, 1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.4, 2.5]).slice(0, 2);
+      } while (Math.abs(p1 - p2) < 0.05);
+      const T1 = r2(q1 * p1), T2 = r2(q2 * p2);
+      const noms = [`${fem ? "la" : "le"} ${contenant} de ${q1} ${unite}`, `${fem ? "la" : "le"} ${contenant} de ${q2} ${unite}`];
+      const meilleur = p1 < p2 ? 0 : 1;
+      return {
+        consigne: `Au magasin, ${vendu} en ${contenant}s de ${q1} ${unite} à ${euros(T1)} ou en ${contenant}s de ${q2} ${unite} à ${euros(T2)}. Quelle offre est la plus avantageuse ?`,
+        classeLigne: "etapes",
+        ligne: etape(`1. Prix d'un ${mot} dans ${noms[0]} :`, "€") + etape(`2. Prix d'un ${mot} dans ${noms[1]} :`, "€")
+          + `<div class="etape-pb"><p>3. Le plus avantageux :</p>[s]</div>`,
+        listes: [noms.map(cap)],
+        solutions: [prixSol(p1), prixSol(p2), meilleur],
+        verifier(v) {
+          const x = v.slice(0, 2).map(lireNombre);
+          if (x.some(isNaN) || v[2] == null) return { etat: "incomplet", message: "Réponds aux trois questions." };
+          if (Math.abs(x[0] - p1) > 1e-9 || Math.abs(x[1] - p2) > 1e-9) return { etat: "faux", message: `Pour le prix d'un ${mot}, divise le prix par le nombre de ${unite === "kg" ? "kilos" : "litres"}.` };
+          if (v[2] !== meilleur) return { etat: "faux", message: `Les prix d'un ${mot} sont justes : l'offre la plus avantageuse est celle où le ${mot} est le moins cher. Acheter une plus grande quantité n'est pas toujours moins cher !` };
+          return { etat: "juste" };
+        },
+        indice: `On ne peut pas comparer directement ${euros(T1)} et ${euros(T2)} : les quantités sont différentes. Calcule le prix d'un ${mot} dans chaque offre.`,
+        correction: `${cap(noms[0])} : ${euros(T1)} ÷ ${q1} = ${euros(p1)} le ${mot}. ${cap(noms[1])} : ${euros(T2)} ÷ ${q2} = ${euros(p2)} le ${mot}.<br>`
+          + `Le ${mot} est moins cher dans ${noms[meilleur]} : c'est l'offre la plus avantageuse.`
       };
     }
   },
@@ -742,6 +843,7 @@ const ACTIVITES = [
         consigne: `${machine} ${N} ${objet} en ${m} minutes, toujours au même rythme.`,
         classeLigne: "etapes",
         ligne: etape("1. Combien en 1 minute ?", objet, "[n]") + etape(`2. Combien en ${c} minutes ?`, objet, "[n]") + etape("3. Combien en 1 heure ?", objet, "[n]"),
+        solutions: [v, c * v, 60 * v],
         verifier(x) {
           x = x.map(lireNombre);
           if (x.some(isNaN)) return { etat: "incomplet", message: "Réponds aux trois questions." };
@@ -794,6 +896,7 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: `<div class="etape-pb"><p>Méthode :</p>[s]</div><div class="etape-pb">${tb.html}</div>`,
         listes: [methodes],
+        solutions: [type, ...tb.solutions],
         verifier(v) {
           if (v[0] == null) return { etat: "incomplet", message: "Choisis une méthode." };
           const r = verifierTableau(v.slice(1), tb.attendus, [piege]);
@@ -831,12 +934,15 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: `<div class="etape-pb">${tb.html}</div>` + colonnes.map(c => `<div class="etape-pb enonce-ligne"><span>Pour ${nb(c)} :</span>[s]</div>`).join(""),
         listes: colonnes.map(() => PROC),
+        solutions: [...tb.solutions, ...attenduesProc],
         verifier(v) {
           const prix = v.slice(0, 5), procs = v.slice(5);
           if (procs.some(x => x == null)) return { etat: "incomplet", message: "Choisis une procédure pour chaque colonne." };
           const r = verifierCases(prix, tb.attendus);
           if (r.etat !== "juste") return r.etat === "incomplet" ? r : { etat: "faux", message: r.message + " Vérifie les prix." };
-          const fausses = procs.map((x, i) => x === attenduesProc[i] ? 0 : i + 1).filter(Boolean);
+          // a + a/2, c'est aussi 3 fois a/2 (multiplier) ; pour 1, « diviser » ou « unité » conviennent
+          const acceptees = [[1], [0], [2, 0], [1, 3], [3]];
+          const fausses = procs.map((x, i) => acceptees[i].includes(x) ? 0 : i + 1).filter(Boolean);
           if (fausses.length) return { etat: "faux", message: `Les prix sont justes, mais revois la procédure pour ${fausses.map(i => nb(colonnes[i - 1])).join(" et ")}.` };
           return { etat: "juste" };
         },
@@ -869,6 +975,7 @@ const ACTIVITES = [
           + etape(`${a / 2} ${art[0]} (la moitié de ${a}) coûtent`, "€") + etape(`donc ${c} ${art[0]} coûtent`, "€")
           + `<p><strong>Méthode 2 : avec l'unité</strong></p>`
           + etape(`1 ${art[1]} coûte`, "€") + etape(`donc ${c} ${art[0]} coûtent`, "€"),
+        solutions: [moitie, total, p, total].map(prixSol),
         verifier(v) {
           const x = v.map(lireNombre);
           if (x.some(isNaN)) return { etat: "incomplet", message: "Complète les deux méthodes." };
@@ -903,6 +1010,7 @@ const ACTIVITES = [
       return {
         consigne: texte,
         ligne: `[d] ${unite}`,
+        solutions: [r],
         verifier(v) {
           const res = verifierNombre(v[0], r);
           const x = lireNombre(v[0]);
@@ -971,6 +1079,7 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: `<div class="etape-pb">${tb.html}</div><div class="etape-pb"><p>Phrase réponse :</p>[s]</div>`,
         listes: [phrases],
+        solutions: [r, phrases.indexOf(phrase(r))],
         verifier(v) {
           const res = verifierTableau([v[0]], tb.attendus, [piege]);
           if (res.etat === "incomplet" || v[1] == null) return { etat: "incomplet", message: "Complète le tableau et choisis une phrase réponse." };
@@ -1003,6 +1112,7 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: `<div class="etape-pb"><p>Peut-on répondre avec la proportionnalité ?</p>[s]</div><div class="etape-pb"><p>Si oui, écris la réponse (sinon, laisse vide) :</p><p class="rep">[d] ${unite}</p></div>`,
         listes: [["Oui, c'est une situation de proportionnalité", "Non, ce n'est pas une situation de proportionnalité"]],
+        solutions: [prop ? 0 : 1, prop ? r : null],
         verifier(v) {
           if (v[0] == null) return { etat: "incomplet", message: "Réponds d'abord à la première question." };
           if ((v[0] === 0) !== prop) return { etat: "faux", message: prop ? "Relis bien : y a-t-il une valeur « par unité » qui reste la même ?" : "Attention au piège : si la première grandeur double, la seconde double-t-elle vraiment ?" };
@@ -1030,6 +1140,7 @@ const ACTIVITES = [
         classeLigne: "etapes",
         ligne: etape("1. Combien de m² peint-on avec 1 L ?", "m²") + etape(`2. Combien de litres faut-il pour ${S} m² ?`, "L")
           + etape("3. Combien de pots faut-il acheter ?", "pots", "[n]") + etape("4. Combien faut-il dépenser ?", "€"),
+        solutions: [c, litres, pots, pots * P],
         verifier(v) {
           const x = v.map(lireNombre);
           if (x.some(isNaN)) return { etat: "incomplet", message: "Réponds aux quatre questions." };
@@ -1062,6 +1173,7 @@ const ACTIVITES = [
         return {
           consigne: `Sur une carte, ${kc} cm représentent ${R} km. Complète le tableau : que représente 1 cm ? et ${nb(d)} cm ?`,
           ligne: tb.html,
+          solutions: tb.solutions,
           verifier: v => verifierCases(v, tb.attendus),
           indice: `Commence par 1 cm : ${R} km ÷ ${kc}.`,
           correction: `1 cm représente ${R} ÷ ${kc} = ${nb(q)} km. ${nb(d)} cm représentent ${nb(d)} × ${nb(q)} = ${nb(r2(d * q))} km.`
@@ -1074,6 +1186,7 @@ const ACTIVITES = [
           consigne: `Sur une carte, 1 cm représente ${k} m. Deux villages sont à ${nb(d)} cm l'un de l'autre sur la carte.`,
           classeLigne: "etapes",
           ligne: etape("1. Quelle est la distance réelle en mètres ?", "m") + etape("2. Écris-la en kilomètres.", "km"),
+          solutions: [reel, reel / 1000],
           verifier(v) {
             const x = v.map(lireNombre);
             if (x.some(isNaN)) return { etat: "incomplet", message: "Réponds aux deux questions." };
@@ -1095,6 +1208,7 @@ const ACTIVITES = [
       return {
         consigne: `Sur ${plan ? "le plan d'une maison" : "une carte"}, 1 cm représente ${k} ${ur} dans la réalité. Complète le tableau.`,
         ligne: tb.html,
+        solutions: tb.solutions,
         verifier: v => verifierCases(v, tb.attendus),
         indice: `Chaque centimètre représente ${k} ${ur} : on multiplie par ${k} pour passer à la réalité, on divise par ${k} pour revenir ${plan ? "au plan" : "à la carte"}.`,
         correction: versReel
@@ -1125,6 +1239,7 @@ const ACTIVITES = [
         ligne: etape("1. Quelle distance réelle représente 1 cm sur cette carte ?", "km")
           + etape(`2. Sur la carte, ${A} et ${B} sont à ${nb(d1)} cm. Quelle est la distance réelle ?`, "km")
           + etape(`3. Sur la carte, ${C} et ${D} sont à ${nb(d2)} cm. Quelle est la distance réelle ?`, "km"),
+        solutions: [q, r2(d1 * q), r2(d2 * q)],
         verifier(v) {
           const x = v.map(lireNombre);
           if (x.some(isNaN)) return { etat: "incomplet", message: "Réponds aux trois questions." };
@@ -1163,6 +1278,7 @@ const ACTIVITES = [
         figure: s,
         classeLigne: "etapes",
         ligne: etape("1. Distance sur la carte :", "cm") + etape("2. Distance réelle :", "km"),
+        solutions: [dist, reel],
         verifier(v) {
           const x = v.map(lireNombre);
           if (x.some(isNaN)) return { etat: "incomplet", message: "Réponds aux deux questions." };
@@ -1241,10 +1357,10 @@ const PARCOURS = {
     { competence: "Reconnaître une situation de proportionnalité", activites: ["proportionnel-ou-pas", "deux-grandeurs", "langage-courant"] },
     { competence: "Un tableau est-il proportionnel ?", activites: ["tableau-proportionnel", "contre-exemple", "intrus"] },
     { competence: "Multiplier ou diviser", activites: ["fois-plus"] },
-    { competence: "Additionner des colonnes", activites: ["en-additionnant", "recette"] },
+    { competence: "Additionner des colonnes", activites: ["en-additionnant", "combiner-colonnes", "recette"] },
     { competence: "Repérer une erreur", activites: ["trouver-erreur"] },
     { competence: "Le retour à l'unité", activites: ["retour-unite", "coefficient"] },
-    { competence: "Utiliser la valeur pour 1", activites: ["combien-au-maximum", "unite-duree"] },
+    { competence: "Utiliser la valeur pour 1", activites: ["combien-au-maximum", "meilleur-achat", "unite-duree"] },
     { competence: "Choisir sa procédure", activites: ["choisis-ta-methode", "indiquer-procedure", "deux-facons"] },
     { competence: "Résoudre un problème", activites: ["problemes", "piege", "fois-plus-fois-moins"] },
     { competence: "Utiliser une échelle", activites: ["lire-echelle", "echelle-graphique"] },

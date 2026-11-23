@@ -146,14 +146,18 @@ function droiteGraduee(b, { max = unitesDroite(), point = null, lettre = "A", cl
      [r]      un nombre relatif (clavier avec le signe moins)
      [f]      une fraction complète     [f/12] numérateur à trouver, dénominateur 12
      [f3/]    dénominateur à trouver    [c]    un symbole choisi parmi q.choix
-     [s]      une liste de phrases à choisir : elles sont dans q.listes (une liste par [s]) */
+     [s]      une liste de phrases à choisir : elles sont dans q.listes (une liste par [s])
+   Correction case par case (facultatif) : q.solutions donne la réponse attendue de chaque case,
+   dans l'ordre de la ligne — un nombre pour [n] [d] [r] (ou { v, texte } pour choisir son écriture, 7,50 €), { num, den } pour [f], le numéro de la
+   bonne phrase pour [s], null pour une case à ne pas corriger. Après une erreur, les cases fausses
+   sont entourées en rouge ; avec la correction, la bonne valeur s'affiche à côté de chaque case. */
 function construireLigne(ligne, modele, listes = []) {
   const trous = [];
   ligne.innerHTML = modele.replace(/\[(n|d|r|c|s)\]|\[f(\d*)\/?(\d*)\]/g, (m, t, num, den) => {
     trous.push(t ? { type: t } : { type: "f", num, den });
     return `<span data-trou="${trous.length - 1}"></span>`;
   });
-  const cases = [], lecteurs = [];
+  const cases = [], lecteurs = [], champs = [];
   const nouvelleCase = (mode, etiquette) => {
     const i = el("input", { class: "case" + (mode === "decimal" ? " large" : ""), inputmode: mode,
       autocomplete: "off", autocapitalize: "off", spellcheck: "false", "aria-label": etiquette });
@@ -166,8 +170,10 @@ function construireLigne(ligne, modele, listes = []) {
     if (t.type === "n" || t.type === "d" || t.type === "r") {
       const i = nouvelleCase(t.type === "n" ? "numeric" : t.type === "d" ? "decimal" : "text", "Réponse");
       if (t.type === "r") i.classList.add("large");
+      i.addEventListener("input", () => i.classList.remove("bonne", "mauvaise"));
       place.replaceWith(i);
       lecteurs.push(() => i.value);
+      champs.push({ type: "nombre", i });
     } else if (t.type === "s") {
       const options = listes[nbListes++] || [];
       // Choix courts (∈, ∉, ⊥, //…) : présentés en ligne
@@ -177,6 +183,7 @@ function construireLigne(ligne, modele, listes = []) {
       options.forEach((o, i) => {
         const option = el("button", { class: "option", type: "button", role: "radio", "aria-checked": "false", onclick: () => {
           valeur = i;
+          liste.classList.remove("mauvaise");
           for (const b of liste.children) b.setAttribute("aria-checked", String(b === option));
         } });
         option.innerHTML = o;
@@ -185,18 +192,73 @@ function construireLigne(ligne, modele, listes = []) {
       });
       place.replaceWith(liste);
       lecteurs.push(() => valeur);
+      champs.push({ type: "liste", liste });
     } else if (t.type === "c") {
       choix = el("span", { class: "case-choix", "aria-label": "Symbole à choisir" }, "?");
       place.replaceWith(choix);
       lecteurs.push(() => choix.dataset.valeur ?? "");
+      champs.push({ type: "autre" });
     } else {
       const haut = t.num || nouvelleCase("numeric", "Numérateur");
       const bas = t.den || nouvelleCase("numeric", "Dénominateur");
-      place.replaceWith(el("span", { class: "frac frac-saisie" }, el("span", {}, haut), el("span", {}, bas)));
+      const fr = el("span", { class: "frac frac-saisie" }, el("span", {}, haut), el("span", {}, bas));
+      for (const c of [haut, bas]) if (typeof c !== "string") c.addEventListener("input", () => fr.classList.remove("bonne", "mauvaise"));
+      place.replaceWith(fr);
       lecteurs.push(() => ({ num: t.num || haut.value, den: t.den || bas.value }));
+      champs.push({ type: "fraction", fr });
     }
   });
-  return { cases, choix, lire: () => lecteurs.map(f => f()) };
+  const lire = () => lecteurs.map(f => f());
+
+  /* Compare chaque case à sa solution : true (juste), false (faux), null (vide ou non corrigée) */
+  function etats(solutions) {
+    const v = lire();
+    return champs.map((c, k) => {
+      const sol = solutions[k], x = v[k];
+      if (sol == null) return null;
+      if (c.type === "nombre") { const n = lireNombre(x); return isNaN(n) ? null : Math.abs(n - (sol.v ?? sol)) < 1e-9; }
+      if (c.type === "liste") return x == null ? null : x === sol;
+      if (c.type === "fraction") {
+        const n = lireEntier(x.num), d = lireEntier(x.den);
+        return isNaN(n) || isNaN(d) || d === 0 ? null : n * sol.den === sol.num * d;
+      }
+      return null;
+    });
+  }
+  /* Après une erreur : entoure en rouge les cases fausses (elles redeviennent neutres dès qu'on les modifie) */
+  function marquer(solutions) {
+    etats(solutions).forEach((e, k) => {
+      const c = champs[k];
+      if (c.type === "nombre") { c.i.classList.toggle("mauvaise", e === false); c.i.classList.remove("bonne"); }
+      else if (c.type === "fraction") c.fr.classList.toggle("mauvaise", e === false);
+      else if (c.type === "liste") c.liste.classList.toggle("mauvaise", e === false);
+    });
+  }
+  /* Correction : cases justes en vert, fausses barrées en rouge, avec la bonne réponse à côté */
+  function corriger(solutions) {
+    etats(solutions).forEach((e, k) => {
+      const c = champs[k], sol = solutions[k];
+      if (sol == null) return;
+      if (c.type === "liste") {
+        c.liste.classList.remove("mauvaise");
+        [...c.liste.children].forEach((b, i) => {
+          b.classList.toggle("bonne", i === sol);
+          b.classList.toggle("mauvaise", i !== sol && b.getAttribute("aria-checked") === "true");
+        });
+        return;
+      }
+      const cible = c.type === "nombre" ? c.i : c.type === "fraction" ? c.fr : null;
+      if (!cible) return;
+      cible.classList.toggle("bonne", e === true);
+      cible.classList.toggle("mauvaise", e === false);
+      if (e !== true) {
+        const sol2 = el("span", { class: "case-sol", "aria-label": "Bonne réponse" });
+        sol2.innerHTML = c.type === "fraction" ? frac(sol.num, sol.den) : sol.texte ?? ecrireNombre(sol);
+        cible.after(sol2);
+      }
+    });
+  }
+  return { cases, choix, lire, marquer, corriger };
 }
 
 /* ---------- Relier deux colonnes ----------
@@ -264,6 +326,23 @@ function rangement(items, signe) {
     ordre: () => [...arrivee.querySelectorAll(".jeton")].map(b => Number(b.dataset.i)),
     bloquer: () => { actif = false; }
   };
+}
+
+/* ---------- Correction ----------
+   Avec q.solutions : la bonne réponse s'affiche dans chaque case.
+   Avec q.solutionChoix (le texte ou le numéro du bon bouton de q.choix) : le bon bouton reste affiché, en vert. */
+function montrerSolution(q, saisie, boutons, retour) {
+  if (q.solutions) saisie.corriger(q.solutions);
+  if (q.solutionChoix != null && q.choix) {
+    const k = typeof q.solutionChoix === "number" ? q.solutionChoix : q.choix.indexOf(q.solutionChoix);
+    const b = boutons[k];
+    if (b) {
+      const vu = el("div", { class: "actions solution-choix" }, b.cloneNode(true));
+      vu.firstChild.classList.add("bonne");
+      vu.firstChild.disabled = true;
+      retour.before(vu);
+    }
+  }
 }
 
 /* ---------- Pages ---------- */
@@ -410,6 +489,7 @@ function lancerExerciseur({ intro, activites, parcours }) {
           if (texte === null) message("correction", "Correction :", q.correction);
           else message("faux", "Ce n'est pas ça.", texte, "<br><strong>Correction :</strong>", q.correction);
           q.surCorrection?.();
+          montrerSolution(q, saisie, boutons, actions);
         }
         q.bloquer?.();
         const derniere = k === etapes.length - 1;
@@ -507,6 +587,7 @@ function lancerExerciseur({ intro, activites, parcours }) {
         retour.replaceChildren(boite);
       }
 
+      let boutonsChoix = [];
       function boutonsSaisie() {
         const liste = [];
         if (q.choix) {
@@ -526,6 +607,7 @@ function lancerExerciseur({ intro, activites, parcours }) {
             if (texte) bouton.innerHTML = c; // un choix peut contenir une notation (fraction, angle…)
             liste.push(bouton);
           });
+          boutonsChoix = liste.slice();
         } else {
           liste.push(el("button", { class: "btn principal", type: "button", onclick: valider }, "Valider"));
         }
@@ -564,6 +646,7 @@ function lancerExerciseur({ intro, activites, parcours }) {
           terminer();
         } else {
           if (essais === 1) s.serie = 0;
+          if (q.solutions) saisie.marquer(q.solutions);
           message("faux", "Pas tout à fait…", r.message, q.indice);
           boutonsSaisie();
           const vide = saisie.cases.find(c => c.value === "") || saisie.cases[0];
@@ -575,6 +658,7 @@ function lancerExerciseur({ intro, activites, parcours }) {
       function voirCorrection() {
         message("correction", "Correction :", q.correction);
         q.surCorrection?.();
+        montrerSolution(q, saisie, boutonsChoix, actions);
         terminer();
       }
 

@@ -86,7 +86,6 @@ const NIVEAUX = {
       },
       {
         titre: "Chapitre 3 — Fractions et partage",
-        enCours: true,
         ressources: [
           { type: "cours",     titre: "Cours — Fractions et partage",                                fichier: "pdf/6e/ch3-cours.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Fractions et partage de surfaces",  fichier: "pdf/6e/ch3-exercices-1.pdf", correction: "https://youtu.be/StCESByUlJg" },
@@ -111,10 +110,11 @@ const NIVEAUX = {
       },
       {
         titre: "Chapitre 4 — Proportionnalité",
+        enCours: true,
         ressources: [
           { type: "cours",     titre: "Cours — Proportionnalité",                                 fichier: "pdf/6e/ch4-cours.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Proportionnel ou pas ?",         fichier: "pdf/6e/ch4-exercices-1.pdf" },
-          { type: "exercices", titre: "Feuille d'exercices n°2 : Multiplier, diviser, additionner", fichier: "pdf/6e/ch4-exercices-2.pdf" },
+          { type: "exercices", titre: "Feuille d'exercices n°2 : Résoudre des problèmes de proportionnalité avec la linéarité", fichier: "pdf/6e/ch4-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Le retour à l'unité",            fichier: "pdf/6e/ch4-exercices-3.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°4 : Résoudre des problèmes",         fichier: "pdf/6e/ch4-exercices-4.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°5 : Les échelles",                   fichier: "pdf/6e/ch4-exercices-5.pdf" },

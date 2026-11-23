@@ -116,6 +116,16 @@
 .message.correction .titre { color: var(--cours); }
 .message.incomplet { color: var(--texte-doux); }
 
+/* ----- Correction case par case (q.solutions) ----- */
+.case.mauvaise, .frac-saisie.mauvaise .case { border-color: var(--video); background: color-mix(in srgb, var(--video) 8%, var(--fond)); }
+.case.bonne, .frac-saisie.bonne .case { border-color: var(--corrige); }
+.case.mauvaise:disabled { text-decoration: line-through; text-decoration-color: var(--video); }
+.case-sol { display: inline-block; margin: 0 .3em; color: var(--corrige); font-weight: 700; font-variant-numeric: tabular-nums; }
+.tp-case .case-sol { margin: 2px 0 0; }
+.liste.mauvaise .option[aria-checked="true"], .option.mauvaise[aria-checked] { border-color: var(--video); box-shadow: 0 0 0 1px var(--video); }
+.solution-choix { margin-top: 12px; }
+.btn.bonne { border-color: var(--corrige); box-shadow: 0 0 0 2px var(--corrige); color: var(--corrige); opacity: 1; }
+
 /* ----- Figures ----- */
 .fig-part { fill: var(--carte); stroke: var(--texte); stroke-width: 1.5; }
 .fig-part.coloriee { fill: var(--exercices); }
