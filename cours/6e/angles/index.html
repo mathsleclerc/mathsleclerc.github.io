@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les angles — Cours interactif</title>
+<link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<link rel="stylesheet" href="../../cours.css">
+<style>
+  .types2 { grid-template-columns: 1fr 1fr; }
+  .lecture-jeu { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; }
+  .lecture-jeu input { font: 700 24px "Fira Sans", sans-serif; width: 90px; text-align: center; padding: 6px; border: 2px solid #9fb3cc; border-radius: 9px; }
+  .retour { font-size: 19px; line-height: 1.4; min-height: 84px; background: #fff; border-radius: 12px; padding: 12px 16px; border: 2px dashed #c9d3df; }
+  .retour.ok { border: 2px solid var(--vert); background: var(--vert-clair); }
+  .retour.ko { border: 2px solid var(--rouge); background: var(--rouge-clair); }
+  .prog { font-size: 19px; line-height: 1.45; margin: 0; padding-left: 26px; }
+  .prog li { margin-bottom: 4px; }
+  table.donnees { font-size: 18px; width: 100%; }
+  table.donnees td, table.donnees th { padding: 6px 6px; }
+  table.donnees .trou { font-size: 18px; }
+</style>
+</head>
+<body>
+<div id="tourne">Tourne ton téléphone pour voir le cours en grand.</div>
+<div id="viewport"><div id="stage">
+
+<!-- ============ 1. TITRE ============ -->
+<section class="slide titre" id="s-titre" data-titre="Une question pour commencer">
+  <div class="kicker">Chapitre 5</div>
+  <h1>Les angles</h1>
+  <p class="sous">Nommer · Mesurer · Tracer · Calculer · Construire</p>
+  <div class="question">Quel angle est le plus grand :<br>l’angle <b style="color:#ffb066">orange</b> ou l’angle <b style="color:#9cc8ff">bleu</b> ?</div>
+  <p data-step="1" style="font-size:22px;margin-top:22px;opacity:.9;max-width:600px">Garde ta réponse en tête : on la vérifie un peu plus loin.</p>
+  <svg id="fig-titre" viewBox="0 0 520 440" style="position:absolute;right:40px;top:150px;width:520px;height:440px" aria-hidden="true"></svg>
+</section>
+
+<!-- ============ 2. DÉFINITION ============ -->
+<section class="slide" id="s-def" data-titre="Qu’est-ce qu’un angle ?">
+  <header><span class="chip">I · Vocabulaire et notations</span><h2>Qu’est-ce qu’un angle ?</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>Un angle est formé par <b>deux demi-droites de même origine</b>.</p>
+        <p>L’origine commune est le <b class="c-rouge">sommet</b> de l’angle ; les deux demi-droites sont ses <b class="c-bleu">côtés</b>.</p></div>
+      <div class="box def" data-step="3"><span class="onglet">Notation</span>
+        <p>L’angle ci-contre se note <span class="ang">xOy</span> ou <span class="ang">AOB</span> (ou <span class="ang">yOx</span>, <span class="ang">BOA</span>).</p>
+        <p><b>La lettre du sommet est toujours écrite au milieu.</b></p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-def" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. NOMMER ============ -->
+<section class="slide" id="s-nom" data-titre="Nommer un angle">
+  <header><span class="chip">I · Vocabulaire et notations</span><h2>Nommer un angle</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p>L’angle marqué en orange se note <input class="trou" data-rep="EFG|GFE" data-rev="1"> ou <input class="trou" data-rep="GFE|EFG" data-rev="1">.</p>
+        <p class="ligne">Son sommet est le point <input class="trou" data-rep="F" data-rev="2">.</p>
+        <p class="ligne">Ses côtés sont [F<input class="trou" data-rep="E|G" data-rev="3">) et [F<input class="trou" data-rep="G|E" data-rev="3">).</p></div>
+      <div class="box att" data-step="4"><span class="onglet">Erreur fréquente</span>
+        <p>« <span class="ang">FEG</span> » n’est pas le bon nom : la lettre du milieu doit être le <b>sommet</b>, ici F.</p></div>
+      <p class="note">Tape tes réponses en lettres majuscules, puis appuie sur Entrée.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-nom" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. TAILLE D'UN ANGLE ============ -->
+<section class="slide" id="s-taille" data-titre="La taille d’un angle">
+  <header><span class="chip">I · Vocabulaire et notations</span><h2>Retour sur la question</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Expérience</span>
+        <p>Allonge ou raccourcis les côtés de l’angle bleu. Est-il plus grand ou plus petit ?</p></div>
+      <div class="box att" data-step="1"><span class="onglet">Attention</span>
+        <p>La « taille » d’un angle dépend de l’<b>écartement de ses côtés</b>, et pas de leur longueur.</p></div>
+      <div class="concl" data-step="2">L’angle bleu est le plus grand, même si ses côtés sont plus courts.</div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:460px"><svg id="fig-taille" viewBox="0 0 620 460"></svg></div>
+      <div class="ctrl">Longueur des côtés bleus <input type="range" id="taille-l" min="60" max="420" value="140"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. MESURE ET TYPES ============ -->
+<section class="slide" id="s-types" data-titre="Aigu, droit, obtus, plat">
+  <header><span class="chip vert">II · Mesurer et tracer</span><h2>La mesure d’un angle</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>On mesure un angle en <b>degrés</b> (symbole °), avec un <b>rapporteur</b>. On écrit par exemple : <span class="ang">xOy</span> = 40°.</p></div>
+      <div class="type-angle types2" id="types">
+        <div data-t="aigu"><b>angle aigu</b>entre 0° et 90°</div>
+        <div data-t="droit"><b>angle droit</b>égal à 90°</div>
+        <div data-t="obtus"><b>angle obtus</b>entre 90° et 180°</div>
+        <div data-t="plat"><b>angle plat</b>égal à 180°</div>
+      </div>
+      <p class="note">Fais tourner le côté [Oy) : le type de l’angle s’allume.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:420px"><svg id="fig-types" viewBox="0 0 620 420" style="touch-action:none"></svg></div>
+      <div class="ctrl">Mesure <input type="range" id="types-a" min="1" max="180" value="40"></div>
+      <div class="lecture" id="types-lec"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. MESURER ============ -->
+<section class="slide" id="s-mesurer" data-titre="Mesurer un angle">
+  <header><span class="chip vert">II · Mesurer et tracer</span><h2>Mesurer un angle</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box meth"><span class="onglet">Méthode : mesurer un angle</span>
+        <ol>
+          <li data-step="1">Je place le centre du rapporteur sur le <b>sommet</b> de l’angle.</li>
+          <li data-step="2">J’aligne le <b>0</b> du rapporteur sur un côté.</li>
+          <li data-step="3">Je lis la mesure sur la graduation <b>qui part de ce 0</b>, là où passe l’autre côté (je prolonge le côté s’il est trop court).</li>
+          <li data-step="4">Je vérifie : angle aigu → moins de 90° ; angle obtus → plus de 90°.</li>
+        </ol></div>
+      <div class="box ex" data-step="4"><span class="onglet">Exemple</span>
+        <p>L’angle <span class="ang">AOB</span> est <input class="trou" data-rep="obtus" data-rev="5">, donc on lit <span class="ang">AOB</span> = <input class="trou" data-rep="130" data-rev="6">° (et non 50° !).</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-mesurer" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. JEU : LIRE UNE MESURE ============ -->
+<section class="slide" id="s-lire" data-titre="À toi : lis la mesure">
+  <header><span class="chip jaune">À toi</span><h2>Lis la mesure de l’angle <span class="ang">AOB</span></h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Défi</span>
+        <p>Le rapporteur est bien placé. Lis la mesure de l’angle <span class="ang">AOB</span>.</p></div>
+      <div class="lecture-jeu"><span class="ang">AOB</span> = <input id="lire-rep" inputmode="numeric" autocomplete="off" aria-label="Mesure de l’angle AOB"> °
+        <button class="btn pri" id="lire-ok">Vérifier</button></div>
+      <div class="retour" id="lire-retour">Pense à partir du 0 qui est sur le côté [OA).</div>
+      <div style="display:flex;gap:10px"><button class="btn" id="lire-new">Nouvel angle</button><button class="btn" id="lire-voir">Voir la réponse</button></div>
+      <p class="note" id="lire-score"></p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-lire" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. TRACER ============ -->
+<section class="slide" id="s-tracer" data-titre="Tracer un angle">
+  <header><span class="chip vert">II · Mesurer et tracer</span><h2>Tracer un angle <span class="ang">xOy</span> de 37°</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box meth"><span class="onglet">Méthode : tracer un angle</span>
+        <ol>
+          <li data-step="1">Je trace la demi-droite [Ox).</li>
+          <li data-step="2">Je place le centre du rapporteur sur O et le 0 sur [Ox).</li>
+          <li data-step="3">Je fais un petit trait (un repère) en face de la graduation 37, sur la graduation qui part de 0.</li>
+          <li data-step="4">J’enlève le rapporteur et je trace la demi-droite [Oy) qui passe par ce repère.</li>
+        </ol></div>
+      <p class="note" data-step="4">Pour vérifier : 37° est moins de 90°, l’angle tracé doit bien être aigu.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-tracer" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. ADJACENTS ============ -->
+<section class="slide" id="s-adj" data-titre="Angles adjacents">
+  <header><span class="chip violet">III · Calculer la mesure d’un angle</span><h2>Angles adjacents</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>Deux angles sont <b>adjacents</b> s’ils ont :</p>
+        <ul style="margin:4px 0 0;padding-left:24px"><li>le même sommet ;</li><li>un côté commun ;</li><li>et s’ils sont situés de part et d’autre de ce côté commun.</li></ul></div>
+      <div class="box prop" data-step="1"><span class="onglet">Propriété</span>
+        <p>Si deux angles sont adjacents, la mesure de l’angle « total » est la somme de leurs mesures :</p>
+        <p style="text-align:center;font-weight:700"><span class="ang">xOz</span> = <span class="ang">xOy</span> + <span class="ang">yOz</span>.</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:470px"><svg id="fig-adj" viewBox="0 0 620 470" style="touch-action:none"></svg></div>
+      <div class="lecture" id="adj-lec"></div>
+      <p class="note" style="text-align:center">Fais glisser le côté commun [Oy).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. CALCULER ============ -->
+<section class="slide" id="s-calc" data-titre="Calculer avec des angles adjacents">
+  <header><span class="chip violet">III · Calculer la mesure d’un angle</span><h2>Calculer une mesure</h2></header>
+  <div class="cols egal">
+    <div class="col">
+      <div class="box ex"><span class="onglet">Exemple a</span>
+        <p>[Ox) et [Oz) forment un angle plat. Calcule <span class="ang">yOz</span>.</p></div>
+      <div class="fig" style="height:220px"><svg id="fig-calc-a" viewBox="0 0 560 220"></svg></div>
+      <p class="texte"><span class="ang">xOz</span> est plat, donc <span class="ang">xOz</span> = <input class="trou" data-rep="180" data-rev="1">°.</p>
+      <p class="texte" data-step="2">Les angles <span class="ang">xOy</span> et <span class="ang">yOz</span> sont adjacents, donc <span class="ang">yOz</span> = 180° − 125° = <input class="trou" data-rep="55" data-rev="3">°.</p>
+    </div>
+    <div class="col">
+      <div class="box ex" data-step="4"><span class="onglet">Exemple b</span>
+        <p><span class="ang">xOz</span> est un angle droit. Calcule <span class="ang">yOz</span>.</p></div>
+      <div class="fig" style="height:220px" data-step="4"><svg id="fig-calc-b" viewBox="0 0 560 220"></svg></div>
+      <p class="texte" data-step="4"><span class="ang">xOz</span> = <input class="trou" data-rep="90" data-rev="5">°.</p>
+      <p class="texte" data-step="6">Les angles <span class="ang">xOy</span> et <span class="ang">yOz</span> sont adjacents, donc <span class="ang">yOz</span> = 90° − 34° = <input class="trou" data-rep="56" data-rev="7">°.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11. BISSECTRICE ============ -->
+<section class="slide" id="s-bis" data-titre="La bissectrice">
+  <header><span class="chip orange">IV · La bissectrice d’un angle</span><h2>La bissectrice</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>La <b>bissectrice</b> d’un angle est la demi-droite qui partage cet angle en <b>deux angles adjacents de même mesure</b>.</p></div>
+      <div class="box meth" data-step="1"><span class="onglet">Méthode : au rapporteur</span>
+        <ol><li>Je mesure l’angle.</li><li>Je divise sa mesure par 2.</li><li>Je trace, à partir d’un côté, l’angle de cette mesure.</li><li>Je code les deux angles égaux.</li></ol></div>
+      <div class="box ex" data-step="2"><span class="onglet">Exemple</span>
+        <p><span class="ang">xOy</span> = 110°. Pour tracer sa bissectrice [Oz), je trace <span class="ang">xOz</span> = 110 ÷ 2 = <input class="trou" data-rep="55" data-rev="3">°.</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:470px"><svg id="fig-bis" viewBox="0 0 620 470"></svg></div>
+      <div class="ctrl">Mesure de <span class="ang">xOy</span> <input type="range" id="bis-a" min="20" max="170" value="110"></div>
+      <div class="lecture" id="bis-lec" style="font-size:26px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12. CONSTRUIRE : MÉTHODE ============ -->
+<section class="slide" id="s-constr" data-titre="Construire une figure">
+  <header><span class="chip">V · Construire une figure</span><h2>Construire une figure</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box meth"><span class="onglet">Méthode</span>
+        <ol>
+          <li>Je fais d’abord une <b>figure à main levée</b>, codée, avec toutes les mesures.</li>
+          <li>Je commence par tracer le <b>segment</b> dont je connais la longueur.</li>
+          <li>Je trace les <b>angles</b> au rapporteur, à ses extrémités.</li>
+          <li>Je nomme les points et je code la figure.</li>
+        </ol></div>
+      <div class="box def" data-step="1"><span class="onglet">Définition</span>
+        <p>Un <b>programme de construction</b> est une liste d’instructions, dans l’ordre, qui permet de construire une figure sans la voir. On utilise des verbes comme : <i>trace, place, construis, nomme</i>.</p></div>
+    </div>
+    <div class="col">
+      <div class="box ex"><span class="onglet">Exemple</span>
+        <p>Construis le triangle ABC tel que AB = 5 cm, <span class="ang">BAC</span> = 50° et <span class="ang">ABC</span> = 40°, puis écris son programme de construction.</p></div>
+      <div class="fig" style="height:330px" data-step="2"><svg id="fig-main" viewBox="0 0 600 330"></svg></div>
+      <p class="note" data-step="2">D’abord une figure à main levée : pas besoin de règle ni de rapporteur, mais toutes les mesures sont écrites.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13. CONSTRUIRE : EXEMPLE ============ -->
+<section class="slide" id="s-triangle" data-titre="Construire le triangle ABC">
+  <header><span class="chip">V · Construire une figure</span><h2>En vraie grandeur</h2></header>
+  <div class="cols" style="grid-template-columns:430px 1fr">
+    <div class="col">
+      <p class="texte">Triangle ABC : AB = 5 cm, <span class="ang">BAC</span> = 50°, <span class="ang">ABC</span> = 40°.</p>
+      <div class="box ex"><span class="onglet">Programme de construction</span>
+        <ol class="prog">
+          <li data-step="1">Trace un segment [AB] de 5 cm.</li>
+          <li data-step="2">Trace [Ax) telle que <span class="ang">BAx</span> = 50°.</li>
+          <li data-step="3">Du même côté de [AB], trace [By) telle que <span class="ang">ABy</span> = 40°.</li>
+          <li data-step="4">[Ax) et [By) se coupent en C.</li>
+        </ol></div>
+      <p class="note" data-step="4">Sur l’écran, les longueurs ne sont pas en vraie grandeur : sur ta feuille, AB mesure bien 5 cm.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-tri" viewBox="0 0 700 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14. DIAGRAMME CIRCULAIRE ============ -->
+<section class="slide" id="s-diag" data-titre="Le diagramme circulaire">
+  <header><span class="chip orange">VI · Le diagramme circulaire</span><h2>Le diagramme circulaire</h2></header>
+  <div class="box def" style="max-width:1150px"><span class="onglet">Définition</span>
+    <p>Dans un diagramme circulaire, le disque entier (<b>360°</b>) représente l’effectif total. Les angles des secteurs sont <b>proportionnels</b> aux effectifs. (Dans un diagramme semi-circulaire, l’effectif total correspond à 180°.)</p></div>
+  <div class="box meth" style="max-width:1150px"><span class="onglet">Méthode : construire un diagramme circulaire</span>
+    <ol>
+      <li>Je fais un tableau de proportionnalité : l’effectif total correspond à 360°.</li>
+      <li>Je calcule chaque angle (par exemple en multipliant par 360 ÷ effectif total).</li>
+      <li>Je trace un cercle et un rayon, puis les secteurs les uns à la suite des autres au rapporteur.</li>
+      <li>J’ajoute une légende (ou j’écris dans chaque secteur ce qu’il représente).</li>
+    </ol></div>
+  <p class="note" style="margin-top:16px">C’est la proportionnalité du chapitre 4 : l’angle est proportionnel à l’effectif.</p>
+</section>
+
+<!-- ============ 15. EXEMPLE SPORTS ============ -->
+<section class="slide" id="s-sport" data-titre="Exemple : le sport préféré">
+  <header><span class="chip orange">VI · Le diagramme circulaire</span><h2>Le sport préféré de 24 élèves</h2></header>
+  <div class="cols">
+    <div class="col">
+      <table class="donnees">
+        <tr><th>Sport</th><td>Football</td><td>Danse</td><td>Handball</td><td>Natation</td><td>Total</td></tr>
+        <tr><th>Effectif</th><td>8</td><td>6</td><td>4</td><td>6</td><td>24</td></tr>
+        <tr><th>Angle (en °)</th><td><input class="trou" data-rep="120" data-rev="2"></td><td><input class="trou" data-rep="90" data-rev="3"></td><td><input class="trou" data-rep="60" data-rev="4"></td><td><input class="trou" data-rep="90" data-rev="5"></td><td><input class="trou" data-rep="360" data-rev="6"></td></tr>
+      </table>
+      <p class="texte">360 ÷ 24 = 15 : un élève est représenté par un angle de <input class="trou" data-rep="15" data-rev="1">°.</p>
+      <p class="texte" data-step="2">Football : 8 × 15 = 120°, danse : 6 × 15 = 90°…</p>
+      <div class="box att" data-step="7"><span class="onglet">Remarque</span>
+        <p>Avec des pourcentages, 100 % correspond à 360°, donc 1 % correspond à 3,6°.</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-sport" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16. BILAN ============ -->
+<section class="slide" id="s-bilan" data-titre="Ce qu’il faut retenir">
+  <header><span class="chip">Bilan</span><h2>Ce qu’il faut retenir</h2></header>
+  <div class="cartes">
+    <div class="carte" data-step="1"><h3 class="c-bleu">Nommer</h3>Le sommet est toujours au milieu.<div class="calc"><span class="ang">xOy</span> : sommet O</div></div>
+    <div class="carte" data-step="2" style="border-top-color:var(--vert)"><h3 class="c-vert">Mesurer</h3>Centre sur le sommet, 0 sur un côté, on lit la graduation qui part de ce 0.<div class="calc">Aigu ou obtus ? On vérifie !</div></div>
+    <div class="carte" data-step="3" style="border-top-color:var(--violet)"><h3 class="c-violet">Adjacents</h3>Même sommet, un côté commun, de part et d’autre : on additionne.<div class="calc">35° + 60° = 95°</div></div>
+    <div class="carte" data-step="4" style="border-top-color:var(--orange)"><h3 class="c-orange">Bissectrice</h3>Elle partage l’angle en deux angles de même mesure.<div class="calc">110 ÷ 2 = 55°</div></div>
+    <div class="carte" data-step="5" style="border-top-color:var(--orange)"><h3 class="c-orange">Diagramme circulaire</h3>360° pour l’effectif total ; angles proportionnels aux effectifs.<div class="calc">360 ÷ 24 = 15° par élève</div></div>
+  </div>
+  <div class="box att" data-step="6" style="margin-top:34px;max-width:900px"><span class="onglet">Attention</span>
+    <p>La taille d’un angle dépend de l’écartement de ses côtés, pas de leur longueur.</p></div>
+  <div class="liens">
+    <a class="btn pri" href="../../../exerciseurs/angles-6e/">S’entraîner avec l’exerciseur →</a>
+    <a class="btn" href="../../../pdf/6e/ch5-cours.pdf" target="_blank" rel="noopener">Le cours à imprimer (PDF)</a>
+  </div>
+</section>
+
+<canvas id="pen" width="1280" height="720"></canvas>
+<div id="bar">
+  <a class="tb" href="../../../niveau.html?n=6e" title="Revenir à la page Sixième">← Sixième</a>
+  <button class="tb" id="b-som" title="Sommaire (S)">☰</button>
+  <button class="tb" id="b-prev" title="Précédent (←)" aria-label="Précédent">◀</button>
+  <button class="tb" id="b-next" title="Suivant (→ ou espace)" aria-label="Suivant">▶</button>
+  <div id="dots"></div>
+  <span id="count"></span>
+  <button class="tb" id="b-pen" title="Stylo (P)" aria-label="Stylo">✎</button>
+  <button class="tb" id="b-clear" title="Effacer le dessin (X)" aria-label="Effacer le dessin">⌫</button>
+  <button class="tb" id="b-fs" title="Plein écran (F)" aria-label="Plein écran">⛶</button>
+  <button class="tb" id="b-help" title="Aide (H)" aria-label="Aide">?</button>
+</div>
+<div class="panneau" id="sommaire"><b>Sommaire</b><ol></ol></div>
+<div class="panneau" id="aide">
+  <kbd>→</kbd> ou <kbd>Espace</kbd> : étape suivante · <kbd>←</kbd> : étape précédente<br>
+  Tu peux aussi cliquer sur la diapo pour avancer.<br>
+  Cases en pointillés : tape ta réponse puis <kbd>Entrée</kbd> pour vérifier.<br>
+  <kbd>P</kbd> stylo · <kbd>X</kbd> effacer le dessin · <kbd>S</kbd> sommaire<br>
+  <kbd>F</kbd> plein écran · <kbd>B</kbd> écran noir
+</div>
+</div></div>
+<div id="black"></div>
+
+<script src="../../moteur-cours.js"></script>
+<script src="angles.js"></script>
+</body>
+</html>

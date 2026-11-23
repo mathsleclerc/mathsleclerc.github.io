@@ -70,7 +70,7 @@
       if (k >= r) {
         if (!i.disabled) i.dataset.saisie = i.value;
         const juste = i.dataset.saisie && egal(i.dataset.saisie, i.dataset.rep);
-        i.value = i.dataset.rep; i.disabled = true;
+        i.value = i.dataset.rep.split("|")[0]; i.disabled = true;
         i.classList.remove("faux"); i.classList.toggle("juste", !!juste); i.classList.toggle("revele", !juste);
       } else if (i.disabled) {
         i.disabled = false; i.value = i.dataset.saisie || "";
@@ -97,16 +97,24 @@
 
   /* ---------- cases à compléter ---------- */
   const norm = s => String(s).trim().replace(/\s|€|cm|km|kg|m$/g, "").replace(",", ".");
-  function egal(a, b) { const x = parseFloat(norm(a)), y = parseFloat(norm(b)); return norm(a) !== "" && !isNaN(x) && Math.abs(x - y) < 1e-9; }
+  const mot = s => String(s).toUpperCase().replace(/[\s\[\]()^°]/g, "");
+  /* réponse attendue : un nombre, ou des lettres ; plusieurs réponses possibles séparées par | */
+  function egal(a, b) {
+    return String(b).split("|").some(r => {
+      if (/^[\d\s,.\-]+$/.test(r.replace(/€|cm|km|kg|°/g, ""))) { const x = parseFloat(norm(a).replace("°", "")), y = parseFloat(norm(r).replace("°", "")); return norm(a) !== "" && !isNaN(x) && Math.abs(x - y) < 1e-9; }
+      return mot(a) !== "" && mot(a) === mot(r);
+    });
+  }
   function verifier(i) {
     if (!i.value.trim()) { i.classList.remove("juste", "faux"); return; }
     const ok = egal(i.value, i.dataset.rep);
     i.classList.toggle("juste", ok); i.classList.toggle("faux", !ok);
   }
   document.querySelectorAll("input.trou").forEach(i => {
-    i.setAttribute("inputmode", "decimal"); i.setAttribute("autocomplete", "off");
+    const r0 = i.dataset.rep.split("|")[0];
+    i.setAttribute("inputmode", /^[\d,]+$/.test(r0) ? "decimal" : "text"); i.setAttribute("autocomplete", "off"); i.setAttribute("autocapitalize", /^[A-Z|]+$/.test(i.dataset.rep) ? "characters" : "off");
     i.setAttribute("aria-label", "Case à compléter");
-    i.style.width = Math.max(2.6, i.dataset.rep.length * 0.62 + 1.4) + "em";
+    i.style.width = Math.max(2.6, r0.length * 0.62 + 1.4) + "em";
     i.addEventListener("keydown", e => { if (e.key === "Enter") { verifier(i); i.blur(); } e.stopPropagation(); });
     i.addEventListener("input", () => i.classList.remove("juste", "faux"));
     i.addEventListener("change", () => verifier(i));

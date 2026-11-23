@@ -132,7 +132,8 @@ const NIVEAUX = {
       {
         titre: "Chapitre 5 — Angles",
         ressources: [
-          { type: "cours",     titre: "Cours — Angles",                                           fichier: "pdf/6e/ch5-cours.pdf" },
+          { type: "cours",     titre: "Cours interactif — Angles",                                lien: "cours/6e/angles/" },
+          { type: "cours",     titre: "Cours — Angles",                                           fichier: "pdf/6e/ch5-cours.pdf", detail: "Le même cours en PDF, à imprimer" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Vocabulaire et notations",       fichier: "pdf/6e/ch5-exercices-1.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°2 : Mesurer un angle",               fichier: "pdf/6e/ch5-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Tracer un angle",                fichier: "pdf/6e/ch5-exercices-3.pdf" },

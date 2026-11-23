@@ -163,3 +163,17 @@ svg .enter { animation: fadeIn .5s ease both; }
 .liens a { text-decoration: none; font-size: 20px; padding: 14px 22px; }
 .btn:disabled { opacity: .45; cursor: default; transform: none; }
 .tri-choix .btn.bon:disabled, .tri-choix .btn.mauvais:disabled { opacity: 1; }
+
+/* nom d'angle avec son chapeau : <span class="ang">xOy</span> */
+.ang { display: inline-block; position: relative; font-style: normal; padding-top: .14em; white-space: nowrap; }
+.ang::before { content: ""; position: absolute; left: 4%; right: 4%; top: -.16em; height: .38em; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpolygon points='0,16 50,0 100,16 100,20 50,5 0,20'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpolygon points='0,16 50,0 100,16 100,20 50,5 0,20'/%3E%3C/svg%3E") center/100% 100% no-repeat; }
+.cartes.c4 { grid-template-columns: repeat(4, 1fr); }
+.type-angle { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.type-angle > div { background: #fff; border-radius: 12px; padding: 8px 10px; text-align: center; font-size: 17px; line-height: 1.3; border: 3px solid transparent; transition: border-color .2s, background .2s; }
+.type-angle > div b { display: block; font-size: 19px; }
+.type-angle > div.actif { border-color: var(--bleu); background: var(--bleu-clair); }
+table.donnees { border-collapse: collapse; font-size: 20px; }
+table.donnees td, table.donnees th { border: 2px solid #8796aa; padding: 7px 12px; text-align: center; background: #fff; }
+table.donnees th { background: var(--bleu-clair); text-align: left; }
