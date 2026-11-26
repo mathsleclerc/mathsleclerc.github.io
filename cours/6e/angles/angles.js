@@ -42,8 +42,8 @@
       const l = d % 10 === 0 ? R * 0.075 : d % 5 === 0 ? R * 0.05 : R * 0.025;
       const p = P(O, d, R), q = P(O, d, R - l);
       S("line", { x1: f(p[0]), y1: f(p[1]), x2: f(q[0]), y2: f(q[1]), stroke: C.bleu, "stroke-width": d % 10 ? 1 : 1.6 }, grp);
-      if (d % 10 === 0 && (!petit || d % 30 === 0)) {
-        const fs = petit ? 11 : 13, a = P(O, d, R * 0.84), b = P(O, d, R * 0.7);
+      if (d % 10 === 0) {
+        const fs = petit ? 10 : 13, a = P(O, d, R * 0.84), b = P(O, d, R * 0.7);
         T(grp, a[0], a[1] - (d === 0 || d === 180 ? 8 : 0), String(d), { style: `font-size:${fs}px;font-weight:700`, fill: C.fonce });
         T(grp, b[0], b[1] - (d === 0 || d === 180 ? 8 : 0), String(180 - d), { style: `font-size:${fs}px;font-weight:700`, fill: C.rouge });
       }
@@ -55,7 +55,7 @@
 
 
   /* ---------- rapporteur que l'on déplace (glisser) et que l'on tourne (poignée orange) ----------
-     depart = [x, y, angle] ; cible = [x, y, angle ou liste d'angles] : il s'y cale quand on s'en approche,
+     depart = [x, y, angle] ; cible = [x, y, angle ou liste d'angles] (ou une liste de cibles) : il s'y cale quand on s'en approche,
      et son contour devient vert quand il est bien placé */
   const ecartAngle = (a, b) => ((a - b) % 360 + 540) % 360 - 180;
   function rapporteurMobile(svg, R, depart, cible, attrs = {}) {
@@ -69,9 +69,10 @@
     S("circle", { cx: h[0], cy: h[1], r: 18, fill: C.orange, stroke: "#fff", "stroke-width": 3 }, poignee);
     T(poignee, h[0], h[1] + 1, "↻", { fill: "#fff", style: "font-size:22px;font-weight:700" });
     let [x, y, th] = depart;
-    const angles = () => [].concat(cible[2]);
+    const cibles = Array.isArray(cible[0]) ? cible : [cible];
+    const angles = c => [].concat(c[2]);
     const calque = S("g", {}, grp); // repères dessinés sur le rapporteur (ils bougent avec lui)
-    const place = () => Math.hypot(x - cible[0], y - cible[1]) < 0.5 && angles().some(a => Math.abs(ecartAngle(th, a)) < 0.5);
+    const place = () => cibles.some(c => Math.hypot(x - c[0], y - c[1]) < 0.5 && angles(c).some(a => Math.abs(ecartAngle(th, a)) < 0.5));
     function poser(anim) {
       grp.style.transition = anim ? "transform .9s ease" : "none";
       grp.style.transform = `translate(${x}px,${y}px) rotate(${-th}deg)`;
@@ -92,10 +93,13 @@
       const q = svgPt(svg, e);
       if (mode === "glisse") {
         x = q.x - dx; y = q.y - dy;
-        if (Math.hypot(x - cible[0], y - cible[1]) < 16) { x = cible[0]; y = cible[1]; }
+        for (const c of cibles) if (Math.hypot(x - c[0], y - c[1]) < 16) {
+          x = c[0]; y = c[1];
+          for (const a of angles(c)) if (Math.abs(ecartAngle(th, a)) < 4) th = a;
+        }
       } else {
         th = Math.atan2(y - q.y, q.x - x) * 180 / Math.PI - 90;
-        for (const a of angles()) if (Math.abs(ecartAngle(th, a)) < 4) th = a;
+        for (const c of cibles) if (Math.hypot(x - c[0], y - c[1]) < 0.5) for (const a of angles(c)) if (Math.abs(ecartAngle(th, a)) < 4) th = a;
       }
       poser(false);
     });
@@ -293,12 +297,12 @@
     lettre(g4, O, 37, 350, "y");
     secteur(g4, O, 0, 37, 70, C.bleu);
     const m = P(O, 18.5, 100); T(g4, m[0], m[1], "37°", { class: "lab gras", fill: C.bleu, style: "font-size:22px" });
-    const rap = rapporteurMobile(svg, R, [300, 580, -12], [O[0], O[1], 0], { "data-step": 1, "data-until": 4 });
+    const rap = rapporteurMobile(svg, R, [300, 580, -12], [O[0], O[1], 0]);
     const lb = P([0, 0], 37, R * 0.84);
     S("circle", { cx: lb[0], cy: lb[1], r: 15, fill: "none", stroke: C.rouge, "stroke-width": 3, "data-step": 3 }, rap.calque);
     let avant = -1;
     Diapo.surEtape("s-tracer", k => {
-      const p = k < 2 ? 0 : 1;
+      const p = k < 2 || k >= 4 ? 0 : 1;
       if (p === avant) return; avant = p;
       if (p === 0) rap.depart(); else rap.aller(O[0], O[1], 0);
     });
@@ -396,13 +400,11 @@
     T(g1, A[0] - 22, A[1] + 8, "A", { class: "lab gras", style: "font-size:22px" });
     T(g1, B[0] + 22, B[1] + 8, "B", { class: "lab gras", style: "font-size:22px" });
     T(g1, (A[0] + B[0]) / 2, A[1] + 34, "5 cm", { class: "lab gras" });
-    rapporteur(svg, A, 140, { "data-step": 2, "data-until": 3 });
     const g2 = S("g", { "data-step": 2 }, svg);
     demi(g2, A, 50, 350, { class: "ln draw", pathLength: 1, style: `stroke:${C.bleu};stroke-width:3` });
     lettre(g2, A, 50, 370, "x", { fill: C.bleu });
     S("path", { d: arcD(A, 0, 50, 50), fill: "none", stroke: C.bleu, "stroke-width": 3 }, g2);
     let m = P(A, 25, 78); T(g2, m[0], m[1], "50°", { class: "lab gras", fill: C.bleu });
-    rapporteur(svg, B, 140, { "data-step": 3, "data-until": 4 });
     const g3 = S("g", { "data-step": 3 }, svg);
     demi(g3, B, 140, 350, { class: "ln draw", pathLength: 1, style: `stroke:${C.vert};stroke-width:3` });
     lettre(g3, B, 140, 370, "y", { fill: C.vert });
@@ -412,6 +414,13 @@
     S("circle", { cx: Cp[0], cy: Cp[1], r: 14, fill: "none", stroke: C.rouge, "stroke-width": 3 }, g4);
     croix(g4, Cp);
     T(g4, Cp[0], Cp[1] - 30, "C", { class: "lab gras", style: "font-size:24px" });
+    const rap = rapporteurMobile(svg, 140, [560, 190, 0], [[A[0], A[1], 0], [B[0], B[1], 0]]);
+    let avant = -1;
+    Diapo.surEtape("s-triangle", k => {
+      const p = k === 2 ? 1 : k === 3 ? 2 : 0;
+      if (p === avant) return; avant = p;
+      if (p === 1) rap.aller(A[0], A[1], 0); else if (p === 2) rap.aller(B[0], B[1], 0); else rap.depart();
+    });
   })();
 
   /* ================= 15. diagramme circulaire ================= */
