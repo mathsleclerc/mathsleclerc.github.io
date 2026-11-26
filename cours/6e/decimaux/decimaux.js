@@ -103,7 +103,7 @@
       chiffres = [...Array(3 - nEnt).fill(null), ...ent, ...dec];
       const span = (d, i) => `<span class="c" data-i="${i}">${d}</span>`;
       $("#ch-nombre").innerHTML = chiffres.map((d, i) => d === null ? "" : span(d, i) + (i === 2 ? "<span>,</span>" : "")).join("");
-      document.querySelectorAll("#ch-table tr:last-child td").forEach((td, i) => { td.textContent = chiffres[i] === null ? "" : chiffres[i]; td.classList.remove("actif"); });
+      document.querySelectorAll("#ch-table tr:last-child td").forEach((td, i) => { td.textContent = chiffres[i] === null ? "" : chiffres[i]; td.classList.remove("actif"); td.classList.toggle("clic", chiffres[i] !== null); });
       document.querySelectorAll("#ch-nombre .c").forEach(s => s.addEventListener("click", e => { e.stopPropagation(); montrer(+s.dataset.i); }));
       const termes = chiffres.map((d, i) => d ? `${d} × ${RANGS[i][1]}` : null).filter(Boolean);
       const total = chiffres.reduce((s, d, i) => s + (d || 0) * VAL[i], 0);
@@ -117,6 +117,12 @@
       const d = chiffres[i], [rang, u] = RANGS[i];
       retour($("#ch-ret"), "ok", `Le ${d} est le chiffre des <b>${rang}</b> : il vaut ${d} × ${u} = <b>${ecr(d * VAL[i])}</b>.${d === 0 ? " Ce zéro est utile : il marque qu’il n’y a aucun" + (i < 3 ? "e " : " ") + rang.replace(/s$/, "") + "." : ""}`);
     }
+    // on peut aussi cliquer sur les chiffres (ou les rangs) du tableau
+    document.querySelectorAll("#ch-table td, #ch-table th").forEach(c => c.addEventListener("click", e => {
+      e.stopPropagation();
+      const i = [...c.parentNode.children].indexOf(c);
+      if (chiffres[i] !== null) montrer(i);
+    }));
     $("#ch-new").addEventListener("click", nouveau);
     nouveau();
   })();

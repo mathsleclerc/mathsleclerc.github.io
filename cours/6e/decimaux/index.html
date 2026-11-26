@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Les nombres décimaux — Cours interactif</title>
 <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
-<link rel="stylesheet" href="../../cours.css?v=2026-11-26b">
+<link rel="stylesheet" href="../../cours.css?v=2026-11-26c">
 <style>
   .retour { font-size: 19px; line-height: 1.4; min-height: 70px; background: #fff; border-radius: 12px; padding: 12px 16px; border: 2px dashed #c9d3df; }
   .retour.ok { border: 2px solid var(--vert); background: var(--vert-clair); }
@@ -24,7 +24,10 @@
   table.num td.virg { border-left: 5px solid var(--rouge); }
   table.num td.actif { background: #ffe9a8; font-weight: 700; }
   table.num tr.part th { font-size: 16px; color: var(--doux); background: #fff; }
-  .chiffres span { cursor: pointer; padding: 0 3px; border-radius: 8px; transition: background .2s; }
+  .chiffres span { cursor: pointer; padding: 4px 6px; border-radius: 10px; transition: background .2s; }
+  .chiffres span.c { display: inline-block; }
+  #ch-table td.clic, #ch-table th { cursor: pointer; }
+  #ch-table td.clic:hover { background: var(--bleu-clair); }
   .chiffres span.c:hover { background: var(--bleu-clair); }
   .chiffres span.actif { background: #ffe9a8; }
   .duel { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; font-size: 46px; font-weight: 700; text-align: center; }
@@ -98,7 +101,7 @@
 <section class="slide" id="s-chiffre" data-titre="À toi : la valeur de chaque chiffre">
   <header><span class="chip jaune">À toi</span><h2>Que vaut chaque chiffre ?</h2></header>
   <div class="jeu">
-    <p class="texte">Clique sur un chiffre du nombre : on voit son rang et sa valeur.</p>
+    <p class="texte">Clique sur un chiffre du nombre ou du tableau : on voit son rang et sa valeur.</p>
     <div class="grand chiffres" id="ch-nombre" style="margin:14px 0"></div>
     <table class="num" id="ch-table">
       <tr><th>centaines</th><th>dizaines</th><th>unités</th><th class="dec">dixièmes</th><th class="dec">centièmes</th><th class="dec">millièmes</th></tr>
@@ -402,7 +405,7 @@
 </div></div>
 <div id="black"></div>
 
-<script src="../../moteur-cours.js?v=2026-11-26b"></script>
-<script src="decimaux.js?v=2026-11-26b"></script>
+<script src="../../moteur-cours.js?v=2026-11-26c"></script>
+<script src="decimaux.js?v=2026-11-26c"></script>
 </body>
 </html>
