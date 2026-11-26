@@ -24,7 +24,7 @@
     return S("path", { d: `M${f(p[0])},${f(p[1])} L${f(m[0])},${f(m[1])} L${f(q[0])},${f(q[1])}`, fill: "none", stroke: C.texte, "stroke-width": 2, ...attrs }, g);
   }
   function lettre(g, O, a, r, txt, attrs = {}) { const p = P(O, a, r); return T(g, p[0], p[1], txt, { class: "lab gras", style: "font-style:italic;font-size:22px", ...attrs }); }
-  function svgPt(svg, ev) { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+  const svgPt = (svg, ev) => Diapo.point(svg, ev);
   function glisser(svg, surPoint) {
     let drag = false;
     svg.addEventListener("pointerdown", e => { drag = true; svg.setPointerCapture(e.pointerId); surPoint(svgPt(svg, e)); });

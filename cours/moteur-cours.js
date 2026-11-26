@@ -44,6 +44,17 @@
     return grp;
   }
 
+  /* position d'un clic dans un SVG, en unités du viewBox.
+     On passe par getBoundingClientRect (fiable avec la mise à l'échelle CSS de la diapo,
+     contrairement à getScreenCTM sous Safari), en tenant compte de preserveAspectRatio « meet ». */
+  function point(svg, ev) {
+    const r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal;
+    if (!vb || !vb.width) return { x: ev.clientX - r.left, y: ev.clientY - r.top };
+    const k = Math.min(r.width / vb.width, r.height / vb.height);
+    const ox = (r.width - vb.width * k) / 2, oy = (r.height - vb.height * k) / 2;
+    return { x: vb.x + (ev.clientX - r.left - ox) / k, y: vb.y + (ev.clientY - r.top - oy) / k };
+  }
+
   /* ---------- moteur de diapo ---------- */
   const slides = [...document.querySelectorAll(".slide")];
   const stage = $("#stage");
@@ -186,7 +197,7 @@
   });
 
   window.Diapo = {
-    S, T, nb, euros, fleche,
+    S, T, nb, euros, fleche, point,
     surEtape(id, f) { (hooks[id] = hooks[id] || []).push(f); },
     etape: () => step,
     demarrer() {

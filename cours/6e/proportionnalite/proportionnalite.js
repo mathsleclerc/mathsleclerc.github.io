@@ -48,8 +48,7 @@
     sl.addEventListener("input", e => { m = +e.target.value; render(); });
     let drag = false;
     function fromPt(ev) {
-      const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
-      const q = p.matrixTransform(svg.getScreenCTM().inverse());
+      const q = Diapo.point(svg, ev);
       m = Math.max(0, Math.min(5, Math.round((q.x - 60) / 50) / 2)); render();
     }
     svg.addEventListener("pointerdown", e => { drag = true; svg.setPointerCapture(e.pointerId); fromPt(e); });
@@ -342,7 +341,7 @@
       const km = d1 * 2, env = exact ? "" : "≈ ";
       $("#carte-lec").innerHTML = `<span style="white-space:nowrap">Sur la carte : <b class="c-rouge">${env}${nb(d1)} cm</b></span> → <span style="white-space:nowrap">dans la réalité : <b class="c-vert">${env}${nb(d1)} × 2 = ${nb(km)} km</b></span>`;
     }
-    function pt(ev) { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+    function pt(ev) { return Diapo.point(svg, ev); }
     svg.addEventListener("pointerdown", e => {
       const q = pt(e); let best = -1, dm = 30;
       villes.forEach((v, i) => { const [x, y] = P(v), dd = Math.hypot(q.x - x, q.y - y); if (dd < dm) { dm = dd; best = i; } });

@@ -12,7 +12,7 @@
   const ecr = m => { const neg = m < 0; m = Math.abs(m); const e = Math.floor(m / 1000), d = String(m % 1000).padStart(3, "0").replace(/0+$/, ""); return (neg ? "−" : "") + e + (d ? "," + d : ""); };
   /* lecture d'une saisie → millièmes (ou NaN) */
   const lire = s => { s = String(s).trim().replace(/\s/g, "").replace(",", "."); if (!/^\d+(\.\d{0,3})?$/.test(s)) return NaN; return Math.round(parseFloat(s) * 1000); };
-  function svgPt(svg, ev) { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+  const svgPt = (svg, ev) => Diapo.point(svg, ev);
   function glisser(svg, f) {
     let drag = false;
     svg.addEventListener("pointerdown", e => { e.stopPropagation(); drag = true; svg.setPointerCapture(e.pointerId); f(svgPt(svg, e)); });
