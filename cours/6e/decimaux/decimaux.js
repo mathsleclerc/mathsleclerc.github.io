@@ -211,10 +211,11 @@
     let d = 2;
     function dessiner() {
       const n = +sl.value, q = Math.floor(n / d), r = n % d, unites = Math.ceil(n / d);
+      $("#mx-nv").textContent = n;
       svg.innerHTML = "";
-      const h = Math.min(34, 360 / Math.max(unites, 1) - 6), W = 480, x0 = 90;
+      const h = Math.min(40, 380 / Math.max(unites, 1) - 8), W = 480, x0 = 90;
       for (let u = 0; u < unites; u++) {
-        const y = 20 + u * (h + 6);
+        const y = 10 + u * (h + 8);
         T(svg, 50, y + h / 2, "1 unité", { class: "lab petit", style: "font-size:13px" });
         for (let k = 0; k < d; k++) {
           const idx = u * d + k, on = idx < n;
@@ -224,8 +225,13 @@
       const dec = n * 1000 / d;
       $("#mx-lec").innerHTML = r === 0 ? `${fracH(n, d)} = <b>${q}</b>` : `${fracH(n, d)} = ${q} + ${fracH(r, d)} = <b class="c-bleu">${ecr(dec)}</b>`;
     }
+    // le numérateur va jusqu'à 6 unités moins une part : 4,2 = 21/5 = 42/10 est possible
+    const limite = () => { sl.max = 6 * d - 1; if (+sl.value > 6 * d - 1) sl.value = 6 * d - 1; };
     sl.addEventListener("input", dessiner);
-    document.querySelectorAll("#mx-d .btn").forEach(b => b.addEventListener("click", () => { d = +b.dataset.d; document.querySelectorAll("#mx-d .btn").forEach(x => x.classList.toggle("sel", x === b)); dessiner(); }));
+    $("#mx-moins").addEventListener("click", () => { sl.value = Math.max(1, +sl.value - 1); dessiner(); });
+    $("#mx-plus").addEventListener("click", () => { sl.value = Math.min(+sl.max, +sl.value + 1); dessiner(); });
+    document.querySelectorAll("#mx-d .btn").forEach(b => b.addEventListener("click", () => { d = +b.dataset.d; document.querySelectorAll("#mx-d .btn").forEach(x => x.classList.toggle("sel", x === b)); limite(); dessiner(); }));
+    limite();
     dessiner();
   })();
 
