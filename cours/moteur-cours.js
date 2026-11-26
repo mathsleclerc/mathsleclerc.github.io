@@ -69,9 +69,10 @@
       const r = +i.dataset.rev;
       if (k >= r) {
         if (!i.disabled) i.dataset.saisie = i.value;
-        const juste = i.dataset.saisie && egal(i.dataset.saisie, i.dataset.rep) && !doublon(i, i.dataset.saisie);
+        const juste = i.dataset.saisie && egal(i.dataset.saisie, i.dataset.rep, i.dataset.entre) && !doublon(i, i.dataset.saisie);
         // réponse juste : on garde celle de l'élève ; sinon une bonne réponse pas déjà écrite dans une case « sœur »
-        i.value = juste ? (lettres(i) ? i.dataset.saisie.toUpperCase() : i.dataset.saisie)
+        const r0 = i.dataset.rep.split("|")[0], mot0 = /^[a-zà-ÿ]{3,}$/i.test(r0) && !lettres(i); // un mot : on l'affiche bien orthographié
+        i.value = juste ? (lettres(i) ? i.dataset.saisie.toUpperCase() : mot0 ? r0 : i.dataset.saisie)
           : i.dataset.rep.split("|").find(r => !prise(i, r)) || i.dataset.rep.split("|")[0];
         i.disabled = true;
         i.classList.remove("faux"); i.classList.toggle("juste", !!juste); i.classList.toggle("revele", !juste);
@@ -102,7 +103,11 @@
   const norm = s => String(s).trim().replace(/\s|€|cm|km|kg|m$/g, "").replace(",", ".");
   const mot = s => String(s).toUpperCase().replace(/[\s\[\]()^°]/g, "");
   /* réponse attendue : un nombre, ou des lettres ; plusieurs réponses possibles séparées par | */
-  function egal(a, b) {
+  function egal(a, b, entre) {
+    if (entre) { // réponse libre : un nombre strictement compris entre deux bornes (data-entre="2,4|2,5")
+      const [lo, hi] = entre.split("|").map(v => parseFloat(norm(v))), x = parseFloat(norm(a));
+      return norm(a) !== "" && /^-?\d+(\.\d+)?$/.test(norm(a)) && x > lo && x < hi;
+    }
     return String(b).split("|").some(r => {
       if (/^[\d\s,.\-]+$/.test(r.replace(/€|cm|km|kg|°/g, ""))) { const x = parseFloat(norm(a).replace("°", "")), y = parseFloat(norm(r).replace("°", "")); return norm(a) !== "" && !isNaN(x) && Math.abs(x - y) < 1e-9; }
       return mot(a) !== "" && mot(a) === mot(r);
@@ -116,7 +121,7 @@
   const prise = (i, v) => soeurs(i).some(j => j.value.trim() && mot(j.value) === mot(v) && (j.disabled || egal(j.value, j.dataset.rep)));
   function verifier(i) {
     if (!i.value.trim()) { i.classList.remove("juste", "faux"); return; }
-    const ok = egal(i.value, i.dataset.rep) && !doublon(i, i.value);
+    const ok = egal(i.value, i.dataset.rep, i.dataset.entre) && !doublon(i, i.value);
     i.classList.toggle("juste", ok); i.classList.toggle("faux", !ok);
   }
   document.querySelectorAll("input.trou").forEach(i => {

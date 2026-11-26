@@ -148,7 +148,8 @@ const NIVEAUX = {
       {
         titre: "Chapitre 6 — Nombres décimaux",
         ressources: [
-          { type: "cours",     titre: "Cours — Nombres décimaux",                                 fichier: "pdf/6e/ch6-cours.pdf" },
+          { type: "cours",     titre: "Cours interactif — Nombres décimaux",                      lien: "cours/6e/decimaux/" },
+          { type: "cours",     titre: "Cours — Nombres décimaux",                                 fichier: "pdf/6e/ch6-cours.pdf", detail: "Le même cours en PDF, à imprimer" },
           { type: "exercices", titre: "Feuille d'exercices n°1 : Valeur des chiffres et décompositions", fichier: "pdf/6e/ch6-exercices-1.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°2 : Fractions décimales et écriture à virgule", fichier: "pdf/6e/ch6-exercices-2.pdf" },
           { type: "exercices", titre: "Feuille d'exercices n°3 : Pourcentage et nombre mixte",    fichier: "pdf/6e/ch6-exercices-3.pdf" },

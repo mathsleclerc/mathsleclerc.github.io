@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les nombres décimaux — Cours interactif</title>
+<link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<link rel="stylesheet" href="../../cours.css?v=2026-11-26b">
+<style>
+  .retour { font-size: 19px; line-height: 1.4; min-height: 70px; background: #fff; border-radius: 12px; padding: 12px 16px; border: 2px dashed #c9d3df; }
+  .retour.ok { border: 2px solid var(--vert); background: var(--vert-clair); }
+  .retour.ko { border: 2px solid var(--rouge); background: var(--rouge-clair); }
+  .ligne-btn { display: flex; gap: 10px; flex-wrap: wrap; }
+  .champ { font: 700 22px "Fira Sans", sans-serif; width: 110px; text-align: center; padding: 6px; border: 2px solid #9fb3cc; border-radius: 9px; }
+  .grand { font-size: 58px; font-weight: 700; text-align: center; letter-spacing: 2px; }
+  .vf { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .vf .btn { font-size: 20px; padding: 16px 10px; }
+  .btn.bon { background: var(--vert); color: #fff; opacity: 1; }
+  .btn.mauvais { background: var(--rouge); color: #fff; opacity: 1; }
+  table.num { border-collapse: collapse; font-size: 30px; font-weight: 700; margin: 0 auto; }
+  table.num td, table.num th { border: 2px solid #8796aa; padding: 8px 14px; text-align: center; background: #fff; min-width: 130px; }
+  table.num th { background: var(--bleu-clair); font-size: 18px; }
+  table.num th.dec { background: var(--orange-clair); }
+  table.num td.virg { border-left: 5px solid var(--rouge); }
+  table.num td.actif { background: #ffe9a8; font-weight: 700; }
+  table.num tr.part th { font-size: 16px; color: var(--doux); background: #fff; }
+  .chiffres span { cursor: pointer; padding: 0 3px; border-radius: 8px; transition: background .2s; }
+  .chiffres span.c:hover { background: var(--bleu-clair); }
+  .chiffres span.actif { background: #ffe9a8; }
+  .duel { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; font-size: 46px; font-weight: 700; text-align: center; }
+  .signes { display: flex; gap: 10px; justify-content: center; }
+  .signes .btn { font-size: 30px; width: 80px; }
+  .aligne { font-family: "Fira Mono", ui-monospace, Menlo, monospace; font-size: 30px; line-height: 1.3; text-align: center; white-space: pre; }
+  .aligne b { background: #ffe9a8; border-radius: 4px; }
+  .pioche { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; min-height: 70px; }
+  .pioche .btn { font-size: 26px; padding: 12px 18px; }
+  .rangee { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; min-height: 70px; font-size: 28px; font-weight: 700; background: #fff; border-radius: 14px; padding: 10px; }
+  .secoue { animation: secoue .35s; }
+  @keyframes secoue { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  table.donnees { border-collapse: collapse; font-size: 20px; }
+  table.donnees td, table.donnees th { border: 2px solid #8796aa; padding: 6px 10px; text-align: center; background: #fff; }
+  table.donnees th { background: var(--bleu-clair); text-align: left; }
+</style>
+</head>
+<body>
+<div id="tourne">Tourne ton téléphone pour voir le cours en grand.</div>
+<div id="viewport"><div id="stage">
+
+<!-- ============ TITRE ============ -->
+<section class="slide titre" id="s-titre" data-titre="Une question pour commencer">
+  <div class="kicker">Chapitre 6</div>
+  <h1>Les nombres décimaux</h1>
+  <p class="sous">Écrire · Repérer · Comparer · Encadrer · Arrondir</p>
+  <div class="question">Léa affirme : « <b>4,32</b> est plus grand que <b>4,5</b>, car 32 est plus grand que 5. »<br>A-t-elle raison ?</div>
+  <p data-step="1" style="font-size:22px;margin-top:22px;opacity:.9;max-width:600px">Garde ta réponse en tête : on la vérifie dans la partie « Comparer ».</p>
+  <svg id="fig-titre" viewBox="0 0 480 420" style="position:absolute;right:40px;top:170px;width:480px;height:420px" aria-hidden="true"></svg>
+</section>
+
+<!-- ============ UNITÉS DE NUMÉRATION ============ -->
+<section class="slide" id="s-unites" data-titre="Dixièmes, centièmes, millièmes">
+  <header><span class="chip">I · L’écriture décimale</span><h2>Dixièmes, centièmes, millièmes</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>On partage une unité en 10 parts égales : chaque part est un <b>dixième</b>. On partage un dixième en 10 : chaque part est un <b>centième</b>. Puis un centième en 10 : un <b>millième</b>.</p>
+        <p class="ligne" style="display:flex;justify-content:space-between;gap:10px;white-space:nowrap"><span>1 dixième = <span class="frac"><span>1</span><span>10</span></span> = 0,1</span><span>1 centième = <span class="frac"><span>1</span><span>100</span></span> = 0,01</span></p>
+        <p style="white-space:nowrap">1 millième = <span class="frac"><span>1</span><span>1 000</span></span> = 0,001</p></div>
+      <div class="box prop" data-step="1"><span class="onglet">Règle</span>
+        <p>1 unité = 10 dixièmes = 100 centièmes = 1 000 millièmes.</p>
+        <p>1 dixième = 10 centièmes &nbsp;·&nbsp; 1 centième = 10 millièmes.</p></div>
+      <p class="note">Clique dans le carré : le carré entier est 1 unité, une colonne est 1 dixième, un petit carré est 1 centième.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:470px"><svg id="fig-unites" viewBox="0 0 620 470" style="touch-action:none"></svg></div>
+      <div class="lecture" id="unites-lec" style="font-size:24px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VALEUR D'UN CHIFFRE ============ -->
+<section class="slide" id="s-rang" data-titre="La valeur d’un chiffre selon son rang">
+  <header><span class="chip">I · L’écriture décimale</span><h2>La valeur d’un chiffre selon son rang</h2></header>
+  <div class="box def" style="max-width:1170px"><span class="onglet">Définition</span>
+    <p>La <b>virgule</b> sépare la partie entière (à gauche) de la partie décimale (à droite). Chaque chiffre a une valeur qui dépend de son rang : de gauche à droite, chaque rang vaut <b>10 fois moins</b> que le précédent.</p></div>
+  <div class="box ex" style="max-width:1170px"><span class="onglet">Exemple</span>
+    <table class="num" style="margin-top:4px">
+      <tr class="part"><th colspan="3">Partie entière</th><th colspan="3" class="dec">Partie décimale</th></tr>
+      <tr><th>centaines</th><th>dizaines</th><th>unités</th><th class="dec">dixièmes</th><th class="dec">centièmes</th><th class="dec">millièmes</th></tr>
+      <tr><td>3</td><td>5</td><td>2</td><td class="virg">3</td><td>0</td><td>7</td></tr>
+    </table>
+    <p class="ligne" style="text-align:center">Ce nombre s’écrit <b>352,307</b>. &nbsp; Partie entière : <input class="trou" data-rep="352" data-rev="1"> &nbsp; Partie décimale : <input class="trou" data-rep="0,307" data-rev="1"></p>
+    <p class="ligne" style="text-align:center" data-step="1">Chiffre des dixièmes : <input class="trou" data-rep="3" data-rev="2"> &nbsp; des centièmes : <input class="trou" data-rep="0" data-rev="2"> &nbsp; des millièmes : <input class="trou" data-rep="7" data-rev="2"> &nbsp; des dizaines : <input class="trou" data-rep="5" data-rev="2"></p>
+    <p class="ligne" style="text-align:center" data-step="3"><b>Décomposition :</b> 352,307 = 3 × 100 + 5 × 10 + 2 × 1 + 3 × 0,1 + 7 × 0,001</p>
+  </div>
+</section>
+
+<!-- ============ À TOI : CLIQUE SUR UN CHIFFRE ============ -->
+<section class="slide" id="s-chiffre" data-titre="À toi : la valeur de chaque chiffre">
+  <header><span class="chip jaune">À toi</span><h2>Que vaut chaque chiffre ?</h2></header>
+  <div class="jeu">
+    <p class="texte">Clique sur un chiffre du nombre : on voit son rang et sa valeur.</p>
+    <div class="grand chiffres" id="ch-nombre" style="margin:14px 0"></div>
+    <table class="num" id="ch-table">
+      <tr><th>centaines</th><th>dizaines</th><th>unités</th><th class="dec">dixièmes</th><th class="dec">centièmes</th><th class="dec">millièmes</th></tr>
+      <tr><td></td><td></td><td></td><td class="virg"></td><td></td><td></td></tr>
+    </table>
+    <div class="retour" id="ch-ret" style="margin-top:16px;font-size:22px"></div>
+    <p class="texte" id="ch-dec" style="margin-top:10px;font-size:24px"></p>
+    <div class="ligne-btn" style="margin-top:10px"><button class="btn pri" id="ch-new">Autre nombre</button></div>
+  </div>
+</section>
+
+<!-- ============ ZÉROS INUTILES ============ -->
+<section class="slide" id="s-zeros" data-titre="Les zéros inutiles">
+  <header><span class="chip">I · L’écriture décimale</span><h2>Les zéros inutiles… et les zéros utiles</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box att"><span class="onglet">Les zéros inutiles</span>
+        <p>Un zéro placé à la fin de la partie décimale ou au début de la partie entière ne change pas le nombre : 7,50 = 7,5 ; 07,3 = 7,3 ; 12 = 12,0 = 12,00.</p>
+        <p>Mais un zéro « au milieu » est utile : 7,05 ≠ 7,5 (5 centièmes et 5 dixièmes, ce n’est pas pareil !).</p></div>
+    </div>
+    <div class="col">
+      <div class="box ask"><span class="onglet">Vrai ou faux ?</span><p class="grand" id="z-egal" style="font-size:40px"></p></div>
+      <div class="vf"><button class="btn" data-r="1">Vrai</button><button class="btn" data-r="0">Faux</button></div>
+      <div class="retour" id="z-ret"></div>
+      <div class="ligne-btn"><button class="btn pri" id="z-new">Suivant</button></div>
+      <p class="note" id="z-score"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FRACTIONS DÉCIMALES ============ -->
+<section class="slide" id="s-fracdec" data-titre="Fractions décimales">
+  <header><span class="chip vert">II · Différentes écritures</span><h2>Fractions décimales</h2></header>
+  <div class="cols egal">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>Une <b>fraction décimale</b> est une fraction dont le dénominateur est 10, 100, 1 000…</p>
+        <p>Un <b>nombre décimal</b> est un nombre qui peut s’écrire sous la forme d’une fraction décimale.</p></div>
+      <div class="box meth"><span class="onglet">Méthode : passer d’une écriture à l’autre</span>
+        <ol><li>Je repère le rang du dernier chiffre de la partie décimale : il donne le dénominateur.</li>
+        <li>J’écris au numérateur le nombre sans la virgule.</li></ol></div>
+    </div>
+    <div class="col">
+      <div class="box ex"><span class="onglet">Exemples</span>
+        <p>3,47 = <span class="frac"><span><input class="trou" data-rep="347" data-rev="1"></span><span>100</span></span> (le 7 est le chiffre des <input class="trou" data-rep="centièmes|centieme|centiemes|centième" data-rev="1">)</p>
+        <p class="ligne" data-step="2"><span class="frac"><span>2 053</span><span>1 000</span></span> = <input class="trou" data-rep="2,053" data-rev="3"> &nbsp;&nbsp; 0,8 = <span class="frac"><span>8</span><span><input class="trou" data-rep="10" data-rev="3"></span></span></p>
+        <p class="ligne" data-step="4"><b>Somme de fractions décimales :</b></p>
+        <p data-step="4">3,47 = 3 + <span class="frac"><span><input class="trou" data-rep="4" data-rev="5"></span><span>10</span></span> + <span class="frac"><span><input class="trou" data-rep="7" data-rev="5"></span><span>100</span></span></p>
+        <p class="ligne" data-step="4">5 + <span class="frac"><span>6</span><span>10</span></span> + <span class="frac"><span>9</span><span>1000</span></span> = <input class="trou" data-rep="5,609" data-rev="6"></p></div>
+      <p class="note" data-step="6">Attention : dans 5,609, il n’y a pas de centièmes, on écrit donc un 0 au rang des centièmes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ À TOI : FRACTIONS DÉCIMALES ============ -->
+<section class="slide" id="s-fracjeu" data-titre="À toi : écris autrement">
+  <header><span class="chip jaune">À toi</span><h2>Change d’écriture</h2></header>
+  <div class="jeu" style="max-width:900px;margin:0 auto">
+    <p class="texte" id="fj-consigne"></p>
+    <div class="grand" id="fj-q" style="margin:30px 0;display:flex;align-items:center;justify-content:center;gap:14px"></div>
+    <div class="ligne-btn" style="justify-content:center"><button class="btn pri" id="fj-ok">Vérifier</button><button class="btn" id="fj-voir">Voir la réponse</button><button class="btn" id="fj-new">Autre nombre</button></div>
+    <div class="retour" id="fj-ret" style="margin-top:16px"></div>
+    <p class="note" id="fj-score"></p>
+  </div>
+</section>
+
+<!-- ============ NOMBRE MIXTE ============ -->
+<section class="slide" id="s-mixte" data-titre="Nombre mixte">
+  <header><span class="chip vert">II · Différentes écritures</span><h2>Nombre mixte</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p>Une fraction plus grande que 1 peut s’écrire comme la somme d’un nombre entier et d’une fraction inférieure à 1 : c’est un <b>nombre mixte</b>.</p></div>
+      <div class="box ex"><span class="onglet">Exemples</span>
+        <p><span class="frac"><span>5</span><span>2</span></span> = <span class="frac"><span>4</span><span>2</span></span> + <span class="frac"><span>1</span><span>2</span></span> = 2 + <span class="frac"><span>1</span><span>2</span></span> = <input class="trou" data-rep="2,5" data-rev="1"></p>
+        <p class="ligne" data-step="2"><span class="frac"><span>7</span><span>4</span></span> = 1 + <span class="frac"><span><input class="trou" data-rep="3" data-rev="3"></span><span>4</span></span> = <input class="trou" data-rep="1,75" data-rev="3"></p>
+        <p class="ligne" data-step="4">4,2 = 4 + <span class="frac"><span><input class="trou" data-rep="2" data-rev="5"></span><span>10</span></span> = 4 + <span class="frac"><span>1</span><span><input class="trou" data-rep="5" data-rev="5"></span></span></p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:330px"><svg id="fig-mixte" viewBox="0 0 620 400"></svg></div>
+      <div class="ctrl">Numérateur <input type="range" id="mx-n" min="1" max="19" value="5"></div>
+      <div class="ctrl">Dénominateur <span class="ligne-btn" id="mx-d"><button class="btn sel" data-d="2">2</button><button class="btn" data-d="4">4</button><button class="btn" data-d="5">5</button><button class="btn" data-d="10">10</button></span></div>
+      <div class="lecture" id="mx-lec" style="font-size:26px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POURCENTAGES ============ -->
+<section class="slide" id="s-pourc" data-titre="Pourcentages">
+  <header><span class="chip vert">II · Différentes écritures</span><h2>Pourcentages</h2></header>
+  <div class="box def" style="max-width:1170px"><span class="onglet">Définition</span>
+    <p><b>a %</b> (« a pour cent ») est égal à <span class="frac"><span>a</span><span>100</span></span>. Par exemple : 35 % = <span class="frac"><span>35</span><span>100</span></span> = 0,35.</p>
+    <p>Une proportion est toujours inférieure ou égale à 1 : un pourcentage de proportion est compris entre 0 % et 100 %.</p></div>
+  <div class="box ex" style="max-width:1170px"><span class="onglet">Écritures à connaître par cœur</span>
+    <table class="donnees" style="margin:4px auto 0">
+      <tr><th>Fraction</th><td><span class="frac"><span>1</span><span>2</span></span></td><td><span class="frac"><span>1</span><span>4</span></span></td><td><span class="frac"><span>3</span><span>4</span></span></td><td><span class="frac"><span>1</span><span>5</span></span></td><td><span class="frac"><span>1</span><span>10</span></span></td><td><span class="frac"><span>2</span><span>5</span></span></td></tr>
+      <tr><th>Écriture décimale</th><td><input class="trou" data-rep="0,5" data-rev="1"></td><td><input class="trou" data-rep="0,25" data-rev="2"></td><td><input class="trou" data-rep="0,75" data-rev="3"></td><td><input class="trou" data-rep="0,2" data-rev="4"></td><td><input class="trou" data-rep="0,1" data-rev="5"></td><td><input class="trou" data-rep="0,4" data-rev="6"></td></tr>
+      <tr><th>Pourcentage</th><td><input class="trou" data-rep="50" data-rev="1"> %</td><td><input class="trou" data-rep="25" data-rev="2"> %</td><td><input class="trou" data-rep="75" data-rev="3"> %</td><td><input class="trou" data-rep="20" data-rev="4"> %</td><td><input class="trou" data-rep="10" data-rev="5"> %</td><td><input class="trou" data-rep="40" data-rev="6"> %</td></tr>
+    </table></div>
+  <div class="box att" data-step="7" style="max-width:1170px"><span class="onglet">Attention</span>
+    <p>Certaines fractions ne sont pas des nombres décimaux : <span class="frac"><span>1</span><span>3</span></span> = 0,3333… (les 3 ne s’arrêtent jamais). On ne peut pas l’écrire avec une fraction décimale.</p></div>
+</section>
+
+<!-- ============ À TOI : LA GRILLE DE 100 ============ -->
+<section class="slide" id="s-grille" data-titre="À toi : le carré de 100">
+  <header><span class="chip jaune">À toi</span><h2>Un pourcentage dans le carré de 100</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Défi</span><p id="gr-consigne" style="font-size:24px"></p></div>
+      <div class="lecture" id="gr-lec" style="font-size:26px;text-align:left"></div>
+      <div class="ligne-btn"><button class="btn pri" id="gr-ok">Vérifier</button><button class="btn" id="gr-new">Autre défi</button></div>
+      <div class="retour" id="gr-ret"></div>
+      <p class="note">Clique dans le carré pour colorier : chaque petit carré vaut 1 % de l’unité.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:560px"><svg id="fig-grille" viewBox="0 0 620 560" style="touch-action:none"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMI-DROITE GRADUÉE ============ -->
+<section class="slide" id="s-droite" data-titre="Repérer sur une demi-droite graduée">
+  <header><span class="chip violet">III · Repérer</span><h2>Sur une demi-droite graduée</h2></header>
+  <div class="box meth" style="max-width:1170px"><span class="onglet">Méthode : lire ou placer une abscisse</span>
+    <p>Sur une demi-droite graduée, chaque point est repéré par un nombre : son <b>abscisse</b>. On note A(1,4).</p>
+    <ol><li>Je cherche le <b>pas</b> : en combien d’intervalles égaux l’unité (ou l’écart entre deux nombres écrits) est-elle partagée ? Unité partagée en 10 → chaque intervalle vaut 0,1 ; partagée en 100 → chaque intervalle vaut 0,01.</li>
+    <li>Je compte les intervalles à partir d’une graduation connue.</li></ol></div>
+  <div class="fig" style="height:190px;margin-top:14px"><svg id="fig-droite" viewBox="0 0 1180 190"></svg></div>
+  <p class="texte" style="margin-top:16px;font-size:25px">Le pas est <input class="trou" data-rep="0,1" data-rev="1">. &nbsp; A(<input class="trou" data-rep="0,6" data-rev="2">) &nbsp; B(<input class="trou" data-rep="1,4" data-rev="3">) &nbsp; <span data-step="4">C(1,75) est au <input class="trou" data-rep="milieu" data-rev="5"> entre 1,7 et 1,8. &nbsp; On place aussi D(0,3).</span></p>
+</section>
+
+<!-- ============ À TOI : DEMI-DROITE ============ -->
+<section class="slide" id="s-droitejeu" data-titre="À toi : lis et place des points">
+  <header><span class="chip jaune">À toi</span><h2 id="dj-titre">Place le point</h2></header>
+  <div class="jeu">
+    <div class="box ask" style="max-width:1170px"><span class="onglet">Défi</span><p id="dj-consigne" style="font-size:24px"></p></div>
+    <div class="fig" style="height:220px;margin-top:12px"><svg id="fig-dj" viewBox="0 0 1180 220" style="touch-action:none"></svg></div>
+    <div class="ligne-btn" style="margin-top:12px;align-items:center"><span id="dj-saisie" class="texte"></span><button class="btn pri" id="dj-ok">Vérifier</button><button class="btn" id="dj-voir">Voir la réponse</button><button class="btn" id="dj-new">Autre défi</button></div>
+    <div class="retour" id="dj-ret" style="margin-top:12px"></div>
+    <p class="note" id="dj-score"></p>
+  </div>
+</section>
+
+<!-- ============ COMPARER ============ -->
+<section class="slide" id="s-comparer" data-titre="Comparer deux nombres décimaux">
+  <header><span class="chip orange">IV · Comparer et ranger</span><h2>Comparer deux nombres décimaux</h2></header>
+  <div class="cols egal">
+    <div class="col">
+      <div class="box meth"><span class="onglet">Méthode : comparer</span>
+        <ol><li>Je compare les <b>parties entières</b> : le plus grand nombre est celui qui a la plus grande partie entière.</li>
+        <li>Si elles sont égales, je compare les chiffres des <b>dixièmes</b>, puis des centièmes, puis des millièmes… (Je peux ajouter des zéros inutiles pour avoir le même nombre de chiffres après la virgule.)</li></ol></div>
+      <div class="box ex"><span class="onglet">Exemples (avec &lt; ou &gt;)</span>
+        <p style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;font-size:24px"><span>12,7 <input class="trou" data-rep="&gt;" data-rev="1"> 9,85</span><span>4,5 <input class="trou" data-rep="&gt;" data-rev="2"> 4,32</span><span>3,08 <input class="trou" data-rep="&lt;" data-rev="3"> 3,1</span><span>0,7 <input class="trou" data-rep="&lt;" data-rev="4"> 0,705</span></p></div>
+    </div>
+    <div class="col">
+      <div class="box att" data-step="5"><span class="onglet">Attention — retour sur la question de Léa</span>
+        <p>4,32 &lt; 4,5 même si 32 &gt; 5 : on compare <b>rang par rang</b> (4,5 = 4,50 et 50 centièmes &gt; 32 centièmes).</p></div>
+      <div class="fig" style="height:220px" data-step="5"><div class="aligne" style="padding-top:26px">4,<b>5</b>0<br>4,<b>3</b>2</div>
+        <p class="note" style="text-align:center;margin-top:8px">Mêmes unités (4) ; aux dixièmes : 5 &gt; 3, donc 4,5 &gt; 4,32. Léa a tort !</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ À TOI : DUEL ============ -->
+<section class="slide" id="s-duel" data-titre="À toi : le plus grand">
+  <header><span class="chip jaune">À toi</span><h2>&lt;, &gt; ou = ?</h2></header>
+  <div class="jeu" style="max-width:900px;margin:0 auto">
+    <div class="duel" style="margin-top:30px"><span id="du-a"></span><span id="du-sig" style="color:var(--bleu);min-width:60px">?</span><span id="du-b"></span></div>
+    <div class="signes" style="margin-top:20px"><button class="btn" data-s="&lt;">&lt;</button><button class="btn" data-s="=">=</button><button class="btn" data-s="&gt;">&gt;</button></div>
+    <div class="aligne" id="du-al" style="margin-top:18px;min-height:90px"></div>
+    <div class="retour" id="du-ret"></div>
+    <div class="ligne-btn" style="justify-content:center;margin-top:10px"><button class="btn pri" id="du-new">Suivant</button></div>
+    <p class="note" id="du-score" style="text-align:center"></p>
+  </div>
+</section>
+
+<!-- ============ RANGER ============ -->
+<section class="slide" id="s-ranger" data-titre="Ranger des nombres décimaux">
+  <header><span class="chip orange">IV · Comparer et ranger</span><h2>Ranger des nombres</h2></header>
+  <div class="jeu">
+    <div class="box def" style="max-width:1170px"><span class="onglet">Définition</span>
+      <p>Ranger dans l’ordre <b>croissant</b> : du plus petit au plus grand (avec &lt;). Ordre <b>décroissant</b> : du plus grand au plus petit (avec &gt;).</p></div>
+    <p class="texte" style="margin-top:14px" id="rg-consigne"></p>
+    <div class="pioche" id="rg-pioche" style="margin-top:12px"></div>
+    <div class="rangee" id="rg-rangee" style="margin-top:12px"></div>
+    <div class="retour" id="rg-ret" style="margin-top:12px"></div>
+    <div class="ligne-btn" style="margin-top:10px"><button class="btn" id="rg-zero">Recommencer</button><button class="btn pri" id="rg-new">Autre série</button></div>
+  </div>
+</section>
+
+<!-- ============ ENCADRER ============ -->
+<section class="slide" id="s-encadrer" data-titre="Encadrer un nombre">
+  <header><span class="chip">V · Encadrer et intercaler</span><h2>Encadrer un nombre</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box def"><span class="onglet">Définition</span>
+        <p><b>Encadrer</b> un nombre, c’est trouver un nombre plus petit et un nombre plus grand que lui. Le nombre de gauche est une valeur approchée <b>par défaut</b>, celui de droite une valeur approchée <b>par excès</b>.</p></div>
+      <div class="box ex"><span class="onglet">Exemple : encadrer 7,384</span>
+        <p>à l’unité : <input class="trou" data-rep="7" data-rev="1"> &lt; 7,384 &lt; <input class="trou" data-rep="8" data-rev="1"></p>
+        <p class="ligne">au dixième : <input class="trou" data-rep="7,3" data-rev="2"> &lt; 7,384 &lt; <input class="trou" data-rep="7,4" data-rev="2"></p>
+        <p class="ligne">au centième : <input class="trou" data-rep="7,38" data-rev="3"> &lt; 7,384 &lt; <input class="trou" data-rep="7,39" data-rev="3"></p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:330px"><svg id="fig-loupe" viewBox="0 0 620 330"></svg></div>
+      <div class="ligne-btn" style="justify-content:center"><button class="btn" id="lp-moins">− Dézoomer</button><button class="btn pri" id="lp-plus">Zoomer ×10 +</button><button class="btn" id="lp-autre">Autre nombre</button></div>
+      <div class="lecture" id="lp-lec" style="font-size:26px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTERCALER ============ -->
+<section class="slide" id="s-intercaler" data-titre="Intercaler un nombre">
+  <header><span class="chip">V · Encadrer et intercaler</span><h2>Intercaler un nombre</h2></header>
+  <div class="box prop" style="max-width:1170px"><span class="onglet">Propriété</span>
+    <p><b>Intercaler</b> un nombre entre deux autres, c’est trouver un nombre compris entre les deux. Entre deux nombres décimaux différents, on peut <b>toujours</b> intercaler d’autres nombres décimaux.</p></div>
+  <div class="box ex" style="max-width:1170px"><span class="onglet">Exemple</span>
+    <p>Entre 2,4 et 2,5, j’écris : 2,40 &lt; <input class="trou" data-rep="2,45" data-entre="2,4|2,5" data-rev="1"> &lt; 2,50</p>
+    <p class="note" data-step="1">Autres réponses possibles : 2,41 ; 2,499… En ajoutant des zéros (2,40 et 2,50), on voit tout de suite la place.</p></div>
+  <div class="fig" style="height:200px;margin-top:16px"><svg id="fig-inter" viewBox="0 0 1180 200" style="touch-action:none"></svg></div>
+  <p class="note" style="text-align:center">Fais glisser le point entre 2,4 et 2,5 : il y a toujours un nombre décimal entre les deux.</p>
+</section>
+
+<!-- ============ ARRONDIR ============ -->
+<section class="slide" id="s-arrondir" data-titre="Arrondir un nombre">
+  <header><span class="chip">VI · Arrondir</span><h2>Arrondir un nombre décimal</h2></header>
+  <div class="cols">
+    <div class="col">
+      <div class="box meth"><span class="onglet">Méthode : arrondir</span>
+        <p>L’<b>arrondi</b> d’un nombre (à l’unité, au dixième, au centième) est la valeur approchée la plus proche de ce nombre.</p>
+        <ol><li>J’encadre le nombre à la précision demandée.</li>
+        <li>Je regarde le chiffre juste après le rang demandé : s’il vaut 0, 1, 2, 3 ou 4, je garde la valeur par défaut ; s’il vaut 5, 6, 7, 8 ou 9, je prends la valeur par excès.</li></ol></div>
+      <div class="box ex" data-step="1"><span class="onglet">Exemples</span>
+        <p>Arrondi de 7,384 à l’unité : <input class="trou" data-rep="7" data-rev="2"> &nbsp; au dixième : <input class="trou" data-rep="7,4" data-rev="2"> &nbsp; au centième : <input class="trou" data-rep="7,38" data-rev="2"></p>
+        <p class="ligne"><span class="frac"><span>1</span><span>3</span></span> = 0,3333… : son arrondi au centième est <input class="trou" data-rep="0,33" data-rev="3">.</p>
+        <p class="ligne">L’arrondi de 2,96 au dixième est <input class="trou" data-rep="3,0|3" data-rev="3"> : on peut écrire 3,0 ou 3.</p></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:300px"><svg id="fig-arr" viewBox="0 0 620 300"></svg></div>
+      <p class="note" style="text-align:center">7,384 est plus proche de 7,4 que de 7,3 : son arrondi au dixième est 7,4.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ À TOI : ARRONDIR ============ -->
+<section class="slide" id="s-arrjeu" data-titre="À toi : arrondis">
+  <header><span class="chip jaune">À toi</span><h2>Arrondis le nombre</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Défi</span><p id="aj-consigne" style="font-size:26px"></p></div>
+      <div class="ligne-btn" style="align-items:center"><span class="texte">Arrondi :</span><input class="champ" id="aj-rep" inputmode="decimal" autocomplete="off" aria-label="Arrondi"><button class="btn pri" id="aj-ok">Vérifier</button></div>
+      <div class="retour" id="aj-ret"></div>
+      <div class="ligne-btn"><button class="btn" id="aj-voir">Voir la réponse</button><button class="btn" id="aj-new">Autre nombre</button></div>
+      <p class="note" id="aj-score"></p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:300px"><svg id="fig-aj" viewBox="0 0 620 300"></svg></div>
+      <p class="note" style="text-align:center" id="aj-aide">La droite graduée apparaît avec la correction.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BILAN ============ -->
+<section class="slide" id="s-bilan" data-titre="Ce qu’il faut retenir">
+  <header><span class="chip">Bilan</span><h2>Ce qu’il faut retenir</h2></header>
+  <div class="cartes">
+    <div class="carte" data-step="1"><h3 class="c-bleu">Les rangs</h3>Chaque rang vaut 10 fois moins que celui de gauche.<div class="calc">0,1 = <span class="frac"><span>1</span><span>10</span></span> ; 0,01 = <span class="frac"><span>1</span><span>100</span></span></div></div>
+    <div class="carte" data-step="2" style="border-top-color:var(--vert)"><h3 class="c-vert">Fractions décimales</h3>Le rang du dernier chiffre donne le dénominateur.<div class="calc">3,47 = <span class="frac"><span>347</span><span>100</span></span></div></div>
+    <div class="carte" data-step="3" style="border-top-color:var(--vert)"><h3 class="c-vert">Pourcentages</h3>a % = <span class="frac"><span>a</span><span>100</span></span><div class="calc">25 % = 0,25 = <span class="frac"><span>1</span><span>4</span></span></div></div>
+    <div class="carte" data-step="4" style="border-top-color:var(--orange)"><h3 class="c-orange">Comparer</h3>Parties entières, puis rang par rang.<div class="calc">4,5 = 4,50 &gt; 4,32</div></div>
+    <div class="carte" data-step="5" style="border-top-color:var(--violet)"><h3 class="c-violet">Arrondir</h3>On regarde le chiffre juste après le rang demandé.<div class="calc">7,384 ≈ 7,4 au dixième</div></div>
+  </div>
+  <div class="box att" data-step="6" style="margin-top:34px;max-width:900px"><span class="onglet">Attention</span>
+    <p>Un zéro au milieu est utile : 7,05 ≠ 7,5. Un zéro à la fin de la partie décimale ne change rien : 7,50 = 7,5.</p></div>
+  <div class="liens">
+    <a class="btn pri" href="../../../exerciseurs/decimaux-6e/">S’entraîner avec l’exerciseur →</a>
+    <a class="btn" href="../../../pdf/6e/ch6-cours.pdf" target="_blank" rel="noopener">Le cours à imprimer (PDF)</a>
+  </div>
+</section>
+
+<canvas id="pen" width="1280" height="720"></canvas>
+<div id="bar">
+  <a class="tb" href="../../../niveau.html?n=6e" title="Revenir à la page Sixième">← Sixième</a>
+  <button class="tb" id="b-som" title="Sommaire (S)">☰</button>
+  <button class="tb" id="b-prev" title="Précédent (←)" aria-label="Précédent">◀</button>
+  <button class="tb" id="b-next" title="Suivant (→ ou espace)" aria-label="Suivant">▶</button>
+  <div id="dots"></div>
+  <span id="count"></span>
+  <button class="tb" id="b-pen" title="Stylo (P)" aria-label="Stylo">✎</button>
+  <button class="tb" id="b-clear" title="Effacer le dessin (X)" aria-label="Effacer le dessin">⌫</button>
+  <button class="tb" id="b-fs" title="Plein écran (F)" aria-label="Plein écran">⛶</button>
+  <button class="tb" id="b-help" title="Aide (H)" aria-label="Aide">?</button>
+</div>
+<div class="panneau" id="sommaire"><b>Sommaire</b><ol></ol></div>
+<div class="panneau" id="aide">
+  <kbd>→</kbd> ou <kbd>Espace</kbd> : étape suivante · <kbd>←</kbd> : étape précédente<br>
+  Tu peux aussi cliquer sur la diapo pour avancer.<br>
+  Cases en pointillés : tape ta réponse puis <kbd>Entrée</kbd> pour vérifier.<br>
+  <kbd>P</kbd> stylo · <kbd>X</kbd> effacer le dessin · <kbd>S</kbd> sommaire<br>
+  <kbd>F</kbd> plein écran · <kbd>B</kbd> écran noir
+</div>
+</div></div>
+<div id="black"></div>
+
+<script src="../../moteur-cours.js?v=2026-11-26b"></script>
+<script src="decimaux.js?v=2026-11-26b"></script>
+</body>
+</html>
