@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="../../cours.css">
 <style>
   .types2 { grid-template-columns: 1fr 1fr; }
+  .ang-trou::before { top: -.34em; left: 12%; right: 12%; }
   .lecture-jeu { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; }
   .lecture-jeu input { font: 700 24px "Fira Sans", sans-serif; width: 90px; text-align: center; padding: 6px; border: 2px solid #9fb3cc; border-radius: 9px; }
   .retour { font-size: 19px; line-height: 1.4; min-height: 84px; background: #fff; border-radius: 12px; padding: 12px 16px; border: 2px dashed #c9d3df; }
@@ -58,7 +59,7 @@
   <div class="cols">
     <div class="col">
       <div class="box ex"><span class="onglet">Exemple</span>
-        <p>L’angle marqué en orange se note <input class="trou" data-rep="EFG|GFE" data-rev="1"> ou <input class="trou" data-rep="GFE|EFG" data-rev="1">.</p>
+        <p>L’angle marqué en orange se note <span class="ang ang-trou"><input class="trou" data-rep="EFG|GFE" data-rev="1"></span> ou <span class="ang ang-trou"><input class="trou" data-rep="GFE|EFG" data-rev="1"></span>.</p>
         <p class="ligne">Son sommet est le point <input class="trou" data-rep="F" data-rev="2">.</p>
         <p class="ligne">Ses côtés sont [F<input class="trou" data-rep="E|G" data-rev="3">) et [F<input class="trou" data-rep="G|E" data-rev="3">).</p></div>
       <div class="box att" data-step="4"><span class="onglet">Erreur fréquente</span>
@@ -124,6 +125,7 @@
           <li data-step="3">Je lis la mesure sur la graduation <b>qui part de ce 0</b>, là où passe l’autre côté (je prolonge le côté s’il est trop court).</li>
           <li data-step="4">Je vérifie : angle aigu → moins de 90° ; angle obtus → plus de 90°.</li>
         </ol></div>
+      <p class="note">À toi : fais glisser le rapporteur, et tourne-le avec la poignée orange ↻. Il se cale quand il est bien placé.</p>
       <div class="box ex" data-step="4"><span class="onglet">Exemple</span>
         <p>L’angle <span class="ang">AOB</span> est <input class="trou" data-rep="obtus" data-rev="5">, donc on lit <span class="ang">AOB</span> = <input class="trou" data-rep="130" data-rev="6">° (et non 50° !).</p></div>
     </div>
@@ -164,6 +166,7 @@
           <li data-step="3">Je fais un petit trait (un repère) en face de la graduation 37, sur la graduation qui part de 0.</li>
           <li data-step="4">J’enlève le rapporteur et je trace la demi-droite [Oy) qui passe par ce repère.</li>
         </ol></div>
+      <p class="note">À toi : fais glisser le rapporteur, et tourne-le avec la poignée orange ↻. Il se cale quand il est bien placé.</p>
       <p class="note" data-step="4">Pour vérifier : 37° est moins de 90°, l’angle tracé doit bien être aigu.</p>
     </div>
     <div class="col">

@@ -69,8 +69,11 @@
       const r = +i.dataset.rev;
       if (k >= r) {
         if (!i.disabled) i.dataset.saisie = i.value;
-        const juste = i.dataset.saisie && egal(i.dataset.saisie, i.dataset.rep);
-        i.value = i.dataset.rep.split("|")[0]; i.disabled = true;
+        const juste = i.dataset.saisie && egal(i.dataset.saisie, i.dataset.rep) && !doublon(i, i.dataset.saisie);
+        // réponse juste : on garde celle de l'élève ; sinon une bonne réponse pas déjà écrite dans une case « sœur »
+        i.value = juste ? (lettres(i) ? i.dataset.saisie.toUpperCase() : i.dataset.saisie)
+          : i.dataset.rep.split("|").find(r => !prise(i, r)) || i.dataset.rep.split("|")[0];
+        i.disabled = true;
         i.classList.remove("faux"); i.classList.toggle("juste", !!juste); i.classList.toggle("revele", !juste);
       } else if (i.disabled) {
         i.disabled = false; i.value = i.dataset.saisie || "";
@@ -105,9 +108,15 @@
       return mot(a) !== "" && mot(a) === mot(r);
     });
   }
+  const lettres = i => /^[A-Z|]+$/.test(i.dataset.rep);
+  /* cases « sœurs » : même paragraphe, mêmes réponses possibles (ex. EFG|GFE et GFE|EFG) : elles doivent être différentes */
+  const cle = i => i.dataset.rep.split("|").sort().join("|");
+  const soeurs = i => [...(i.closest("p") || i.parentNode).querySelectorAll("input.trou")].filter(j => j !== i && cle(j) === cle(i) && cle(i).includes("|"));
+  const doublon = (i, v) => soeurs(i).some(j => j.value.trim() && mot(j.value) === mot(v) && (j.disabled || egal(j.value, j.dataset.rep)) && j.compareDocumentPosition(i) & Node.DOCUMENT_POSITION_FOLLOWING);
+  const prise = (i, v) => soeurs(i).some(j => j.value.trim() && mot(j.value) === mot(v) && (j.disabled || egal(j.value, j.dataset.rep)));
   function verifier(i) {
     if (!i.value.trim()) { i.classList.remove("juste", "faux"); return; }
-    const ok = egal(i.value, i.dataset.rep);
+    const ok = egal(i.value, i.dataset.rep) && !doublon(i, i.value);
     i.classList.toggle("juste", ok); i.classList.toggle("faux", !ok);
   }
   document.querySelectorAll("input.trou").forEach(i => {
@@ -115,6 +124,7 @@
     i.setAttribute("inputmode", /^[\d,]+$/.test(r0) ? "decimal" : "text"); i.setAttribute("autocomplete", "off"); i.setAttribute("autocapitalize", /^[A-Z|]+$/.test(i.dataset.rep) ? "characters" : "off");
     i.setAttribute("aria-label", "Case à compléter");
     i.style.width = Math.max(2.6, r0.length * 0.62 + 1.4) + "em";
+    if (lettres(i)) i.style.textTransform = "uppercase";
     i.addEventListener("keydown", e => { if (e.key === "Enter") { verifier(i); i.blur(); } e.stopPropagation(); });
     i.addEventListener("input", () => i.classList.remove("juste", "faux"));
     i.addEventListener("change", () => verifier(i));

@@ -51,6 +51,54 @@
     return grp;
   }
 
+
+  /* ---------- rapporteur que l'on déplace (glisser) et que l'on tourne (poignée orange) ----------
+     depart = [x, y, angle] ; cible = [x, y, angle] : il s'y cale quand on s'en approche */
+  function rapporteurMobile(svg, R, depart, cible, attrs = {}) {
+    const grp = S("g", attrs, svg);
+    const corps = rapporteur(grp, [0, 0], R);
+    corps.style.cursor = "grab";
+    const h = P([0, 0], 90, R + 26), poignee = S("g", { style: "cursor:grab" }, grp);
+    S("line", { x1: 0, y1: -R, x2: 0, y2: h[1] + 13, stroke: C.orange, "stroke-width": 3 }, poignee);
+    S("circle", { cx: h[0], cy: h[1], r: 15, fill: C.orange, stroke: "#fff", "stroke-width": 3 }, poignee);
+    T(poignee, h[0], h[1] + 1, "↻", { fill: "#fff", style: "font-size:19px;font-weight:700" });
+    let [x, y, th] = depart;
+    const calque = S("g", {}, grp); // repères dessinés sur le rapporteur (ils bougent avec lui)
+    function poser(anim) {
+      grp.style.transition = anim ? "transform .9s ease" : "none";
+      grp.style.transform = `translate(${x}px,${y}px) rotate(${-th}deg)`;
+    }
+    let mode = null, dx = 0, dy = 0;
+    grp.addEventListener("pointerdown", e => {
+      e.stopPropagation(); e.preventDefault();
+      const q = svgPt(svg, e);
+      mode = poignee.contains(e.target) ? "tourne" : "glisse";
+      dx = q.x - x; dy = q.y - y;
+      grp.setPointerCapture(e.pointerId);
+    });
+    grp.addEventListener("pointermove", e => {
+      if (!mode) return;
+      const q = svgPt(svg, e);
+      if (mode === "glisse") {
+        x = q.x - dx; y = q.y - dy;
+        if (Math.hypot(x - cible[0], y - cible[1]) < 16) { x = cible[0]; y = cible[1]; }
+      } else {
+        th = Math.atan2(y - q.y, q.x - x) * 180 / Math.PI - 90;
+        const ecart = ((th - cible[2]) % 360 + 540) % 360 - 180;
+        if (Math.abs(ecart) < 4) th = cible[2];
+      }
+      poser(false);
+    });
+    const fin = () => { mode = null; };
+    grp.addEventListener("pointerup", fin); grp.addEventListener("pointercancel", fin);
+    poser(false);
+    return {
+      calque,
+      aller(cx, cy, cth) { x = cx; y = cy; th = cth; poser(true); },
+      depart() { [x, y, th] = depart; poser(true); }
+    };
+  }
+
   /* ================= 1. titre ================= */
   (function () {
     const svg = $("#fig-titre");
@@ -144,26 +192,37 @@
 
   /* ================= 6. mesurer ================= */
   (function () {
-    const svg = $("#fig-mesurer"), O = [310, 470], R = 260;
-    demi(svg, O, 0, 295); demi(svg, O, 130, 290);
-    secteur(svg, O, 0, 130, 45, C.orange, {}, .3);
-    const A = P(O, 0, 290), B = P(O, 130, 285);
-    T(svg, A[0] - 6, A[1] + 24, "A", { class: "lab gras", style: "font-size:22px" });
-    T(svg, B[0] - 22, B[1], "B", { class: "lab gras", style: "font-size:22px" });
-    T(svg, O[0], O[1] + 26, "O", { class: "lab gras", style: "font-size:22px" });
-    rapporteur(svg, O, R, { "data-step": 1 });
-    const g1 = S("g", { "data-step": 1, "data-until": 2 }, svg);
-    S("circle", { cx: O[0], cy: O[1], r: 16, fill: "none", stroke: C.rouge, "stroke-width": 4 }, g1);
-    const g2 = S("g", { "data-step": 2 }, svg), z = P(O, 0, R * 0.84);
+    const svg = $("#fig-mesurer"), O = [300, 455], R = 240, aA = 20, aB = 150; // AOB = 130°
+    demi(svg, O, aA, 300); demi(svg, O, aB, 290);
+    secteur(svg, O, aA, aB, 42, C.orange, {}, .3);
+    const A = P(O, aA, 300), B = P(O, aB, 290);
+    T(svg, A[0] - 2, A[1] + 24, "A", { class: "lab gras", style: "font-size:22px" });
+    T(svg, B[0] - 4, B[1] - 22, "B", { class: "lab gras", style: "font-size:22px" });
+    T(svg, O[0] + 4, O[1] + 26, "O", { class: "lab gras", style: "font-size:22px" });
+    S("circle", { cx: O[0], cy: O[1], r: 4.5, fill: C.texte }, svg);
+    const rap = rapporteurMobile(svg, R, [310, 575, 0], [O[0], O[1], aA]);
+    const L = rap.calque;
+    // repères sur le rapporteur, dans ses propres coordonnées
+    const g1 = S("g", { "data-step": 1, "data-until": 2 }, L);
+    S("circle", { cx: 0, cy: 0, r: 16, fill: "none", stroke: C.rouge, "stroke-width": 4 }, g1);
+    const g2 = S("g", { "data-step": 2 }, L), z = P([0, 0], 0, R * 0.84);
     S("circle", { cx: z[0], cy: z[1] - 8, r: 16, fill: "none", stroke: C.rouge, "stroke-width": 3 }, g2);
-    T(g2, z[0] - 10, z[1] + 40, "le 0 est sur [OA)", { class: "lab gras", fill: C.rouge, style: "font-size:16px" });
-    const g3 = S("g", { "data-step": 3 }, svg);
-    S("path", { d: arcD(O, 2, 128, R * 0.84 + 18), fill: "none", stroke: C.vert, "stroke-width": 4, "marker-end": "" }, g3);
-    const t = P(O, 130, R * 0.84);
+    const g3 = S("g", { "data-step": 3 }, L);
+    S("path", { d: arcD([0, 0], 2, 128, R * 0.84 + 18), fill: "none", stroke: C.vert, "stroke-width": 4 }, g3);
+    const t = P([0, 0], 130, R * 0.84);
     S("circle", { cx: t[0], cy: t[1], r: 18, fill: "none", stroke: C.vert, "stroke-width": 4 }, g3);
-    const g4 = S("g", { "data-step": 4 }, svg), u = P(O, 130, R * 0.7);
+    const g4 = S("g", { "data-step": 4 }, L), u = P([0, 0], 130, R * 0.7);
     S("line", { x1: u[0] - 14, y1: u[1] + 10, x2: u[0] + 14, y2: u[1] - 10, stroke: C.rouge, "stroke-width": 4 }, g4);
-    T(g4, 310, 40, "On lit 130° sur la graduation qui part du 0 de [OA), et non 50°.", { class: "lab gras", fill: C.vert, style: "font-size:17px" });
+    const n2 = S("g", { "data-step": 2, "data-until": 3 }, svg);
+    T(n2, 470, 30, "Le 0 du rapporteur est sur le côté [OA).", { class: "lab gras", fill: C.rouge, style: "font-size:17px" });
+    const n4 = S("g", { "data-step": 3 }, svg);
+    T(n4, 310, 30, "On lit 130° sur la graduation qui part du 0 de [OA), et non 50°.", { class: "lab gras", fill: C.vert, style: "font-size:17px" });
+    let avant = -1;
+    Diapo.surEtape("s-mesurer", k => {
+      const p = k === 0 ? 0 : k === 1 ? 1 : 2;
+      if (p === avant) return; avant = p;
+      if (p === 0) rap.depart(); else if (p === 1) rap.aller(O[0], O[1], 0); else rap.aller(O[0], O[1], aA);
+    });
   })();
 
   /* ================= 7. jeu : lire une mesure ================= */
@@ -209,18 +268,24 @@
     lettre(g1, O, 0, 300, "x", { y: O[1] + 26 });
     S("circle", { cx: O[0], cy: O[1], r: 5, fill: C.texte }, g1);
     T(g1, O[0], O[1] + 26, "O", { class: "lab gras", style: "font-size:22px;font-style:italic" });
-    rapporteur(svg, O, R, { "data-step": 2, "data-until": 4 });
     const g3 = S("g", { "data-step": 3 }, svg);
     const r1 = P(O, 37, R + 4), r2 = P(O, 37, R + 22);
     S("line", { x1: r1[0], y1: r1[1], x2: r2[0], y2: r2[1], stroke: C.rouge, "stroke-width": 5, "stroke-linecap": "round" }, g3);
-    const g3b = S("g", { "data-step": 3, "data-until": 4 }, svg), lb = P(O, 37, R * 0.84);
-    S("circle", { cx: lb[0], cy: lb[1], r: 15, fill: "none", stroke: C.rouge, "stroke-width": 3 }, g3b);
-    T(g3b, r2[0] + 46, r2[1] - 6, "repère", { class: "lab gras", fill: C.rouge });
+    T(S("g", { "data-step": 3, "data-until": 4 }, svg), r2[0] + 50, r2[1] - 6, "repère", { class: "lab gras", fill: C.rouge });
     const g4 = S("g", { "data-step": 4 }, svg);
     demi(g4, O, 37, 330, { class: "ln draw", pathLength: 1, style: `stroke:${C.bleu};stroke-width:3.5` });
     lettre(g4, O, 37, 350, "y");
     secteur(g4, O, 0, 37, 70, C.bleu);
     const m = P(O, 18.5, 100); T(g4, m[0], m[1], "37°", { class: "lab gras", fill: C.bleu, style: "font-size:22px" });
+    const rap = rapporteurMobile(svg, R, [300, 580, -12], [O[0], O[1], 0], { "data-step": 1, "data-until": 4 });
+    const lb = P([0, 0], 37, R * 0.84);
+    S("circle", { cx: lb[0], cy: lb[1], r: 15, fill: "none", stroke: C.rouge, "stroke-width": 3, "data-step": 3 }, rap.calque);
+    let avant = -1;
+    Diapo.surEtape("s-tracer", k => {
+      const p = k < 2 ? 0 : 1;
+      if (p === avant) return; avant = p;
+      if (p === 0) rap.depart(); else rap.aller(O[0], O[1], 0);
+    });
   })();
 
   /* ================= 9. adjacents ================= */
