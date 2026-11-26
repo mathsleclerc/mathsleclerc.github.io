@@ -9,6 +9,18 @@
 <style>
   .types2 { grid-template-columns: 1fr 1fr; }
   .ang-trou::before { top: -.34em; left: 12%; right: 12%; }
+  .tri-choix { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tri-choix .btn { font-size: 20px; padding: 16px 10px; }
+  .tri-choix .btn.bon { background: var(--vert); color: #fff; opacity: 1; }
+  .tri-choix .btn.mauvais { background: var(--rouge); color: #fff; opacity: 1; }
+  .criteres { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 20px; }
+  .criteres li { background: #fff; border-radius: 10px; padding: 8px 14px; border: 2px solid var(--bord); }
+  .criteres li b { display: inline-block; width: 28px; text-align: center; margin-right: 6px; }
+  .criteres li.oui { border-color: var(--vert); background: var(--vert-clair); } .criteres li.oui b { color: var(--vert); }
+  .criteres li.non { border-color: var(--rouge); background: var(--rouge-clair); } .criteres li.non b { color: var(--rouge); }
+  .criteres li.na { opacity: .6; }
+  #diag2-tab input { font: 700 18px "Fira Sans", sans-serif; width: 56px; text-align: center; border: 2px solid #9fb3cc; border-radius: 7px; padding: 3px; }
+  #est-type .btn.sel { background: var(--bleu-fonce); color: #fff; }
   .lecture-jeu { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; }
   .lecture-jeu input { font: 700 24px "Fira Sans", sans-serif; width: 90px; text-align: center; padding: 6px; border: 2px solid #9fb3cc; border-radius: 9px; }
   .retour { font-size: 19px; line-height: 1.4; min-height: 84px; background: #fff; border-radius: 12px; padding: 12px 16px; border: 2px dashed #c9d3df; }
@@ -72,6 +84,24 @@
   </div>
 </section>
 
+<!-- ============ À TOI : NOMMER EN CLIQUANT ============ -->
+<section class="slide" id="s-clic" data-titre="À toi : nomme l’angle en cliquant">
+  <header><span class="chip jaune">À toi</span><h2>Nomme l’angle orange</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Défi</span>
+        <p>Clique sur <b>trois points</b>, dans l’ordre, pour écrire le nom de l’angle orange.</p></div>
+      <div class="lecture-jeu">Nom : <span id="clic-nom" style="font-size:30px"></span></div>
+      <div class="retour" id="clic-ret"></div>
+      <div style="display:flex;gap:10px"><button class="btn" id="clic-eff">Effacer</button><button class="btn pri" id="clic-new">Nouvel angle</button></div>
+      <p class="note" id="clic-score"></p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-clic" viewBox="0 0 660 580"></svg></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 4. TAILLE D'UN ANGLE ============ -->
 <section class="slide" id="s-taille" data-titre="La taille d’un angle">
   <header><span class="chip">I · Vocabulaire et notations</span><h2>Retour sur la question</h2></header>
@@ -113,6 +143,26 @@
   </div>
 </section>
 
+<!-- ============ À TOI : ESTIMER ============ -->
+<section class="slide" id="s-est" data-titre="À toi : estime avant de mesurer">
+  <header><span class="chip jaune">À toi</span><h2>Estime avant de mesurer</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Défi</span>
+        <p>Sans rapporteur : cet angle est-il aigu ou obtus ? Quelle est environ sa mesure ?</p></div>
+      <div id="est-type" style="display:flex;gap:10px"><button class="btn" data-t="aigu">Aigu</button><button class="btn" data-t="obtus">Obtus</button></div>
+      <div class="lecture-jeu">Environ <input id="est-rep" inputmode="numeric" autocomplete="off" aria-label="Estimation de la mesure"> °
+        <button class="btn pri" id="est-ok">Mesurer</button></div>
+      <div class="retour" id="est-ret"></div>
+      <div style="display:flex;gap:10px"><button class="btn" id="est-new">Nouvel angle</button></div>
+      <p class="note">Repères : un angle droit mesure 90°, sa moitié 45°, un angle plat 180°.</p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-est" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 6. MESURER ============ -->
 <section class="slide" id="s-mesurer" data-titre="Mesurer un angle">
   <header><span class="chip vert">II · Mesurer et tracer</span><h2>Mesurer un angle</h2></header>
@@ -141,10 +191,10 @@
   <div class="cols jeu">
     <div class="col">
       <div class="box ask"><span class="onglet">Défi</span>
-        <p>Le rapporteur est bien placé. Lis la mesure de l’angle <span class="ang">AOB</span>.</p></div>
+        <p>Place toi-même le rapporteur (fais-le glisser, tourne-le avec la poignée ↻), puis lis la mesure de l’angle <span class="ang">AOB</span>.</p></div>
       <div class="lecture-jeu"><span class="ang">AOB</span> = <input id="lire-rep" inputmode="numeric" autocomplete="off" aria-label="Mesure de l’angle AOB"> °
         <button class="btn pri" id="lire-ok">Vérifier</button></div>
-      <div class="retour" id="lire-retour">Pense à partir du 0 qui est sur le côté [OA).</div>
+      <div class="retour" id="lire-retour"></div>
       <div style="display:flex;gap:10px"><button class="btn" id="lire-new">Nouvel angle</button><button class="btn" id="lire-voir">Voir la réponse</button></div>
       <p class="note" id="lire-score"></p>
     </div>
@@ -175,6 +225,23 @@
   </div>
 </section>
 
+<!-- ============ À TOI : TRACER ============ -->
+<section class="slide" id="s-trace2" data-titre="À toi : trace un angle">
+  <header><span class="chip jaune">À toi</span><h2>Trace un angle <span class="ang">xOy</span> de <span id="tr2-m"></span>°</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Défi</span>
+        <p>Place le rapporteur sur [Ox), puis fais tourner la demi-droite [Oy) avec la <b class="c-violet">poignée violette</b>.</p></div>
+      <div style="display:flex;gap:10px"><button class="btn pri" id="tr2-ok">Vérifier</button><button class="btn" id="tr2-voir">Voir la correction</button><button class="btn" id="tr2-new">Nouvel angle</button></div>
+      <div class="retour" id="tr2-ret"></div>
+      <p class="note" id="tr2-score"></p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-trace2" viewBox="0 0 620 580" style="touch-action:none"></svg></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 9. ADJACENTS ============ -->
 <section class="slide" id="s-adj" data-titre="Angles adjacents">
   <header><span class="chip violet">III · Calculer la mesure d’un angle</span><h2>Angles adjacents</h2></header>
@@ -191,6 +258,27 @@
       <div class="fig" style="height:470px"><svg id="fig-adj" viewBox="0 0 620 470" style="touch-action:none"></svg></div>
       <div class="lecture" id="adj-lec"></div>
       <p class="note" style="text-align:center">Fais glisser le côté commun [Oy).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ À TOI : ADJACENTS OU PAS ============ -->
+<section class="slide" id="s-adjtri" data-titre="À toi : adjacents ou pas ?">
+  <header><span class="chip jaune">À toi</span><h2>Adjacents ou pas ?</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="tri-choix" id="adj-choix"><button class="btn" data-r="oui">Adjacents</button><button class="btn" data-r="non">Pas adjacents</button></div>
+      <ul class="criteres" id="adj-crit">
+        <li><b>?</b> le même sommet</li>
+        <li><b>?</b> un côté commun</li>
+        <li><b>?</b> de part et d’autre de ce côté commun</li>
+      </ul>
+      <div class="retour" id="adj-ret"></div>
+      <div style="display:flex;gap:10px"><button class="btn pri" id="adj-new">Autre figure</button></div>
+      <p class="note" id="adj-score"></p>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-adjtri" viewBox="0 0 620 580"></svg></div>
     </div>
   </div>
 </section>
@@ -232,6 +320,23 @@
       <div class="fig" style="height:470px"><svg id="fig-bis" viewBox="0 0 620 470"></svg></div>
       <div class="ctrl">Mesure de <span class="ang">xOy</span> <input type="range" id="bis-a" min="20" max="170" value="110"></div>
       <div class="lecture" id="bis-lec" style="font-size:26px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ À TOI : BISSECTRICE ============ -->
+<section class="slide" id="s-bis2" data-titre="À toi : place la bissectrice">
+  <header><span class="chip jaune">À toi</span><h2>Place la bissectrice</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <div class="box ask"><span class="onglet">Défi</span>
+        <p>Fais tourner [Oz) avec la <b class="c-violet">poignée violette</b> pour qu’elle soit la bissectrice de l’angle <span class="ang">xOy</span>.</p></div>
+      <div class="lecture" id="bis2-lec" style="font-size:26px"></div>
+      <div class="retour" id="bis2-ret"></div>
+      <div style="display:flex;gap:10px"><button class="btn pri" id="bis2-new">Autre angle</button></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-bis2" viewBox="0 0 620 580" style="touch-action:none"></svg></div>
     </div>
   </div>
 </section>
@@ -313,6 +418,26 @@
     </div>
     <div class="col">
       <div class="fig" style="height:580px"><svg id="fig-sport" viewBox="0 0 620 580"></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ À TOI : DIAGRAMME MODIFIABLE ============ -->
+<section class="slide" id="s-diag2" data-titre="À toi : change les effectifs">
+  <header><span class="chip jaune">À toi</span><h2>Change les effectifs</h2></header>
+  <div class="cols jeu">
+    <div class="col">
+      <table class="donnees" id="diag2-tab">
+        <tr><th>Sport</th><td>Football</td><td>Danse</td><td>Handball</td><td>Natation</td><td>Total</td></tr>
+        <tr><th>Effectif</th><td><input type="number" min="0" max="99" value="8"></td><td><input type="number" min="0" max="99" value="6"></td><td><input type="number" min="0" max="99" value="4"></td><td><input type="number" min="0" max="99" value="6"></td><td id="diag2-tot">24</td></tr>
+        <tr><th>Angle (en °)</th><td class="ang-cell"></td><td class="ang-cell"></td><td class="ang-cell"></td><td class="ang-cell"></td><td>360</td></tr>
+      </table>
+      <p class="texte" id="diag2-calc"></p>
+      <p class="note">Modifie les effectifs : les angles et le diagramme se recalculent. L’effectif total correspond toujours à 360°.</p>
+      <div style="display:flex;gap:10px"><button class="btn" id="diag2-zero">Revenir à l’exemple</button></div>
+    </div>
+    <div class="col">
+      <div class="fig" style="height:580px"><svg id="fig-diag2" viewBox="0 0 620 580"></svg></div>
     </div>
   </div>
 </section>

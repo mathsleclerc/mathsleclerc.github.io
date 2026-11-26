@@ -8,6 +8,8 @@
   const rad = a => a * Math.PI / 180;
   const P = (O, a, r) => [O[0] + r * Math.cos(rad(a)), O[1] - r * Math.sin(rad(a))];
   const f = x => x.toFixed(1);
+  const alea = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const choisir = t => t[Math.floor(Math.random() * t.length)];
   function arcD(O, a1, a2, r) { const p = P(O, a1, r), q = P(O, a2, r); return `M${f(p[0])},${f(p[1])} A${r},${r} 0 ${a2 - a1 > 180 ? 1 : 0} 0 ${f(q[0])},${f(q[1])}`; }
   function secteur(g, O, a1, a2, r, coul, attrs = {}, opac = .25) {
     const grp = S("g", attrs, g), p = P(O, a1, r), q = P(O, a2, r);
@@ -53,20 +55,29 @@
 
 
   /* ---------- rapporteur que l'on déplace (glisser) et que l'on tourne (poignée orange) ----------
-     depart = [x, y, angle] ; cible = [x, y, angle] : il s'y cale quand on s'en approche */
+     depart = [x, y, angle] ; cible = [x, y, angle ou liste d'angles] : il s'y cale quand on s'en approche,
+     et son contour devient vert quand il est bien placé */
+  const ecartAngle = (a, b) => ((a - b) % 360 + 540) % 360 - 180;
   function rapporteurMobile(svg, R, depart, cible, attrs = {}) {
     const grp = S("g", attrs, svg);
     const corps = rapporteur(grp, [0, 0], R);
     corps.style.cursor = "grab";
-    const h = P([0, 0], 90, R + 26), poignee = S("g", { style: "cursor:grab" }, grp);
-    S("line", { x1: 0, y1: -R, x2: 0, y2: h[1] + 13, stroke: C.orange, "stroke-width": 3 }, poignee);
-    S("circle", { cx: h[0], cy: h[1], r: 15, fill: C.orange, stroke: "#fff", "stroke-width": 3 }, poignee);
-    T(poignee, h[0], h[1] + 1, "↻", { fill: "#fff", style: "font-size:19px;font-weight:700" });
+    const bord = corps.querySelector("path");
+    const h = P([0, 0], 90, R + 30), poignee = S("g", { style: "cursor:grab" }, grp);
+    S("line", { x1: 0, y1: -R, x2: 0, y2: h[1] + 18, stroke: C.orange, "stroke-width": 3 }, poignee);
+    S("circle", { cx: h[0], cy: h[1], r: 26, fill: "transparent" }, poignee); // zone de prise large (doigt)
+    S("circle", { cx: h[0], cy: h[1], r: 18, fill: C.orange, stroke: "#fff", "stroke-width": 3 }, poignee);
+    T(poignee, h[0], h[1] + 1, "↻", { fill: "#fff", style: "font-size:22px;font-weight:700" });
     let [x, y, th] = depart;
+    const angles = () => [].concat(cible[2]);
     const calque = S("g", {}, grp); // repères dessinés sur le rapporteur (ils bougent avec lui)
+    const place = () => Math.hypot(x - cible[0], y - cible[1]) < 0.5 && angles().some(a => Math.abs(ecartAngle(th, a)) < 0.5);
     function poser(anim) {
       grp.style.transition = anim ? "transform .9s ease" : "none";
       grp.style.transform = `translate(${x}px,${y}px) rotate(${-th}deg)`;
+      const ok = place();
+      bord.setAttribute("stroke", ok ? C.vert : C.bleu); bord.setAttribute("stroke-width", ok ? 4 : 2);
+      bord.setAttribute("fill", ok ? "rgba(46,139,87,.08)" : "rgba(31,95,168,.07)");
     }
     let mode = null, dx = 0, dy = 0;
     grp.addEventListener("pointerdown", e => {
@@ -84,8 +95,7 @@
         if (Math.hypot(x - cible[0], y - cible[1]) < 16) { x = cible[0]; y = cible[1]; }
       } else {
         th = Math.atan2(y - q.y, q.x - x) * 180 / Math.PI - 90;
-        const ecart = ((th - cible[2]) % 360 + 540) % 360 - 180;
-        if (Math.abs(ecart) < 4) th = cible[2];
+        for (const a of angles()) if (Math.abs(ecartAngle(th, a)) < 4) th = a;
       }
       poser(false);
     });
@@ -93,7 +103,7 @@
     grp.addEventListener("pointerup", fin); grp.addEventListener("pointercancel", fin);
     poser(false);
     return {
-      calque,
+      calque, el: grp, place,
       aller(cx, cy, cth) { x = cx; y = cy; th = cth; poser(true); },
       depart() { [x, y, th] = depart; poser(true); }
     };
@@ -225,38 +235,44 @@
     });
   })();
 
-  /* ================= 7. jeu : lire une mesure ================= */
+  /* ================= 7. jeu : lire une mesure (rapporteur à placer soi-même) ================= */
   (function () {
-    const svg = $("#fig-lire"), O = [310, 470], R = 260;
+    const svg = $("#fig-lire"), O = [310, 390], R = 220;
     const rep = $("#lire-rep"), ret = $("#lire-retour");
-    let m = 50, base = 0, essais = 0, reussis = 0;
+    let m = 50, rap = null, essais = 0, reussis = 0;
     function nouveau() {
       do { m = 10 + 5 * Math.floor(Math.random() * 33); } while (m === 90);
-      base = Math.random() < .5 ? 0 : 180;
+      const th0 = alea(-25, 25), surDroite = Math.random() < .5;
+      const dA = surDroite ? th0 : th0 + 180, dB = surDroite ? th0 + m : th0 + 180 - m;
+      const autre = surDroite ? th0 + m - 180 : th0 + 180 - m; // base le long de [OB)
       svg.innerHTML = "";
-      const aB = base === 0 ? m : 180 - m;
-      rapporteur(svg, O, R);
-      demi(svg, O, base, 295, { style: "stroke-width:3" }); demi(svg, O, aB, 290, { style: "stroke-width:3" });
-      const a1 = Math.min(base, aB), a2 = Math.max(base, aB);
-      secteur(svg, O, a1, a2, 45, C.orange, {}, .35);
-      const A = P(O, base, 290), B = P(O, aB, 290);
-      T(svg, A[0], A[1] + 24, "A", { class: "lab gras", style: "font-size:22px" });
-      const ob = P(O, aB, 312); T(svg, ob[0], ob[1], "B", { class: "lab gras", style: "font-size:22px" });
-      T(svg, O[0], O[1] + 26, "O", { class: "lab gras", style: "font-size:22px" });
-      rep.value = ""; ret.className = "retour"; ret.textContent = "Pense à partir du 0 qui est sur le côté [OA).";
+      demi(svg, O, dA, 255, { style: "stroke-width:3" }); demi(svg, O, dB, 250, { style: "stroke-width:3" });
+      const [a1, a2] = surDroite ? [dA, dB] : [dB, dA];
+      secteur(svg, O, a1, a2, 40, C.orange, {}, .35);
+      const A = P(O, dA, 275), B = P(O, dB, 272);
+      T(svg, A[0], A[1], "A", { class: "lab gras", style: "font-size:22px" });
+      T(svg, B[0], B[1], "B", { class: "lab gras", style: "font-size:22px" });
+      const o = P(O, (a1 + a2) / 2 + 180, 26); T(svg, o[0], o[1], "O", { class: "lab gras", style: "font-size:22px" });
+      S("circle", { cx: O[0], cy: O[1], r: 4.5, fill: C.texte }, svg);
+      rap = rapporteurMobile(svg, R, [310, 590, 0], [O[0], O[1], [th0, autre]]);
+      rep.value = ""; ret.className = "retour";
+      ret.textContent = "Place le rapporteur : son centre sur O et sa base le long d’un côté. Il devient vert quand il est bien placé.";
     }
     function verifier() {
       const v = parseInt(rep.value, 10); if (isNaN(v)) return;
+      if (!rap.place()) { ret.className = "retour ko"; ret.innerHTML = "<b>Place d’abord ton rapporteur !</b> Son centre doit être sur le sommet O, et sa base le long d’un côté de l’angle (le contour devient vert)."; return; }
       essais++;
       if (v === m) { reussis++; ret.className = "retour ok"; ret.innerHTML = `<b>Bravo !</b> L’angle mesure ${m}°. Il est ${m < 90 ? "aigu : moins de 90°" : "obtus : plus de 90°"}, ça colle.`; }
-      else if (v === 180 - m) { ret.className = "retour ko"; ret.innerHTML = `<b>Mauvaise graduation !</b> Tu as lu ${v}°. L’angle est ${m < 90 ? "aigu" : "obtus"}, il mesure donc ${m < 90 ? "moins" : "plus"} de 90°. Pars du 0 qui est sur [OA).`; }
-      else { ret.className = "retour ko"; ret.innerHTML = `Pas tout à fait. Suis la graduation qui part du 0 de [OA) jusqu’au côté [OB).`; }
+      else if (v === 180 - m) { ret.className = "retour ko"; ret.innerHTML = `<b>Mauvaise graduation !</b> Tu as lu ${v}°. L’angle est ${m < 90 ? "aigu" : "obtus"}, il mesure donc ${m < 90 ? "moins" : "plus"} de 90°. Lis la graduation qui part du 0 posé sur un côté.`; }
+      else { ret.className = "retour ko"; ret.innerHTML = `Pas tout à fait. Suis la graduation qui part du 0 posé sur un côté, jusqu’à l’autre côté.`; }
       $("#lire-score").textContent = `Bonnes réponses : ${reussis} sur ${essais}`;
     }
     $("#lire-ok").addEventListener("click", verifier);
     rep.addEventListener("keydown", e => { if (e.key === "Enter") verifier(); e.stopPropagation(); });
     $("#lire-new").addEventListener("click", nouveau);
-    $("#lire-voir").addEventListener("click", () => { ret.className = "retour"; ret.innerHTML = `<span class="ang">AOB</span> = <b>${m}°</b> (et non ${180 - m}°) : l’angle est ${m < 90 ? "aigu" : "obtus"}.`; });
+    $("#lire-voir").addEventListener("click", () => {
+      ret.className = "retour"; ret.innerHTML = `<span class="ang">AOB</span> = <b>${m}°</b> (et non ${180 - m}°) : l’angle est ${m < 90 ? "aigu" : "obtus"}.`;
+    });
     nouveau();
   })();
 
@@ -416,6 +432,243 @@
       deb = a1;
     });
     T(svg, O[0], 40, "Sport préféré des 24 élèves", { class: "lab gras", "data-step": 6 });
+  })();
+
+  /* ======================================================================
+     MANIPULATIONS AJOUTÉES
+     ====================================================================== */
+  const dir = (Y, X) => Math.atan2(Y[1] - X[1], X[0] - Y[0]) * 180 / Math.PI; // direction de [YX)
+  function petitAngle(d1, d2) { const e = ((d2 - d1) % 360 + 360) % 360; return e <= 180 ? [d1, d1 + e] : [d2, d2 + 360 - e]; }
+  function retour(el, classe, html) { el.className = "retour" + (classe ? " " + classe : ""); el.innerHTML = html; }
+
+  /* ----- Nommer un angle en cliquant sur trois points ----- */
+  (function () {
+    const svg = $("#fig-clic"), res = $("#clic-ret"), nom = $("#clic-nom");
+    const PTS = { A: [90, 390], B: [330, 500], C: [570, 330], D: [260, 85] };
+    const OFF = { A: [-24, 6], B: [6, 28], C: [26, 4], D: [0, -26] };
+    const ANGLES = [["B", "A", "C"], ["C", "A", "D"], ["B", "A", "D"], ["A", "C", "B"], ["A", "C", "D"], ["B", "C", "D"], ["A", "B", "C"], ["A", "D", "C"]];
+    let cible, clics = [], fini = false, score = 0, essais = 0;
+    function arc(g, X, Y, Z, coul, r) { const [a1, a2] = petitAngle(dir(PTS[Y], PTS[X]), dir(PTS[Y], PTS[Z])); return secteur(g, PTS[Y], a1, a2, r, coul, {}, .35); }
+    function dessiner() {
+      svg.innerHTML = "";
+      const seg = (u, v) => S("line", { x1: PTS[u][0], y1: PTS[u][1], x2: PTS[v][0], y2: PTS[v][1], class: "ln" }, svg);
+      seg("A", "B"); seg("B", "C"); seg("C", "D"); seg("D", "A"); seg("A", "C");
+      arc(svg, cible[0], cible[1], cible[2], C.orange, 58);
+      if (clics.length === 3 && !fini) {} // rien
+      if (fini && clics.length === 3 && new Set(clics).size === 3) arc(svg, clics[0], clics[1], clics[2], C.bleu, 38);
+      for (const k in PTS) {
+        const g = S("g", { style: "cursor:pointer" }, svg), [x, y] = PTS[k], i = clics.indexOf(k);
+        S("circle", { cx: x, cy: y, r: 26, fill: i >= 0 ? "rgba(31,95,168,.18)" : "transparent", stroke: i >= 0 ? C.bleu : "none", "stroke-width": 2 }, g);
+        S("circle", { cx: x, cy: y, r: 6, fill: C.texte }, g);
+        T(g, x + OFF[k][0], y + OFF[k][1], k, { class: "lab gras", style: "font-size:24px" });
+        g.addEventListener("click", e => { e.stopPropagation(); clic(k); });
+      }
+      nom.innerHTML = clics.length ? `<span class="ang">${clics.join("")}</span>` : `<span class="note">clique sur un point</span>`;
+    }
+    function clic(k) {
+      if (fini || clics.includes(k)) return;
+      clics.push(k); dessiner();
+      if (clics.length < 3) return;
+      fini = true; essais++;
+      const [x, y, z] = cible, ok = clics[1] === y && new Set([clics[0], clics[2]]).size === 2 && [x, z].includes(clics[0]) && [x, z].includes(clics[2]);
+      if (ok) { score++; retour(res, "ok", `<b>Bravo !</b> L’angle orange se note <span class="ang">${x + y + z}</span> ou <span class="ang">${z + y + x}</span> : le sommet ${y} est au milieu.`); }
+      else if (clics[1] !== y) retour(res, "ko", `<b>Attention au sommet !</b> Le sommet de l’angle orange est ${y} : sa lettre doit être <b>au milieu</b>. Tu as nommé (en bleu) un angle de sommet ${clics[1]}.`);
+      else retour(res, "ko", `Le sommet ${y} est bien au milieu, mais l’angle bleu que tu as nommé n’est pas l’angle orange : regarde sur quels côtés il s’appuie.`);
+      dessiner();
+      $("#clic-score").textContent = `Bonnes réponses : ${score} sur ${essais}`;
+    }
+    function nouveau() {
+      let c; do { c = choisir(ANGLES); } while (cible && c.join("") === cible.join(""));
+      cible = c; clics = []; fini = false;
+      retour(res, "", "Clique sur trois points, dans l’ordre, pour écrire le nom de l’angle orange.");
+      dessiner();
+    }
+    $("#clic-eff").addEventListener("click", () => { clics = []; fini = false; retour(res, "", "Clique sur trois points, dans l’ordre, pour écrire le nom de l’angle orange."); dessiner(); });
+    $("#clic-new").addEventListener("click", nouveau);
+    nouveau();
+  })();
+
+  /* ----- Estimer avant de mesurer ----- */
+  (function () {
+    const svg = $("#fig-est"), O = [310, 400], R = 220, res = $("#est-ret"), inp = $("#est-rep");
+    let m, th0, type = null, rap, fait = false;
+    function nouveau() {
+      do { m = alea(12, 168); } while (Math.abs(m - 90) < 8);
+      th0 = alea(-20, 20); type = null; fait = false;
+      svg.innerHTML = "";
+      demi(svg, O, th0, 260, { style: "stroke-width:3" }); demi(svg, O, th0 + m, 255, { style: "stroke-width:3" });
+      secteur(svg, O, th0, th0 + m, 45, C.orange, {}, .35);
+      S("circle", { cx: O[0], cy: O[1], r: 4.5, fill: C.texte }, svg);
+      rap = rapporteurMobile(svg, R, [310, 640, 0], [O[0], O[1], th0], { style: "opacity:0;pointer-events:none" });
+      document.querySelectorAll("#est-type .btn").forEach(b => b.classList.remove("sel"));
+      inp.value = ""; retour(res, "", "1. Aigu ou obtus ?  2. Estime sa mesure.  3. Clique sur « Mesurer ».");
+    }
+    document.querySelectorAll("#est-type .btn").forEach(b => b.addEventListener("click", () => {
+      if (fait) return; type = b.dataset.t;
+      document.querySelectorAll("#est-type .btn").forEach(x => x.classList.toggle("sel", x === b));
+    }));
+    function mesurer() {
+      const v = parseInt(inp.value, 10);
+      if (!type || isNaN(v)) { retour(res, "ko", "Choisis d’abord <b>aigu</b> ou <b>obtus</b>, puis écris ton estimation."); return; }
+      fait = true;
+      rap.el.style.opacity = 1; rap.el.style.pointerEvents = "auto"; rap.aller(O[0], O[1], th0);
+      const bonType = (m < 90 ? "aigu" : "obtus") === type, e = Math.abs(v - m);
+      const avis = e <= 10 ? "Excellente estimation !" : e <= 20 ? "Bonne estimation." : "Ton estimation est loin : compare avec un angle droit (90°) ou avec la moitié d’un angle droit (45°).";
+      retour(res, bonType && e <= 20 ? "ok" : "ko", `L’angle mesure <b>${m}°</b> : il est ${m < 90 ? "aigu" : "obtus"}${bonType ? "" : " (et non " + type + ")"}. Tu avais estimé ${v}° : écart de ${e}°. ${avis}`);
+    }
+    $("#est-ok").addEventListener("click", mesurer);
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") mesurer(); e.stopPropagation(); });
+    $("#est-new").addEventListener("click", nouveau);
+    nouveau();
+  })();
+
+  /* ----- Défi : tracer un angle de mesure donnée ----- */
+  (function () {
+    const svg = $("#fig-trace2"), O = [300, 440], R = 230, res = $("#tr2-ret");
+    let m, d, rap, gY, essais = 0, reussis = 0;
+    function dessinerOy() {
+      gY.innerHTML = "";
+      demi(gY, O, d, 290, { style: `stroke:${C.violet};stroke-width:3.5;pointer-events:none` });
+      const h = P(O, d, 290);
+      S("circle", { cx: h[0], cy: h[1], r: 26, fill: "transparent", style: "cursor:grab" }, gY);
+      S("circle", { cx: h[0], cy: h[1], r: 16, fill: C.violet, stroke: "#fff", "stroke-width": 3, style: "cursor:grab" }, gY);
+      const l = P(O, d, 318); T(gY, l[0], l[1], "y", { class: "lab gras", style: "font-size:22px;font-style:italic;pointer-events:none" });
+    }
+    function nouveau() {
+      do { m = alea(15, 165); } while (Math.abs(m - 90) < 6);
+      d = m < 90 ? alea(120, 170) : alea(10, 60);
+      $("#tr2-m").textContent = m;
+      svg.innerHTML = "";
+      demi(svg, O, 0, 300, { style: "stroke-width:3" });
+      lettre(svg, O, 0, 312, "x", { y: O[1] + 26 });
+      S("circle", { cx: O[0], cy: O[1], r: 5, fill: C.texte }, svg);
+      T(svg, O[0], O[1] + 26, "O", { class: "lab gras", style: "font-size:22px;font-style:italic" });
+      rap = rapporteurMobile(svg, R, [300, 600, 0], [O[0], O[1], 0]);
+      gY = S("g", {}, svg); dessinerOy();
+      retour(res, "", "Place le rapporteur, puis fais tourner [Oy) avec la poignée violette. Clique sur « Vérifier » quand tu as fini.");
+    }
+    let drag = false;
+    svg.addEventListener("pointerdown", e => { if (!gY.contains(e.target)) return; e.stopPropagation(); drag = true; svg.setPointerCapture(e.pointerId); });
+    svg.addEventListener("pointermove", e => { if (!drag) return; const q = svgPt(svg, e); d = Math.max(1, Math.min(179, Math.round(Math.atan2(O[1] - q.y, q.x - O[0]) * 180 / Math.PI))); dessinerOy(); });
+    svg.addEventListener("pointerup", () => drag = false);
+    $("#tr2-ok").addEventListener("click", () => {
+      essais++;
+      if (Math.abs(d - m) <= 1) { reussis++; retour(res, "ok", `<b>Bravo !</b> Ton angle <span class="ang">xOy</span> mesure ${d}°.`); }
+      else if (Math.abs(d - (180 - m)) <= 1) retour(res, "ko", `<b>Mauvaise graduation !</b> Ton angle mesure ${d}° = 180° − ${m}°. Lis la graduation qui part du 0 posé sur [Ox). ${m < 90 ? "Un angle de " + m + "° est aigu." : "Un angle de " + m + "° est obtus."}`);
+      else retour(res, "ko", `Ton angle mesure ${d}°, il fallait ${m}°. Vérifie le placement du rapporteur et ta lecture.`);
+      $("#tr2-score").textContent = `Bonnes réponses : ${reussis} sur ${essais}`;
+    });
+    $("#tr2-voir").addEventListener("click", () => { rap.aller(O[0], O[1], 0); d = m; dessinerOy(); retour(res, "", `Voici l’angle <span class="ang">xOy</span> de ${m}° : on part du 0 posé sur [Ox).`); });
+    $("#tr2-new").addEventListener("click", nouveau);
+    nouveau();
+  })();
+
+  /* ----- Adjacents ou pas ? ----- */
+  (function () {
+    const svg = $("#fig-adjtri"), res = $("#adj-ret"), crit = [...document.querySelectorAll("#adj-crit li")];
+    let cas, prec = null, essais = 0, reussis = 0, repondu = false;
+    function genere() {
+      let t; do { t = alea(0, 4); } while (t === prec); prec = t;
+      const r = alea(-25, 50), a = alea(35, 55), b = alea(35, 55), O = [310, 420];
+      if (t === 0 || t === 4) return { adj: true, crit: [true, true, true], dessin: g => duo(g, O, [r, r + a], O, [r + a, r + a + b]), texte: "Même sommet, un côté commun, et ils sont de part et d’autre de ce côté : ils sont adjacents." };
+      if (t === 1) return { adj: false, crit: [true, true, false], dessin: g => duo(g, O, [r, r + a + b], O, [r, r + a], true), texte: "Ils ont le même sommet et un côté commun, mais ils sont du même côté de ce côté commun : l’un est dans l’autre. Ils ne sont pas adjacents." };
+      if (t === 2) { const c = alea(20, 35); return { adj: false, crit: [true, false, null], dessin: g => duo(g, O, [r, r + a], O, [r + a + c, r + a + c + b]), texte: "Ils ont le même sommet, mais pas de côté commun. Ils ne sont pas adjacents." }; }
+      const O1 = [140, 420], O2 = [480, 420];
+      return { adj: false, crit: [false, false, null], dessin: g => { S("line", { x1: 30, y1: 420, x2: 600, y2: 420, class: "ln" }, g); duo(g, O1, [0, a + 10], O2, [180 - b - 10, 180]); }, texte: "Ils n’ont pas le même sommet. Ils ne sont pas adjacents." };
+    }
+    function duo(g, O1, [p1, q1], O2, [p2, q2], emboite) {
+      secteur(g, O1, p1, q1, emboite ? 130 : 95, C.vert, {}, .3);
+      secteur(g, O2, p2, q2, emboite ? 80 : 125, C.orange, {}, .3);
+      for (const [O, d] of [[O1, p1], [O1, q1], [O2, p2], [O2, q2]]) demi(g, O, d, 280, { style: "stroke-width:3" });
+      for (const O of [O1, O2]) S("circle", { cx: O[0], cy: O[1], r: 5, fill: C.texte }, g);
+    }
+    function nouveau() {
+      cas = genere(); repondu = false; svg.innerHTML = ""; cas.dessin(svg);
+      crit.forEach(li => { li.className = ""; li.querySelector("b").textContent = "?"; });
+      document.querySelectorAll("#adj-choix .btn").forEach(b => { b.disabled = false; b.classList.remove("bon", "mauvais"); });
+      retour(res, "", "Les angles vert et orange sont-ils adjacents ?");
+    }
+    document.querySelectorAll("#adj-choix .btn").forEach(b => b.addEventListener("click", () => {
+      if (repondu) return; repondu = true; essais++;
+      const oui = b.dataset.r === "oui", ok = oui === cas.adj; if (ok) reussis++;
+      document.querySelectorAll("#adj-choix .btn").forEach(x => { x.disabled = true; if ((x.dataset.r === "oui") === cas.adj) x.classList.add("bon"); });
+      if (!ok) b.classList.add("mauvais");
+      cas.crit.forEach((v, i) => { crit[i].className = v === null ? "na" : v ? "oui" : "non"; crit[i].querySelector("b").textContent = v === null ? "–" : v ? "✓" : "✗"; });
+      retour(res, ok ? "ok" : "ko", `<b>${ok ? "Bravo !" : "Pas tout à fait."}</b> ${cas.texte}`);
+      $("#adj-score").textContent = `Bonnes réponses : ${reussis} sur ${essais}`;
+    }));
+    $("#adj-new").addEventListener("click", nouveau);
+    nouveau();
+  })();
+
+  /* ----- Placer soi-même la bissectrice ----- */
+  (function () {
+    const svg = $("#fig-bis2"), O = [300, 420], res = $("#bis2-ret");
+    let a, z;
+    function dessiner() {
+      svg.innerHTML = "";
+      const g1 = z, g2 = a - z, egal = Math.abs(g1 - g2) < 1e-9;
+      secteur(svg, O, 0, z, 90, egal ? C.vert : C.bleu, {}, .25);
+      secteur(svg, O, z, a, 110, egal ? C.vert : C.orange, {}, .25);
+      if (egal) for (const t of [z / 2, z + (a - z) / 2]) { const p = P(O, t, 81), q = P(O, t, 99); S("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: C.vert, "stroke-width": 3 }, svg); }
+      demi(svg, O, 0, 290); demi(svg, O, a, 290);
+      lettre(svg, O, 0, 306, "x", { y: O[1] + 24 }); lettre(svg, O, a, 312, "y");
+      S("circle", { cx: O[0], cy: O[1], r: 5, fill: C.texte }, svg);
+      T(svg, O[0], O[1] + 26, "O", { class: "lab gras", style: "font-size:22px;font-style:italic" });
+      const gz = S("g", { style: "cursor:grab" }, svg);
+      demi(gz, O, z, 300, { style: `stroke:${C.violet};stroke-width:3.5;stroke-dasharray:10 7` });
+      const h = P(O, z, 300);
+      S("circle", { cx: h[0], cy: h[1], r: 26, fill: "transparent" }, gz);
+      S("circle", { cx: h[0], cy: h[1], r: 16, fill: C.violet, stroke: "#fff", "stroke-width": 3 }, gz);
+      lettre(gz, O, z, 328, "z", { fill: C.violet });
+      let p = P(O, z / 2, 140); T(svg, p[0], p[1], nb(g1) + "°", { class: "lab gras", fill: egal ? C.vert : C.bleu });
+      p = P(O, z + (a - z) / 2, 160); T(svg, p[0], p[1], nb(g2) + "°", { class: "lab gras", fill: egal ? C.vert : C.orange });
+      $("#bis2-lec").innerHTML = `<span class="ang">xOz</span> = <span class="${egal ? "c-vert" : "c-bleu"}">${nb(g1)}°</span> &nbsp;et&nbsp; <span class="ang">zOy</span> = <span class="${egal ? "c-vert" : "c-orange"}">${nb(g2)}°</span>`;
+      if (egal) retour(res, "ok", `<b>Bravo !</b> [Oz) partage <span class="ang">xOy</span> en deux angles adjacents de même mesure : ${nb(a)} ÷ 2 = ${nb(z)}°. C’est la bissectrice.`);
+      else retour(res, "", "Fais tourner [Oz) avec la poignée violette jusqu’à obtenir deux angles de même mesure.");
+    }
+    function nouveau() { a = 2 * alea(25, 80); z = Math.random() < .5 ? alea(8, Math.round(a / 2) - 10) : alea(Math.round(a / 2) + 10, a - 8); dessiner(); }
+    let drag = false;
+    svg.addEventListener("pointerdown", e => { e.stopPropagation(); drag = true; svg.setPointerCapture(e.pointerId); bouger(e); });
+    svg.addEventListener("pointermove", e => { if (drag) bouger(e); });
+    svg.addEventListener("pointerup", () => drag = false);
+    function bouger(e) { const q = svgPt(svg, e); let t = Math.atan2(O[1] - q.y, q.x - O[0]) * 180 / Math.PI; if (t < -90) t += 360; z = Math.max(2, Math.min(a - 2, Math.round(t))); dessiner(); }
+    $("#bis2-new").addEventListener("click", nouveau);
+    nouveau();
+  })();
+
+  /* ----- Diagramme circulaire : on change les effectifs ----- */
+  (function () {
+    const svg = $("#fig-diag2"), O = [310, 290], r = 220;
+    const SPORTS = [["Football", C.bleu], ["Danse", C.orange], ["Handball", C.vert], ["Natation", C.violet]];
+    const ins = [...document.querySelectorAll("#diag2-tab input")];
+    const ecrire = x => (Math.abs(x - Math.round(x * 10) / 10) < 1e-9 ? "" : "≈ ") + nb(Math.round(x * 10) / 10);
+    function dessiner() {
+      const eff = ins.map(i => Math.max(0, parseInt(i.value, 10) || 0)), tot = eff.reduce((s, x) => s + x, 0);
+      svg.innerHTML = "";
+      S("circle", { cx: O[0], cy: O[1], r, fill: "#fff", stroke: C.texte, "stroke-width": 2.5 }, svg);
+      $("#diag2-tot").textContent = tot;
+      if (!tot) { $("#diag2-calc").textContent = "Mets au moins un élève !"; document.querySelectorAll("#diag2-tab .ang-cell").forEach(c => c.textContent = "–"); return; }
+      const u = 360 / tot;
+      const ex = Math.abs(u - Math.round(u * 10) / 10) < 1e-9, uu = nb(Math.round(u * 10) / 10);
+      $("#diag2-calc").innerHTML = ex ? `360 ÷ ${tot} = ${uu} : un élève est représenté par un angle de ${uu}°.`
+        : `360 ÷ ${tot} ≈ ${uu} : un élève est représenté par un angle d’environ ${uu}° (valeur arrondie au dixième).`;
+      let deb = 90;
+      eff.forEach((e, i) => {
+        const ang = e * u, cell = document.querySelectorAll("#diag2-tab .ang-cell")[i];
+        cell.textContent = ecrire(ang);
+        if (!e) return;
+        const [nom, coul] = SPORTS[i], a1 = deb - ang;
+        if (ang >= 359.999) S("circle", { cx: O[0], cy: O[1], r, fill: coul, opacity: .3 }, svg);
+        else { secteur(svg, O, a1, deb, r, coul, {}, .3); demi(svg, O, a1, r); demi(svg, O, deb, r); }
+        if (ang >= 18) { const mid = P(O, (a1 + deb) / 2, r * 0.6); T(svg, mid[0], mid[1] - 11, nom, { class: "lab gras", fill: coul }); T(svg, mid[0], mid[1] + 13, ecrire(ang) + "°", { class: "lab gras", fill: coul }); }
+        deb = a1;
+      });
+      S("circle", { cx: O[0], cy: O[1], r: 4, fill: C.texte }, svg);
+    }
+    ins.forEach(i => { i.addEventListener("input", dessiner); i.addEventListener("keydown", e => e.stopPropagation()); });
+    $("#diag2-zero").addEventListener("click", () => { [8, 6, 4, 6].forEach((v, k) => ins[k].value = v); dessiner(); });
+    dessiner();
   })();
 
   Diapo.demarrer();
